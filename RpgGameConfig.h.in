@@ -1,0 +1,2 @@
+#define RpgGame_VERSION_MAJOR @RpgGame_VERSION_MAJOR@
+#define RpgGame_VERSION_MINOR @RpgGame_VERSION_MINOR@
