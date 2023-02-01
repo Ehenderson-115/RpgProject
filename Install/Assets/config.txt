@@ -1,0 +1,65 @@
+<Player>
+	<ID>0</ID>
+	<Name>Player1</Name>
+	<Race>Human</Race>
+	<HitPoints>20/20</HitPoints>
+</Player>
+
+<Room>
+	<ID>
+	0
+	</ID>
+	<Name>
+	Starting Room
+	</Name>
+	<Contents>
+		<Item>0</Item>
+	</Contents>
+	<Descript>
+	You find yourself in a cold, damp room. The walls and floor are composed of crudely cut stones covered in moss. 
+	To the south there is an old wooden door.
+	</Descript>
+	<South>
+	1
+	</South>
+</Room>
+<Room>
+	<ID>1</ID>
+	<Name>
+	Dark Hallway
+	</Name>
+	<Descript>
+	You are now in a dark hallway illuminated only by a faint torch light at the end of the hall.
+	</Descript>
+	</Contents>
+		<Enemy>0</Enemy>
+	</Contents>
+</Room>
+
+<Enemy>
+	<ID>0</ID>
+	<Name>
+	Fortress Guard
+	</Name>
+	<Race>
+	Orc
+	</Race>
+	<HitPoints>
+	10/10
+	</HitPoints>
+</Enemy>
+
+<Item>
+	<ID>0</ID>
+	<Name>
+		Rusty Sword
+	</Name>
+	<Descript>
+		An old sword nearly dull from age.
+	</Descript>
+	<Type>
+		Weapon
+	</Type>
+</Item>
+
+

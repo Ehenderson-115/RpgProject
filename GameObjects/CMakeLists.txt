@@ -6,7 +6,8 @@ set (SOURCE_FILES
 			Player.cpp
 			Weapon.cpp
 			Room.cpp
-			Game.cpp)
+			Game.cpp
+			HelperFunctions.cpp)
 
 set (HEADER_FILES 
 			Character.h  
@@ -16,11 +17,10 @@ set (HEADER_FILES
 			Player.h
 			Weapon.h
 			Room.h
-			Game.h)
+			Game.h
+			HelperFunctions.h)
 
 add_library(GameObjects ${SOURCE_FILES} ${HEADER_FILES})
-
-configure_file(config.txt config.txt)
 
 target_include_directories(GameObjects INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 

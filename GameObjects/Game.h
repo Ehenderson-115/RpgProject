@@ -22,6 +22,7 @@ public:
 
 private:
 	void ParseConfigFile();
+	void ParseTag(std::string &input);
 	void CreatePlayer();
 	void CreateRoom();
 	void CreateEnemy();
