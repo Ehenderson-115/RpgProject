@@ -10,9 +10,15 @@ configure_file(RpgGameConfig.h.in RpgGameConfig.h)
 
 
 add_subdirectory(GameObjects)
+
 list(APPEND GAME_OBJECTS GameObjects)
 
+
+install(FILES config.txt DESTINATION Assets)
+
+
 add_executable(RpgGame rpgGame.cpp)
+install(TARGETS RpgGame DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 target_link_libraries(RpgGame PUBLIC ${GAME_OBJECTS})
 
