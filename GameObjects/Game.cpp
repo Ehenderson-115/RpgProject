@@ -6,7 +6,7 @@
 void Game::StartGame()
 {
 	std::string response;
-	std::cout << "Welcome to the Untitled RPG Game. Press Enter to start!" << std::endl;
+	PrintString("Welcome to the Untitled RPG Game. Press Enter to start!");
 	std::getline(std::cin,response);
 	ParseConfigFile();
 
