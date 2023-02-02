@@ -12,6 +12,5 @@ protected:
 	std::string mRace;
 	int mCurrhp;
 	int mMaxhp;
-	
 };
 #endif
