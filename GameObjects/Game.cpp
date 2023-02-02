@@ -7,14 +7,14 @@ void Game::StartGame()
 {
 	std::string response;
 	std::cout << "Welcome to the Untitled RPG Game. Press Enter to start!" << std::endl;
-	std::cin.ignore();
-
+	std::getline(std::cin,response);
 	ParseConfigFile();
 
 }
 
 void Game::ParseConfigFile()
 {
+	std::string response;
 	std::fstream configFile;
 	std::string line;
 	std::string fileStr;
@@ -30,25 +30,31 @@ void Game::ParseConfigFile()
 	StripString(fileStr, "\t");
 	ParseTag(fileStr);
 
-	std::cin.ignore();
+	PrintString("End Of File Reached");
+	std::getline(std::cin, response);
 }
 
 void Game::ParseTag(std::string &input)
 {
-	//TODO Fix Base Case
 	std::string objType = "";
-	int tagStart = input.find_first_of("<");
-	int openTagEnd = input.find_first_of(">");
+	int tagStart = input.find("<");
+	int tagEnd = input.find(">");
+	int endOfTags = input.find_last_of(">");
 
-	//+1 to include the > character
-	objType = input.substr(tagStart,( openTagEnd + 1));
-	PrintString(objType);
-	ParseTag(input.substr(openTagEnd));
-
-	if(openTagEnd == input.find_last_of(">"))
+	while (tagEnd != endOfTags)
 	{
-		return;
+		if (objType == "")
+		{
+			objType = input.substr(tagStart + size_t(1), tagEnd - size_t(1));
+			PrintString(objType);
+		}
+		input = input.substr(tagEnd, endOfTags);
+
+		tagEnd = input.find(">");
 	}
+
+	PrintString(objType);
+	
 
 }
 

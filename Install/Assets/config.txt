@@ -5,6 +5,32 @@
 	<HitPoints>20/20</HitPoints>
 </Player>
 
+<Enemy>
+	<ID>0</ID>
+	<Name>
+	Fortress Guard
+	</Name>
+	<Race>
+	Orc
+	</Race>
+	<HitPoints>
+	10/10
+	</HitPoints>
+</Enemy>
+
+<Item>
+	<ID>0</ID>
+	<Name>
+		Rusty Sword
+	</Name>
+	<Descript>
+		An old sword nearly dull from age.
+	</Descript>
+	<Type>
+		Weapon
+	</Type>
+</Item>
+
 <Room>
 	<ID>
 	0
@@ -35,31 +61,3 @@
 		<Enemy>0</Enemy>
 	</Contents>
 </Room>
-
-<Enemy>
-	<ID>0</ID>
-	<Name>
-	Fortress Guard
-	</Name>
-	<Race>
-	Orc
-	</Race>
-	<HitPoints>
-	10/10
-	</HitPoints>
-</Enemy>
-
-<Item>
-	<ID>0</ID>
-	<Name>
-		Rusty Sword
-	</Name>
-	<Descript>
-		An old sword nearly dull from age.
-	</Descript>
-	<Type>
-		Weapon
-	</Type>
-</Item>
-
-
