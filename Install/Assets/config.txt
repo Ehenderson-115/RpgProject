@@ -1,12 +1,18 @@
 <Player>
 	<ID>0</ID>
-	<Name>Player1</Name>
-	<Race>Human</Race>
-	<HitPoints>20/20</HitPoints>
+	<Name>
+	Player1
+	</Name>
+	<Race>
+	Human
+	</Race>
+	<HitPoints>
+	20/20
+	</HitPoints>
 </Player>
 
 <Enemy>
-	<ID>0</ID>
+	<ID>1</ID>
 	<Name>
 	Fortress Guard
 	</Name>
@@ -18,46 +24,43 @@
 	</HitPoints>
 </Enemy>
 
-<Item>
-	<ID>0</ID>
+<Weapon>
+	<ID>2</ID>
 	<Name>
-		Rusty Sword
+	Rusty Sword
 	</Name>
 	<Descript>
-		An old sword nearly dull from age.
+	"An old sword nearly dull from age and exposure."
 	</Descript>
-	<Type>
-		Weapon
-	</Type>
-</Item>
+	<Damage>2</Damage>
+</Weapon>
 
 <Room>
-	<ID>
-	0
-	</ID>
+	<ID>3</ID>
 	<Name>
 	Starting Room
 	</Name>
 	<Contents>
-		<Item>0</Item>
+		<Weapon>2</Weapon>
 	</Contents>
 	<Descript>
-	You find yourself in a cold, damp room. The walls and floor are composed of crudely cut stones covered in moss. 
-	To the south there is an old wooden door.
+	"You find yourself in a cold, damp room. The walls and floor are composed of crudely cut stones covered in moss. 
+	To the south there is an old wooden door."
 	</Descript>
 	<South>
-	1
+	4
 	</South>
 </Room>
+
 <Room>
-	<ID>1</ID>
+	<ID>4</ID>
 	<Name>
 	Dark Hallway
 	</Name>
 	<Descript>
-	You are now in a dark hallway illuminated only by a faint torch light at the end of the hall.
+	"You are now in a dark hallway illuminated only by a faint torch light at the end of the hall."
 	</Descript>
 	</Contents>
-		<Enemy>0</Enemy>
+		<Enemy>1</Enemy>
 	</Contents>
 </Room>

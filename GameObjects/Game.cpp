@@ -12,6 +12,16 @@ void Game::StartGame()
 
 }
 
+void Game::ConsumeTypeTag(ObjectType &obj, std::string &dataSource)
+{
+	int tagStart = dataSource.find("<");
+	int tagEnd = dataSource.find(">");
+	tagEnd++;
+	std::string tag = dataSource.substr(tagStart, tagEnd);
+	StrToLower(tag);
+	TagToObjType(tag, obj);
+}
+
 void Game::ParseConfigFile()
 {
 	std::string response;
@@ -27,38 +37,163 @@ void Game::ParseConfigFile()
 	configFile.close();
 
 	//Strips Tab Characters
+
 	StripString(fileStr, "\t");
-	ParseTag(fileStr);
+	ParseFileData(fileStr);
 
 	PrintString("End Of File Reached");
 	std::getline(std::cin, response);
 }
 
-void Game::ParseTag(std::string &input)
+void Game::ParseFileData(std::string &dataSource)
 {
-	std::string objType = "";
-	int tagStart = input.find("<");
-	int tagEnd = input.find(">");
-	int endOfTags = input.find_last_of(">");
+	ObjectType obj = ObjectType::Empty;
+	std::string tag = "";
+	int startOfTags = dataSource.find_first_of(">");
+	int endOfTags = dataSource.find_last_of(">");
 
-	while (tagEnd != endOfTags)
+	while (startOfTags != endOfTags)
 	{
-		if (objType == "")
-		{
-			objType = input.substr(tagStart + size_t(1), tagEnd - size_t(1));
-			PrintString(objType);
-		}
-		input = input.substr(tagEnd, endOfTags);
+		ConsumeTypeTag(obj, dataSource);
+		dataSource = dataSource.substr(startOfTags + size_t(1), endOfTags);
 
-		tagEnd = input.find(">");
+		LoadObject(obj, dataSource);
+		obj = ObjectType::Empty;
+
+		//Cuts off everthing after the main tag is processed (Might remove later???)
+		dataSource = dataSource.substr(startOfTags + size_t(1), endOfTags);
+
+		startOfTags = dataSource.find_first_of(">");
+		endOfTags = dataSource.find_last_of(">");
 	}
+}
 
-	PrintString(objType);
-	
+void Game::LoadObject(ObjectType obj, std::string &dataSource)
+{
+	switch (obj)
+	{
+	case ObjectType::Player:
+		CreatePlayer(dataSource);
+		break;
+	case ObjectType::Character:
+		CreateCharacter(dataSource);
+		break;
+	case ObjectType::Enemy:
+		CreateEnemy(dataSource);
+		break;
+	case ObjectType::Entity:
+		CreateEntity(dataSource);
+		break;
+	case ObjectType::Weapon:
+		CreateWeapon(dataSource);
+		break;
+	case ObjectType::Item:
+		CreateItem(dataSource);
+		break;
+	case ObjectType::Room:
+		CreateRoom(dataSource);
+		break;
+	default:
+		break;
+	}
 
 }
 
-void Game::CreatePlayer()
+void Game::TagToObjType(std::string tag, ObjectType &inObj)
 {
-	
+	if (tag == "<player>")
+	{
+		inObj = ObjectType::Player;
+	}
+	else if (tag == "<character>")
+	{
+		inObj = ObjectType::Character;
+	}
+	else if (tag == "<entity>")
+	{
+		inObj = ObjectType::Entity;
+	}
+	else if (tag == "<weapon>")
+	{
+		inObj = ObjectType::Weapon;
+	}
+	else if (tag == "<enemy>")
+	{
+		inObj = ObjectType::Enemy;
+	}
+	else if (tag == "<item>")
+	{
+		inObj = ObjectType::Item;
+	}
+	else if (tag == "<room>")
+	{
+		inObj = ObjectType::Room;
+	}
+	else
+	{
+		inObj = ObjectType::Empty;
+	}
+}
+
+void Game::FindObjEndTag(ObjectType obj, std::string dataSource)
+{
+	switch (obj)
+	{
+	case ObjectType::Player:
+		CreatePlayer(dataSource);
+		break;
+	case ObjectType::Character:
+		CreateCharacter(dataSource);
+		break;
+	case ObjectType::Enemy:
+		CreateEnemy(dataSource);
+		break;
+	case ObjectType::Entity:
+		CreateEntity(dataSource);
+		break;
+	case ObjectType::Weapon:
+		CreateWeapon(dataSource);
+		break;
+	case ObjectType::Item:
+		CreateItem(dataSource);
+		break;
+	case ObjectType::Room:
+		CreateRoom(dataSource);
+		break;
+	default:
+		break;
+	}
+
+}
+
+void Game::CreatePlayer(std::string& datasource)
+{
+	DataType dataT = DataType::Empty;
+
+
+
+}
+
+void Game::CreateRoom(std::string& dataSource)
+{
+}
+
+void Game::CreateEnemy(std::string& dataSource)
+{
+}
+
+void Game::CreateItem(std::string& dataSource)
+{
+}
+
+void Game::CreateCharacter(std::string& dataSource)
+{
+}
+
+void Game::CreateEntity(std::string& dataSource)
+{
+}
+
+void Game::CreateWeapon(std::string& dataSource)
+{
 }

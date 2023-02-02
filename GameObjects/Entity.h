@@ -17,7 +17,7 @@ protected:
 	int mId;
 	std::string mName;
 	std::string mDescript;
-	
+
 };
 
 #endif

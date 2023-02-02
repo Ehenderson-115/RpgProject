@@ -1,14 +1,5 @@
 #include "Room.h"
 
-std::string Room::GetDescript()
-{
-    return mDescript;
-}
-
-void Room::AddCharacter(std::shared_ptr<Character> inCharacter)
-{
-    mCharacters.push_back(inCharacter);
-}
 
 void Room::AddRoomObject(std::shared_ptr<Entity> inEntity)
 {
@@ -17,7 +8,7 @@ void Room::AddRoomObject(std::shared_ptr<Entity> inEntity)
 
 void Room::AddRoomConnection(std::shared_ptr<Room> inRoom, char direction)
 {
-    switch (direction) \
+    switch (direction)
     {
     case('n'):
         mNorth = inRoom;

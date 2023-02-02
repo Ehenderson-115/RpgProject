@@ -1,5 +1,6 @@
 #ifndef ROOM_H
 #define ROOM_H
+#include "Entity.h"
 #include<iostream>
 #include<string>
 #include<vector>
@@ -8,13 +9,11 @@
 
 
 class Character;
-class Entity;
 
 
-class Room 
+class Room : public Entity
 {
 public:
-	std::string GetDescript();
 	
 	void AddCharacter(std::shared_ptr<Character> inCharacter);
 	void AddRoomObject(std::shared_ptr<Entity> inEntity);
@@ -24,21 +23,16 @@ public:
 
 
 	std::shared_ptr<Room> GetRoom(char direction);
-
-
-
-	
 	
 private:
 
-std::vector<std::shared_ptr<Character>> mCharacters;
-std::vector<std::shared_ptr<Entity>> mContents;
-std::string mDescript;
+	std::vector<std::shared_ptr<Entity>> mContents;
+	std::string mDescript;
 
-std::shared_ptr<Room> mNorth;
-std::shared_ptr<Room> mSouth;
-std::shared_ptr<Room> mEast;
-std::shared_ptr<Room> mWest;
+	std::shared_ptr<Room> mNorth;
+	std::shared_ptr<Room> mSouth;
+	std::shared_ptr<Room> mEast;
+	std::shared_ptr<Room> mWest;
 };
 
 #endif 
