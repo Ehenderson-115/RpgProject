@@ -6,21 +6,21 @@ void Room::AddRoomObject(std::shared_ptr<Entity> inEntity)
     mContents.push_back(inEntity);
 }
 
-void Room::AddRoomConnection(std::shared_ptr<Room> inRoom, char direction)
+void Room::AddRoomConnection(int input, char direction)
 {
     switch (direction)
     {
     case('n'):
-        mNorth = inRoom;
+        mNorthId = input;
         break;
     case('s'):
-        mSouth = inRoom;
+        mSouthId = input;
         break;
     case('e'):
-        mEast = inRoom;
+        mEastId = input;
         break;
     case('w'):
-        mWest = inRoom;
+        mWestId = input;
         break;
     default:
         std::cout << "Error Invaild Direction passed to AddRoomConnection()" << std::endl;

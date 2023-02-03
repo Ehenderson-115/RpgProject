@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 #include <vector>
+#include <memory>
 #include "Character.h"
 
 
@@ -11,8 +12,7 @@ class Player : public Character
 public:
 	
 private:
-
-	std::vector<Item> inventory;
+	std::vector<std::shared_ptr<Entity>> inventory;
 	
 };
 #endif // !PLAYER_H

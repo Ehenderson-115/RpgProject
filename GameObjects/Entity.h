@@ -9,9 +9,9 @@ public:
 	std::string GetName();
 	int GetId();
 
-	void SetDescript();
-	void SetName();
-	void SetId();
+	void SetDescript(std::string input);
+	void SetName(std::string input);
+	void SetId(int input);
 	
 protected:
 	int mId;

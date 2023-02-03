@@ -5,7 +5,7 @@ project(RpgGame VERSION 1.0)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Header File for cmake changes (Unused)
+# Header File for cmake defines
 configure_file(RpgGameConfig.h.in RpgGameConfig.h)
 
 
