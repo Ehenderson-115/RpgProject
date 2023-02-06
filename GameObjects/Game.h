@@ -3,7 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <fstream>
+#include <typeinfo>
 
 
 
@@ -11,7 +11,6 @@ class Character;
 class Enemy;
 class Entity;
 class Item;
-class Player;
 class Room;
 class Weapon;
 class Parser;
@@ -23,11 +22,6 @@ public:
 
 private:
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
-
-
-
-
-
 
 };
 

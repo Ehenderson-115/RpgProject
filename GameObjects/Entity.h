@@ -6,7 +6,7 @@ class Entity
 {
 public:	
 	std::string GetDescript();
-	std::string GetName();
+	virtual std::string GetRace();
 	int GetId();
 
 	void SetDescript(std::string input);

@@ -216,7 +216,6 @@ void Parser::CreatePlayer()
 
 	while (dataType != DataType::Empty)
 	{
-		//ConsumeDataTag(dataType);
 		SetPlayerData(dataType, newPlayer);
 		StripCurrTag();
 
@@ -225,7 +224,7 @@ void Parser::CreatePlayer()
 		StripCurrTag();
 	}
 
-	mParsedEntites.push_back(std::make_shared<Entity>(newPlayer));
+	mParsedEntites.push_back(std::make_shared<Player>(newPlayer));
 }
 
 void Parser::SetPlayerData(DataType dataType, Player& inPlayer)

@@ -41,6 +41,7 @@
 	Starting Room
 	</Name>
 	<Contents>
+		<Player>0<Player>
 		<Weapon>2</Weapon>
 	</Contents>
 	<Descript>
