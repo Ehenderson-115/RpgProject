@@ -63,4 +63,7 @@
 	</Contents>
 		<Enemy>1</Enemy>
 	</Contents>
+	<North>
+	3
+	</North>
 </Room>
