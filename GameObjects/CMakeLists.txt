@@ -7,7 +7,8 @@ set (SOURCE_FILES
 			Weapon.cpp
 			Room.cpp
 			Game.cpp
-			HelperFunctions.cpp)
+			HelperFunctions.cpp
+			Parser.cpp)
 
 set (HEADER_FILES 
 			Character.h  
@@ -18,7 +19,8 @@ set (HEADER_FILES
 			Weapon.h
 			Room.h
 			Game.h
-			HelperFunctions.h)
+			HelperFunctions.h
+			Parser.h)
 
 add_library(GameObjects ${SOURCE_FILES} ${HEADER_FILES})
 
