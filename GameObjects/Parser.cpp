@@ -26,6 +26,7 @@ void Parser::StripCurrTag()
 	dataSource = dataSource.substr(tagEnd);
 }
 
+
 void Parser::ConsumeObjTag(ObjectType& obj)
 {
 	std::string tag = FetchTag();
@@ -265,7 +266,7 @@ void Parser::CreateRoom()
 		StripCurrTag();
 	}
 
-	mParsedEntites.push_back(std::make_shared<Entity>(newRoom));
+	mParsedEntites.push_back(std::make_shared<Room>(newRoom));
 }
 
 void Parser::SetRoomData(DataType dataType, Room& inRoom)
@@ -305,10 +306,12 @@ void Parser::SetRoomData(DataType dataType, Room& inRoom)
 			StrToObjType(currTag, contentObjType);
 			StripCurrTag();
 			dataToAdd = dataSource.substr(0, dataSource.find("<"));
+			std::shared_ptr<Player> roomPlayer = nullptr;
 			switch (contentObjType)
 			{
 			case ObjectType::Player:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
+				roomPlayer = std::static_pointer_cast<Player>(mParsedEntites.at(std::stoi(dataToAdd)));
+				roomPlayer->SetCurrRoomId(inRoom.GetId());
 				break;
 			case ObjectType::Character:
 				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
@@ -358,7 +361,7 @@ void Parser::CreateEnemy()
 		StripCurrTag();
 	}
 
-	mParsedEntites.push_back(std::make_shared<Entity>(newEnemy));
+	mParsedEntites.push_back(std::make_shared<Enemy>(newEnemy));
 }
 
 void Parser::SetEnemyData(DataType dataType, Enemy& inEnemy)
@@ -399,7 +402,7 @@ void Parser::CreateItem()
 		StripCurrTag();
 	}
 
-	mParsedEntites.push_back(std::make_shared<Entity>(newItem));
+	mParsedEntites.push_back(std::make_shared<Item>(newItem));
 }
 
 void Parser::SetItemData(DataType dataType, Item& inItem)
@@ -437,7 +440,7 @@ void Parser::CreateCharacter()
 		StripCurrTag();
 	}
 
-	mParsedEntites.push_back(std::make_shared<Entity>(newCharacter));
+	mParsedEntites.push_back(std::make_shared<Character>(newCharacter));
 }
 
 void Parser::SetCharacterData(DataType dataType, Character& inCharacter)
@@ -516,7 +519,7 @@ void Parser::CreateWeapon()
 		StripCurrTag();
 	}
 
-	mParsedEntites.push_back(std::make_shared<Entity>(newWeapon));
+	mParsedEntites.push_back(std::make_shared<Weapon>(newWeapon));
 }
 
 void Parser::SetWeaponData(DataType dataType, Weapon& inWeapon)
