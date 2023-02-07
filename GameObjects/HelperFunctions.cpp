@@ -1,12 +1,12 @@
 #include "HelperFunctions.h"
 
-void StripString(std::string &input, std::string stripStr)
+void StripString(std::string& inStr, std::string stripStr)
 {
-	for (int i = 0; i < input.length(); i++) 
+	for (int i = 0; i < inStr.length(); i++)
 	{
-		if (input.substr(i, stripStr.length()) == stripStr)
+		if (inStr.substr(i, stripStr.length()) == stripStr)
 		{
-			input.replace(i, stripStr.length(), "");
+			inStr.replace(i, stripStr.length(), "");
 			i -= stripStr.length();
 		}
 	}
@@ -14,15 +14,46 @@ void StripString(std::string &input, std::string stripStr)
 }
 
 
-void PrintString(std::string input)
+void PrintString(const std::string& inStr)
 {
-	std::cout << input << std::endl;
+	std::cout << inStr << std::endl;
 }
 
-void StrToLower(std::string& input)
+void StrToLower(std::string& inStr)
 {
-	for (int i = 0; i < input.length(); i++)
+	for (int i = 0; i < inStr.length(); i++)
 	{
-		input.at(i) = std::tolower(input.at(i));
+		inStr.at(i) = std::tolower(inStr.at(i));
+	}
+}
+
+void BreakUpString(std::string& inStr, std::vector<std::string>& inVect)
+{
+	int startOfStr = 0;
+	int i = 0;
+	for (i; i < inStr.length(); i++)
+	{
+		if (inStr.at(i) == ' ')
+		{
+			inVect.push_back(inStr.substr(startOfStr, i));
+			startOfStr = i;
+			break;
+
+		}
+	}
+	inVect.push_back(inStr.substr(startOfStr, i));
+
+}
+
+void RemoveExtraSpaces(std::string& inStr)
+{
+	for (int i = 0; i < inStr.length(); i++)
+	{
+		if (inStr.at(i) == ' ' && !std::isalpha(inStr.at(i + 1)))
+		{
+			inStr.erase(i, 1);
+			i--;
+
+		}
 	}
 }

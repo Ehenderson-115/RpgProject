@@ -2,7 +2,12 @@
 
 void Entity::SetId(int input)
 {
-	this->mId = input;
+	mId = input;
+}
+
+void Entity::SetName(std::string input)
+{
+	mName = input;
 }
 
 void Entity::SetDescript(std::string input)
@@ -12,10 +17,21 @@ void Entity::SetDescript(std::string input)
 	int descriptEnd = input.find_last_of("\"");
 	descriptEnd--;
 
-	this->mDescript = input.substr(descriptStart, descriptEnd);
+	mDescript = input.substr(descriptStart, descriptEnd);
 }
 
-void Entity::SetName(std::string input)
+int Entity::GetId()
 {
-	this->mName = input;
+	return mId;
 }
+
+std::string Entity::GetName()
+{
+	return mName;
+}
+
+std::string Entity::GetDescript()
+{
+	return mDescript;
+}
+

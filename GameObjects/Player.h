@@ -12,10 +12,10 @@ class Player : public Character
 {
 public:
 	void SetCurrRoomId(int inRoomId);
-	int GetCurrRoom();
+	int GetCurrRoomId();
 	
 private:
-	int currRoomId;
+	int mCurrRoomId;
 	std::vector<std::shared_ptr<Entity>> inventory;
 	
 };

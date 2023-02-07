@@ -1,5 +1,9 @@
 #include "Room.h"
 
+Room::Room()
+{
+    
+}
 
 void Room::AddRoomObject(std::shared_ptr<Entity> inEntity)
 {
@@ -25,5 +29,18 @@ void Room::AddRoomConnection(int input, char direction)
     default:
         std::cout << "Error Invaild Direction passed to AddRoomConnection()" << std::endl;
     }
+}
+
+std::string Room::CheckRoomContents()
+{   
+    std::string output = "You found a ";
+    for (int i = 0; i < mContents.size(); i++)
+    {
+        if (i > 0) {
+            output += " \nYou also found a ";
+        }
+        output += mContents.at(i)->GetName();
+    }
+    return output;
 }
 

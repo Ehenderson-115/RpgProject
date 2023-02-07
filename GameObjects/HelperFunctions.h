@@ -1,5 +1,8 @@
 #include <string>
 #include <iostream>
-void StripString(std::string &input, std::string stripStr);
-void PrintString(std::string input);
-void StrToLower(std::string &input);
+#include <vector>
+void StripString(std::string& inStr, std::string stripStr);
+void PrintString(const std::string& inStr);
+void StrToLower(std::string& inStr);
+void BreakUpString(std::string& inStr, std::vector<std::string>& inVect);
+void RemoveExtraSpaces(std::string& inStr);

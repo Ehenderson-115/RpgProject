@@ -2,10 +2,10 @@
 
 void Player::SetCurrRoomId(int inRoomId)
 {
-	currRoomId = inRoomId;
+	mCurrRoomId = inRoomId;
 }
 
-int Player::GetCurrRoom()
+int Player::GetCurrRoomId()
 {
-	return currRoomId;
+	return mCurrRoomId;
 }
