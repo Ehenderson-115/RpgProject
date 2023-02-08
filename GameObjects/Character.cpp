@@ -1,5 +1,11 @@
 #include "Character.h"
 
+Character::Character()
+{
+	mClassType = "character";
+	mHoldable = false;
+}
+
 void Character::SetRace(std::string input)
 {
 	mRace = input;

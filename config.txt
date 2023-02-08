@@ -61,7 +61,7 @@
 	<Descript>
 	"You are now in a dark hallway illuminated only by a faint torch light at the end of the hall."
 	</Descript>
-	</Contents>
+	<Contents>
 		<Enemy>1</Enemy>
 	</Contents>
 	<North>

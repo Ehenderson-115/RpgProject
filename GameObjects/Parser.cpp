@@ -298,7 +298,6 @@ void Parser::SetRoomData(DataType dataType, Room& inRoom)
 	case DataType::West:
 		inRoom.AddRoomConnection(std::stoi(dataToAdd), 'w');
 		break;
-		//TODO ADD CONTENTS CASE
 	case DataType::Contents:
 		currTag = FetchTag();
 		while (currTag != "</contents>")

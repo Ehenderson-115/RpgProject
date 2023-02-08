@@ -16,7 +16,7 @@ void StripString(std::string& inStr, std::string stripStr)
 
 void PrintString(const std::string& inStr)
 {
-	std::cout << inStr << std::endl;
+	std::cout << inStr << std::endl << std::endl;
 }
 
 void StrToLower(std::string& inStr)
@@ -27,21 +27,11 @@ void StrToLower(std::string& inStr)
 	}
 }
 
-void BreakUpString(std::string& inStr, std::vector<std::string>& inVect)
+void GrabNextWord(std::string& inStr, std::vector<std::string>& inVect)
 {
-	int startOfStr = 0;
-	int i = 0;
-	for (i; i < inStr.length(); i++)
-	{
-		if (inStr.at(i) == ' ')
-		{
-			inVect.push_back(inStr.substr(startOfStr, i));
-			startOfStr = i;
-			break;
-
-		}
-	}
-	inVect.push_back(inStr.substr(startOfStr, i));
+	int firstSpace = inStr.find(" ");
+	inVect.push_back(inStr.substr(0, firstSpace));
+	inStr = inStr.substr(firstSpace + 1);
 
 }
 
@@ -57,3 +47,4 @@ void RemoveExtraSpaces(std::string& inStr)
 		}
 	}
 }
+

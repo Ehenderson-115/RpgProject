@@ -4,11 +4,12 @@
 
 class Item : public Entity{
 public:
-	
+	Item();
+	bool isEquipable();
 	
 protected:
 
 
-	
+	bool mEquipable;
 };
 #endif

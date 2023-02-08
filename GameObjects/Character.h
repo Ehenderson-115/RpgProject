@@ -7,6 +7,7 @@
 class Character : public Entity
 {
 public:
+	Character();
 	void SetRace(std::string input);
 	void SetHitpoints(std::string input);
 	std::string GetRace();
