@@ -1,5 +1,11 @@
 #include "Entity.h"
 
+Entity::Entity()
+{
+	mClassType = "entity";
+	mHoldable = false;
+}
+
 void Entity::SetId(int input)
 {
 	mId = input;
@@ -29,6 +35,18 @@ std::string Entity::GetName()
 {
 	return mName;
 }
+
+std::string Entity::GetClassType()
+{
+	return mClassType;
+}
+
+bool Entity::isHoldable()
+{
+	return mHoldable;
+}
+
+
 
 std::string Entity::GetDescript()
 {

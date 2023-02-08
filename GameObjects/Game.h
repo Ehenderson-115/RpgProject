@@ -23,12 +23,15 @@ public:
 private:
 	//Unused for now
 	enum class Command {Unknown, Move, Pickup, Look, Search, Attack};
+
+	enum class GameState {Error, Loading, Menu, Combat, Main};
 	
 	void GameLoop();
 	void ParseCommand(std::string& inCommandStr);
-	void ExecuteCommand(const std::vector<std::string>& inCommand);
+	void ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& inCommandVect);
 	
 	bool runGame;
+	GameState currState;
 
 	std::shared_ptr<Player> currPlayer;
 	std::shared_ptr<Room> currRoom;

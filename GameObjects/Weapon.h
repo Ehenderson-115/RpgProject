@@ -5,6 +5,7 @@
 class Weapon : public Item
 {
 public:
+	Weapon();
 	void SetDamage(int input);
 
 private:

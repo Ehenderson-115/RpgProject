@@ -4,19 +4,28 @@
 #include <memory>
 #include "Character.h"
 #include "Room.h"
+#include "Item.h"
+#include "Weapon.h"
 
-
-class Item;
 
 class Player : public Character
 {
 public:
-	void SetCurrRoomId(int inRoomId);
+	Player();
+	
+	std::string CheckInventory();
+	std::string CheckItem(std::string nameToFind);
 	int GetCurrRoomId();
 	
+	void AddItem(std::shared_ptr<Item> inItem);
+	void SetCurrRoomId(int inRoomId);
+
+	void EquipWeapon(std::string nameToFind);
+
 private:
 	int mCurrRoomId;
-	std::vector<std::shared_ptr<Entity>> inventory;
+	std::shared_ptr<Weapon> mCurrWeapon;
+	std::vector<std::shared_ptr<Item>> mInventory;
 	
 };
 #endif
