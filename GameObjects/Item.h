@@ -5,7 +5,9 @@
 class Item : public Entity{
 public:
 	Item();
-	bool isEquipable();
+	Item(ClassType classType, bool equipable);
+
+	bool isEquipable() const;
 	
 protected:
 

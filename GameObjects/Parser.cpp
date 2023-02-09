@@ -8,7 +8,7 @@
 #include "Item.h"
 #include "HelperFunctions.h"
 
-std::string Parser::FetchTag()
+std::string Parser::FetchTag() const
 {
 	int tagStart = dataSource.find("<");
 	int tagEnd = dataSource.find(">");
@@ -26,29 +26,22 @@ void Parser::StripCurrTag()
 	dataSource = dataSource.substr(tagEnd);
 }
 
-
-void Parser::ConsumeObjTag(ObjectType& obj)
+Parser::ObjectType Parser::ConsumeObjTag()
 {
 	std::string tag = FetchTag();
-	StrToObjType(tag, obj);
-
-	//Strips off the consumed tag from the source string
 	StripCurrTag();
-
+	return TagToObjType(tag);
 }
 
-void Parser::ConsumeDataTag(DataType& dataType)
+Parser::DataType Parser::ConsumeDataTag()
 {
 	std::string tag = FetchTag();
-	StrToDataType(tag, dataType);
-
-	//Strips off the consumed tag from the source string
 	StripCurrTag();
+	return TagToDataType(tag);
 }
 
-std::vector<std::shared_ptr<Entity>> Parser::ParseConfigFile(const std::string& fileToParse)
+std::vector<std::shared_ptr<Entity>> Parser::InitGameDataFromFile(const std::string& fileToParse)
 {
-	std::string response;
 	std::fstream configFile;
 	std::string line;
 	std::string fileStr;
@@ -60,8 +53,6 @@ std::vector<std::shared_ptr<Entity>> Parser::ParseConfigFile(const std::string& 
 	}
 	configFile.close();
 
-	//Strips Tab Characters
-
 	StripString(fileStr, "\t");
 	dataSource = fileStr;
 	ParseFileData();
@@ -71,14 +62,13 @@ std::vector<std::shared_ptr<Entity>> Parser::ParseConfigFile(const std::string& 
 void Parser::ParseFileData()
 {
 	ObjectType obj = ObjectType::Empty;
-	std::string tag = "";
 	int startOfTags = dataSource.find_first_of(">");
 	int endOfTags = dataSource.find_last_of(">");
 
 	while (startOfTags != endOfTags)
 	{
 
-		ConsumeObjTag(obj);
+		obj = ConsumeObjTag();
 		LoadObject(obj);
 
 		obj = ObjectType::Empty;
@@ -88,7 +78,7 @@ void Parser::ParseFileData()
 	}
 }
 
-void Parser::LoadObject(ObjectType obj)
+void Parser::LoadObject(const ObjectType& obj)
 {
 	switch (obj)
 	{
@@ -119,91 +109,91 @@ void Parser::LoadObject(ObjectType obj)
 
 }
 
-void Parser::StrToObjType(std::string tag, ObjectType& inObj)
+Parser::ObjectType Parser::TagToObjType(const std::string& tag)
 {
 	if (tag == "<player>")
 	{
-		inObj = ObjectType::Player;
+		return ObjectType::Player;
 	}
 	else if (tag == "<character>")
 	{
-		inObj = ObjectType::Character;
+		return ObjectType::Character;
 	}
 	else if (tag == "<entity>")
 	{
-		inObj = ObjectType::Entity;
+		return ObjectType::Entity;
 	}
 	else if (tag == "<weapon>")
 	{
-		inObj = ObjectType::Weapon;
+		return ObjectType::Weapon;
 	}
 	else if (tag == "<enemy>")
 	{
-		inObj = ObjectType::Enemy;
+		return ObjectType::Enemy;
 	}
 	else if (tag == "<item>")
 	{
-		inObj = ObjectType::Item;
+		return ObjectType::Item;
 	}
 	else if (tag == "<room>")
 	{
-		inObj = ObjectType::Room;
+		return ObjectType::Room;
 	}
 	else
 	{
-		inObj = ObjectType::Empty;
+		return ObjectType::Empty;
 	}
 }
 
-void Parser::StrToDataType(std::string tag, DataType& inDataType)
+Parser::DataType Parser::TagToDataType(const std::string& tag)
 {
 	if (tag == "<id>")
 	{
-		inDataType = DataType::ID;
+		return DataType::ID;
 	}
 	else if (tag == "<name>")
 	{
-		inDataType = DataType::Name;
+		return DataType::Name;
 	}
 	else if (tag == "<race>")
 	{
-		inDataType = DataType::Race;
+		return DataType::Race;
 	}
 	else if (tag == "<hitpoints>")
 	{
-		inDataType = DataType::Hitpoints;
+		return DataType::Hitpoints;
 	}
 	else if (tag == "<descript>")
 	{
-		inDataType = DataType::Descript;
+		return DataType::Descript;
 	}
 	else if (tag == "<damage>")
 	{
-		inDataType = DataType::Damage;
+		return DataType::Damage;
 	}
 	else if (tag == "<north>")
 	{
-		inDataType = DataType::North;
+		return DataType::North;
 	}
 	else if (tag == "<south>")
 	{
-		inDataType = DataType::South;
+		return DataType::South;
 	}
 	else if (tag == "<east>")
 	{
-		inDataType = DataType::East;
+		return DataType::East;
 	}
 	else if (tag == "<west>")
 	{
-		inDataType = DataType::West;
+		return DataType::West;
 	}
 	else if (tag == "<contents>")
 	{
-		inDataType = DataType::Contents;
+		return DataType::Contents;
 	}
 	else
 	{
-		inDataType = DataType::Empty;
+		return DataType::Empty;
 	}
 }
 
@@ -211,33 +201,28 @@ void Parser::CreatePlayer()
 {
 	Player newPlayer = Player();
 	std::string nextTag = FetchTag();
-	DataType dataType = DataType::Empty;
-	StrToDataType(nextTag, dataType);
-	StripCurrTag();
+	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
 	{
-		SetPlayerData(dataType, newPlayer);
+		SetData(dataType, newPlayer);
 		StripCurrTag();
-
-		nextTag = FetchTag();
-		StrToDataType(nextTag, dataType);
-		StripCurrTag();
+		dataType = ConsumeDataTag();
 	}
 
 	mParsedEntites.push_back(std::make_shared<Player>(newPlayer));
 }
 
-void Parser::SetPlayerData(DataType dataType, Player& inPlayer)
+void Parser::SetData(const DataType& dataType, Player& inPlayer)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	switch (dataType)
 	{
 	case DataType::ID:
-		inPlayer.SetId(std::stoi(dataToAdd));
+		inPlayer.Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inPlayer.SetName(dataToAdd);
+		inPlayer.Name(dataToAdd);
 		break;
 	case DataType::Race:
 		inPlayer.SetRace(dataToAdd);
@@ -251,25 +236,19 @@ void Parser::SetPlayerData(DataType dataType, Player& inPlayer)
 void Parser::CreateRoom()
 {
 	Room newRoom = Room();
-	std::string nextTag = FetchTag();
-	DataType dataType = DataType::Empty;
-	StrToDataType(nextTag, dataType);
-	StripCurrTag();
+	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
 	{
-		SetRoomData(dataType, newRoom);
+		SetData(dataType, newRoom);
 		StripCurrTag();
-
-		nextTag = FetchTag();
-		StrToDataType(nextTag, dataType);
-		StripCurrTag();
+		dataType = ConsumeDataTag();
 	}
 
 	mParsedEntites.push_back(std::make_shared<Room>(newRoom));
 }
 
-void Parser::SetRoomData(DataType dataType, Room& inRoom)
+void Parser::SetData(const DataType& dataType, Room& inRoom)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	DataType contentType = DataType::Empty;
@@ -278,13 +257,13 @@ void Parser::SetRoomData(DataType dataType, Room& inRoom)
 	switch (dataType)
 	{
 	case DataType::ID:
-		inRoom.SetId(std::stoi(dataToAdd));
+		inRoom.Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inRoom.SetName(dataToAdd);
+		inRoom.Name(dataToAdd);
 		break;
 	case DataType::Descript:
-		inRoom.SetDescript(dataToAdd);
+		inRoom.Descript(dataToAdd);
 		break;
 	case DataType::North:
 		inRoom.AddRoomConnection(std::stoi(dataToAdd), 'n');
@@ -302,15 +281,14 @@ void Parser::SetRoomData(DataType dataType, Room& inRoom)
 		currTag = FetchTag();
 		while (currTag != "</contents>")
 		{
-			StrToObjType(currTag, contentObjType);
-			StripCurrTag();
+			contentObjType = ConsumeObjTag();
 			dataToAdd = dataSource.substr(0, dataSource.find("<"));
 			std::shared_ptr<Player> roomPlayer = nullptr;
 			switch (contentObjType)
 			{
 			case ObjectType::Player:
 				roomPlayer = std::static_pointer_cast<Player>(mParsedEntites.at(std::stoi(dataToAdd)));
-				roomPlayer->SetCurrRoomId(inRoom.GetId());
+				roomPlayer->SetCurrRoomId(inRoom.Id());
 				break;
 			case ObjectType::Character:
 				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
@@ -346,33 +324,29 @@ void Parser::CreateEnemy()
 {
 	Enemy newEnemy = Enemy();
 	std::string nextTag = FetchTag();
-	DataType dataType = DataType::Empty;
-	StrToDataType(nextTag, dataType);
-	StripCurrTag();
+	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
 	{
-		SetEnemyData(dataType, newEnemy);
+		SetData(dataType, newEnemy);
 		StripCurrTag();
+		dataType = ConsumeDataTag();
 
-		nextTag = FetchTag();
-		StrToDataType(nextTag, dataType);
-		StripCurrTag();
 	}
 
 	mParsedEntites.push_back(std::make_shared<Enemy>(newEnemy));
 }
 
-void Parser::SetEnemyData(DataType dataType, Enemy& inEnemy)
+void Parser::SetData(const DataType& dataType, Enemy& inEnemy)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	switch (dataType)
 	{
 	case DataType::ID:
-		inEnemy.SetId(std::stoi(dataToAdd));
+		inEnemy.Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inEnemy.SetName(dataToAdd);
+		inEnemy.Name(dataToAdd);
 		break;
 	case DataType::Race:
 		inEnemy.SetRace(dataToAdd);
@@ -387,36 +361,31 @@ void Parser::CreateItem()
 {
 	Item newItem = Item();
 	std::string nextTag = FetchTag();
-	DataType dataType = DataType::Empty;
-	StrToDataType(nextTag, dataType);
-	StripCurrTag();
+	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
 	{
-		SetItemData(dataType, newItem);
+		SetData(dataType, newItem);
 		StripCurrTag();
-
-		nextTag = FetchTag();
-		StrToDataType(nextTag, dataType);
-		StripCurrTag();
+		dataType = ConsumeDataTag();
 	}
 
 	mParsedEntites.push_back(std::make_shared<Item>(newItem));
 }
 
-void Parser::SetItemData(DataType dataType, Item& inItem)
+void Parser::SetData(const DataType& dataType, Item& inItem)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	switch (dataType)
 	{
 	case DataType::ID:
-		inItem.SetId(std::stoi(dataToAdd));
+		inItem.Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inItem.SetName(dataToAdd);
+		inItem.Name(dataToAdd);
 		break;
 	case DataType::Descript:
-		inItem.SetDescript(dataToAdd);
+		inItem.Descript(dataToAdd);
 		break;
 	}
 }
@@ -425,33 +394,28 @@ void Parser::CreateCharacter()
 {
 	Character newCharacter = Character();
 	std::string nextTag = FetchTag();
-	DataType dataType = DataType::Empty;
-	StrToDataType(nextTag, dataType);
-	StripCurrTag();
+	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
 	{
-		SetCharacterData(dataType, newCharacter);
+		SetData(dataType, newCharacter);
 		StripCurrTag();
-
-		nextTag = FetchTag();
-		StrToDataType(nextTag, dataType);
-		StripCurrTag();
+		dataType = ConsumeDataTag();
 	}
 
 	mParsedEntites.push_back(std::make_shared<Character>(newCharacter));
 }
 
-void Parser::SetCharacterData(DataType dataType, Character& inCharacter)
+void Parser::SetData(const DataType& dataType, Character& inCharacter)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	switch (dataType)
 	{
 	case DataType::ID:
-		inCharacter.SetId(std::stoi(dataToAdd));
+		inCharacter.Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inCharacter.SetName(dataToAdd);
+		inCharacter.Name(dataToAdd);
 		break;
 	case DataType::Race:
 		inCharacter.SetRace(dataToAdd);
@@ -466,36 +430,31 @@ void Parser::CreateEntity()
 {
 	Entity newEntity = Entity();
 	std::string nextTag = FetchTag();
-	DataType dataType = DataType::Empty;
-	StrToDataType(nextTag, dataType);
-	StripCurrTag();
+	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
 	{
-		SetEntityData(dataType, newEntity);
+		SetData(dataType, newEntity);
 		StripCurrTag();
-
-		nextTag = FetchTag();
-		StrToDataType(nextTag, dataType);
-		StripCurrTag();
+		dataType = ConsumeDataTag();
 	}
 
 	mParsedEntites.push_back(std::make_shared<Entity>(newEntity));
 }
 
-void Parser::SetEntityData(DataType dataType, Entity& inEntity)
+void Parser::SetData(const DataType& dataType, Entity& inEntity)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	switch (dataType)
 	{
 	case DataType::ID:
-		inEntity.SetId(std::stoi(dataToAdd));
+		inEntity.Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inEntity.SetName(dataToAdd);
+		inEntity.Name(dataToAdd);
 		break;
 	case DataType::Descript:
-		inEntity.SetDescript(dataToAdd);
+		inEntity.Descript(dataToAdd);
 		break;
 	}
 }
@@ -504,36 +463,31 @@ void Parser::CreateWeapon()
 {
 	Weapon newWeapon = Weapon();
 	std::string nextTag = FetchTag();
-	DataType dataType = DataType::Empty;
-	StrToDataType(nextTag, dataType);
-	StripCurrTag();
+	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
 	{
-		SetWeaponData(dataType, newWeapon);
+		SetData(dataType, newWeapon);
 		StripCurrTag();
-
-		nextTag = FetchTag();
-		StrToDataType(nextTag, dataType);
-		StripCurrTag();
+		dataType = ConsumeDataTag();
 	}
 
 	mParsedEntites.push_back(std::make_shared<Weapon>(newWeapon));
 }
 
-void Parser::SetWeaponData(DataType dataType, Weapon& inWeapon)
+void Parser::SetData(const DataType& dataType, Weapon& inWeapon)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	switch (dataType)
 	{
 	case DataType::ID:
-		inWeapon.SetId(std::stoi(dataToAdd));
+		inWeapon.Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inWeapon.SetName(dataToAdd);
+		inWeapon.Name(dataToAdd);
 		break;
 	case DataType::Descript:
-		inWeapon.SetDescript(dataToAdd);
+		inWeapon.Descript(dataToAdd);
 		break;
 	case DataType::Damage:
 		inWeapon.SetDamage(std::stoi(dataToAdd));

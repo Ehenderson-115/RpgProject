@@ -1,7 +1,4 @@
 #include "Game.h"
-#include "Player.h"
-#include "Room.h"
-#include "Entity.h"
 #include "Character.h"
 #include "Enemy.h"
 #include "Weapon.h"
@@ -13,14 +10,17 @@
 void Game::StartGame()
 {
 	std::string response;
-	std::shared_ptr<Parser> gameFileParser = std::make_shared<Parser>();
+	auto gameFileParser = std::make_shared<Parser>();
 	PrintString("Welcome to the Untitled RPG Game!");
 	std::vector<std::shared_ptr<Entity>> tempVect;
 	currState = GameState::Loading;
-	mGameEntities = gameFileParser->ParseConfigFile("./Assets/config.txt");
+
+	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
+
 	currPlayer = std::static_pointer_cast<Player>(mGameEntities.at(0));
 	currRoom = std::static_pointer_cast<Room>(mGameEntities.at(currPlayer->GetCurrRoomId()));
-	PrintString("File Parsed Successfully!");
+
+	PrintString("Data Loaded Successfully!");
 	currState = GameState::Main;
 	GameLoop();
 }
@@ -32,6 +32,7 @@ void Game::GameLoop()
 	while (runGame)
 	{
 		getline(std::cin, command);
+		system("cls");
 		ParseCommand(command);
 
 	}
@@ -84,7 +85,7 @@ void Game::ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& i
 		}
 		else if (command == "look" || command == "check")
 		{
-			PrintString(currRoom->GetDescript());
+			PrintString(currRoom->Descript());
 		}
 		else if (command == "search" || command == "survey")
 		{
@@ -144,10 +145,19 @@ void Game::ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& i
 				PrintString("No look target specified");
 			}
 		}
+		else if (command == "equip")
+		{
+			currPlayer->EquipWeapon(inCommandStr);
+		}
 		else
 		{
 			PrintString("Invalid Command: " + command + " try closing inventory first.");
 		}
 		break;
+	case GameState::Combat:
+		break;
+		
+	
 	}
+
 }
