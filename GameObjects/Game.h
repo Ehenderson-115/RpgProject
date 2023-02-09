@@ -1,19 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
-#include <iostream>
+#include "Player.h"
+#include "Room.h"
+#include "Entity.h"
+#include <string>
 #include <memory>
 #include <vector>
-#include <typeinfo>
 
-
-class Player;
-class Character;
-class Enemy;
-class Entity;
-class Item;
-class Room;
-class Weapon;
-class Parser;
 
 class Game
 {

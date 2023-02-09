@@ -5,8 +5,6 @@
 #include <vector>
 #include <fstream>
 
-
-
 class Character;
 class Enemy;
 class Entity;
@@ -19,18 +17,19 @@ class Parser
 {
 
 public:
-	std::vector<std::shared_ptr<Entity>> ParseConfigFile(const std::string& fileToParse);
+	std::vector<std::shared_ptr<Entity>> InitGameDataFromFile(const std::string& fileToParse);
 
 private:
 	enum class ObjectType { Empty, Player, Character, Enemy, Entity, Weapon, Item, Room };
 	enum class DataType { Empty, ID, Name, Race, Hitpoints, Descript, Damage, South, North, East, West, Contents };
+	
 	std::string dataSource;
 
-	void ConsumeObjTag(ObjectType& obj);
-	void ConsumeDataTag(DataType& dataT);
+	ObjectType ConsumeObjTag();
+	DataType ConsumeDataTag();
 	void ParseFileData();
 
-	void LoadObject(ObjectType obj);
+	void LoadObject(const ObjectType& obj);
 
 	void CreateCharacter();
 	void CreateEntity();
@@ -40,18 +39,18 @@ private:
 	void CreateEnemy();
 	void CreateItem();
 
-	void SetPlayerData(DataType dataType, Player& inPlayer);
-	void SetRoomData(DataType dataType, Room& inRoom);
-	void SetEnemyData(DataType dataType, Enemy& inEnemy);
-	void SetItemData(DataType dataType, Item& inItem);
-	void SetCharacterData(DataType dataType, Character& inCharacter);
-	void SetEntityData(DataType dataType, Entity& inEntity);
-	void SetWeaponData(DataType dataType, Weapon& inWeapon);
+	void SetData(const DataType& dataType, Player& inPlayer);
+	void SetData(const DataType& dataType, Room& inRoom);
+	void SetData(const DataType& dataType, Enemy& inEnemy);
+	void SetData(const DataType& dataType, Item& inItem);
+	void SetData(const DataType& dataType, Character& inCharacter);
+	void SetData(const DataType& dataType, Entity& inEntity);
+	void SetData(const DataType& dataType, Weapon& inWeapon);
 
-	void StrToObjType(std::string tag, ObjectType& inObj);
-	void StrToDataType(std::string tag, DataType& inDataType);
+	ObjectType TagToObjType(const std::string& tag);
+	DataType TagToDataType(const std::string& tag);
 
-	std::string FetchTag();
+	std::string FetchTag() const;
 	void StripCurrTag();
 
 	std::vector<std::shared_ptr<Entity>> mParsedEntites;

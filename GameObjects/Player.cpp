@@ -1,10 +1,7 @@
 #include "Player.h"
+#include "HelperFunctions.h"
 
-Player::Player()
-{
-	mClassType = "player";
-	mHoldable = false;
-}
+Player::Player() : Character(ClassType::Player) {}
 
 void Player::AddItem(std::shared_ptr<Item> inItem)
 {
@@ -27,7 +24,7 @@ std::string Player::CheckInventory()
 	for (int i = 0; i < mInventory.size(); i++)
 	{
 		currItem = mInventory.at(i);
-		output += currItem->GetName();
+		output += currItem->Name();
 		if (mInventory.size() > 1)
 		{
 			output += " | ";
@@ -44,14 +41,13 @@ std::string Player::CheckItem(std::string nameToFind)
 	std::string currItemName;
     std::shared_ptr<Item> currItem = nullptr;
 
-    for (int i = 0; i < mInventory.size(); i++)
+	for (auto currItem : mInventory)
     {
-        currItem = mInventory.at(i);
-		currItemName = currItem->GetName();
+		currItemName = currItem->Name();
         StrToLower(currItemName);
         if (currItemName == nameToFind)
         {
-			output = currItem->GetDescript();
+			output = currItem->Descript();
         }
     }
     return output;
@@ -72,12 +68,11 @@ void Player::EquipWeapon(std::string nameToFind)
 	for (int i = 0; i < mInventory.size(); i++)
 	{
 		currItem = mInventory.at(i);
-		currItemName = currItem->GetName();
+		currItemName = currItem->Name();
 		StrToLower(currItemName);
 		if (currItemName == nameToFind && currItem->isEquipable())
 		{
-			output = currItem;
+			mCurrWeapon = std::static_pointer_cast<Weapon>(currItem);
 		}
 	}
-	return output;
 }

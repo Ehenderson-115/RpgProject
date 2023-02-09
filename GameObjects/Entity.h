@@ -5,16 +5,23 @@
 class Entity 
 {
 public:	
+	enum class ClassType { Entity, Player, Room, Character, Enemy, Item, Weapon };
+	
 	Entity();
-	std::string GetDescript();
-	std::string GetName();
-	std::string GetClassType();
-	bool isHoldable();
-	int GetId();
+	Entity(ClassType classType);
+	Entity(bool holdable);
+	Entity(ClassType classType, bool holdable);
+	
+	//Getters
+	bool isHoldable() const;
+	std::string Descript() const;
+	std::string Name() const;
+	int Id() const;
 
-	void SetDescript(std::string input);
-	void SetName(std::string input);
-	void SetId(int input);
+	//Setters
+	void Descript(std::string input);
+	void Name(std::string input);
+	void Id(int input);
 
 	
 protected:
@@ -22,7 +29,7 @@ protected:
 	bool mHoldable;
 	std::string mName;
 	std::string mDescript;
-	std::string mClassType;
+	ClassType mClassType;
 
 };
 

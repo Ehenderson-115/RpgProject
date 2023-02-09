@@ -2,20 +2,15 @@
 #define ROOM_H
 #include "Entity.h"
 #include "Item.h"
-#include "HelperFunctions.h"
-#include<iostream>
 #include<string>
 #include<vector>
 #include<memory>
 
 
-
-class Character;
-
-
 class Room : public Entity
 {
 public:
+	Room();
 	void AddRoomObject(std::shared_ptr<Entity> inEntity);
 	void AddRoomConnection(int input, char direction);
 	std::string CheckRoomContents();

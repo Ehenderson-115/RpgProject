@@ -1,5 +1,12 @@
 #include "Room.h"
+#include "HelperFunctions.h"
 
+Room::Room()
+{
+    mClassType = ClassType::Room;
+    mHoldable = false;
+
+}
 
 void Room::AddRoomObject(std::shared_ptr<Entity> inEntity)
 {
@@ -29,13 +36,13 @@ void Room::AddRoomConnection(int input, char direction)
 
 std::string Room::CheckRoomContents()
 {   
-    std::string output = "You searched the room high and low and found a ";
+    std::string output = "You searched the room found a ";
     for (int i = 0; i < mContents.size(); i++)
     {
         if (i > 0) {
             output += " \nYou also found a ";
         }
-        output += mContents.at(i)->GetName();
+        output += mContents.at(i)->Name();
     }
     return output;
 }
@@ -49,7 +56,7 @@ std::shared_ptr<Item> Room::GetItem(std::string nameToFind)
     for (int i = 0; i < mContents.size(); i++)
     {
         currEnt = mContents.at(i);
-        currEntName = currEnt->GetName();
+        currEntName = currEnt->Name();
         StrToLower(currEntName);
         if (currEntName == nameToFind && currEnt->isHoldable())
         {

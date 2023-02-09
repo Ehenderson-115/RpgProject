@@ -1,22 +1,23 @@
 #include "Entity.h"
 
-Entity::Entity()
-{
-	mClassType = "entity";
-	mHoldable = false;
-}
+//Constructors
+Entity::Entity() : mClassType{ ClassType::Entity }, mHoldable{ false } {}
+Entity::Entity(ClassType classType) : mClassType{ classType } {}
+Entity::Entity(bool holdable) : mHoldable{ holdable } {}
+Entity::Entity(ClassType classType, bool holdable) : mClassType{ classType }, mHoldable{ holdable } {}
 
-void Entity::SetId(int input)
+//Getter Functions
+void Entity::Id(int input)
 {
 	mId = input;
 }
 
-void Entity::SetName(std::string input)
+void Entity::Name(std::string input)
 {
 	mName = input;
 }
 
-void Entity::SetDescript(std::string input)
+void Entity::Descript(std::string input)
 {
 	int descriptStart = input.find_first_of("\"");
 	descriptStart++;
@@ -26,29 +27,24 @@ void Entity::SetDescript(std::string input)
 	mDescript = input.substr(descriptStart, descriptEnd);
 }
 
-int Entity::GetId()
+
+//Setter Functions
+int Entity::Id() const
 {
 	return mId;
 }
 
-std::string Entity::GetName()
+std::string Entity::Name() const
 {
 	return mName;
 }
 
-std::string Entity::GetClassType()
-{
-	return mClassType;
-}
-
-bool Entity::isHoldable()
+bool Entity::isHoldable() const
 {
 	return mHoldable;
 }
 
-
-
-std::string Entity::GetDescript()
+std::string Entity::Descript() const
 {
 	return mDescript;
 }

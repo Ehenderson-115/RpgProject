@@ -1,10 +1,8 @@
 #include "Character.h"
+#include "Entity.h"
 
-Character::Character()
-{
-	mClassType = "character";
-	mHoldable = false;
-}
+Character::Character() : Entity(ClassType::Character) {}
+Character::Character(ClassType classType) : Entity(classType) {}
 
 void Character::SetRace(std::string input)
 {
