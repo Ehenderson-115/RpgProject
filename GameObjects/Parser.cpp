@@ -1,3 +1,4 @@
+#include <fstream>
 #include "Parser.h"
 #include "Player.h"
 #include "Room.h"
@@ -14,7 +15,7 @@ std::string Parser::FetchTag() const
 	int tagEnd = dataSource.find(">");
 	tagEnd++;
 	std::string outputStr = dataSource.substr(tagStart, tagEnd);
-	StrToLower(outputStr);
+	outputStr = StrToLower(outputStr);
 	return outputStr;
 }
 
@@ -53,7 +54,7 @@ std::vector<std::shared_ptr<Entity>> Parser::InitGameDataFromFile(const std::str
 	}
 	configFile.close();
 
-	StripString(fileStr, "\t");
+	fileStr = StripString(fileStr, "\t");
 	dataSource = fileStr;
 	ParseFileData();
 	return mParsedEntites;
@@ -200,7 +201,6 @@ Parser::DataType Parser::TagToDataType(const std::string& tag)
 void Parser::CreatePlayer()
 {
 	Player newPlayer = Player();
-	std::string nextTag = FetchTag();
 	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
@@ -225,10 +225,11 @@ void Parser::SetData(const DataType& dataType, Player& inPlayer)
 		inPlayer.Name(dataToAdd);
 		break;
 	case DataType::Race:
-		inPlayer.SetRace(dataToAdd);
+		dataToAdd = StrToLower(dataToAdd);
+		inPlayer.Race(dataToAdd);
 		break;
 	case DataType::Hitpoints:
-		inPlayer.SetHitpoints(dataToAdd);
+		inPlayer.Hitpoints(dataToAdd);
 		break;
 	}
 }
@@ -266,16 +267,16 @@ void Parser::SetData(const DataType& dataType, Room& inRoom)
 		inRoom.Descript(dataToAdd);
 		break;
 	case DataType::North:
-		inRoom.AddRoomConnection(std::stoi(dataToAdd), 'n');
+		inRoom.RoomConnection(std::stoi(dataToAdd), "north");
 		break;
 	case DataType::South:
-		inRoom.AddRoomConnection(std::stoi(dataToAdd), 's');
+		inRoom.RoomConnection(std::stoi(dataToAdd), "south");
 		break;
 	case DataType::East:
-		inRoom.AddRoomConnection(std::stoi(dataToAdd), 'e');
+		inRoom.RoomConnection(std::stoi(dataToAdd), "east");
 		break;
 	case DataType::West:
-		inRoom.AddRoomConnection(std::stoi(dataToAdd), 'w');
+		inRoom.RoomConnection(std::stoi(dataToAdd), "west");
 		break;
 	case DataType::Contents:
 		currTag = FetchTag();
@@ -288,7 +289,7 @@ void Parser::SetData(const DataType& dataType, Room& inRoom)
 			{
 			case ObjectType::Player:
 				roomPlayer = std::static_pointer_cast<Player>(mParsedEntites.at(std::stoi(dataToAdd)));
-				roomPlayer->SetCurrRoomId(inRoom.Id());
+				roomPlayer->RoomId(inRoom.Id());
 				break;
 			case ObjectType::Character:
 				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
@@ -349,10 +350,11 @@ void Parser::SetData(const DataType& dataType, Enemy& inEnemy)
 		inEnemy.Name(dataToAdd);
 		break;
 	case DataType::Race:
-		inEnemy.SetRace(dataToAdd);
+		dataToAdd = StrToLower(dataToAdd);
+		inEnemy.Race(dataToAdd);
 		break;
 	case DataType::Hitpoints:
-		inEnemy.SetHitpoints(dataToAdd);
+		inEnemy.Hitpoints(dataToAdd);
 		break;
 	}
 }
@@ -418,10 +420,11 @@ void Parser::SetData(const DataType& dataType, Character& inCharacter)
 		inCharacter.Name(dataToAdd);
 		break;
 	case DataType::Race:
-		inCharacter.SetRace(dataToAdd);
+		dataToAdd = StrToLower(dataToAdd);
+		inCharacter.Race(dataToAdd);
 		break;
 	case DataType::Hitpoints:
-		inCharacter.SetHitpoints(dataToAdd);
+		inCharacter.Hitpoints(dataToAdd);
 		break;
 	}
 }
@@ -462,7 +465,6 @@ void Parser::SetData(const DataType& dataType, Entity& inEntity)
 void Parser::CreateWeapon()
 {
 	Weapon newWeapon = Weapon();
-	std::string nextTag = FetchTag();
 	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
@@ -490,7 +492,7 @@ void Parser::SetData(const DataType& dataType, Weapon& inWeapon)
 		inWeapon.Descript(dataToAdd);
 		break;
 	case DataType::Damage:
-		inWeapon.SetDamage(std::stoi(dataToAdd));
+		inWeapon.Damage(std::stoi(dataToAdd));
 		break;
 	}
 }

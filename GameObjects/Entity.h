@@ -11,12 +11,15 @@ public:
 	Entity(ClassType classType);
 	Entity(bool holdable);
 	Entity(ClassType classType, bool holdable);
+	Entity(ClassType classType, bool holdable, bool item);
 	
 	//Getters
 	bool isHoldable() const;
+	bool isItem() const;
 	std::string Descript() const;
 	std::string Name() const;
 	int Id() const;
+	ClassType classType() const;
 
 	//Setters
 	void Descript(std::string input);
@@ -27,6 +30,7 @@ public:
 protected:
 	int mId;
 	bool mHoldable;
+	bool mItem;
 	std::string mName;
 	std::string mDescript;
 	ClassType mClassType;

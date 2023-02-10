@@ -1,6 +1,6 @@
 #include "HelperFunctions.h"
 
-void StripString(std::string& inStr, std::string stripStr)
+std::string StripString(std::string inStr, const std::string& stripStr)
 {
 	for (int i = 0; i < inStr.length(); i++)
 	{
@@ -10,7 +10,7 @@ void StripString(std::string& inStr, std::string stripStr)
 			i -= stripStr.length();
 		}
 	}
-
+	return inStr;
 }
 
 
@@ -19,12 +19,13 @@ void PrintString(const std::string& inStr)
 	std::cout << inStr << std::endl;
 }
 
-void StrToLower(std::string& inStr)
+std::string StrToLower(std::string inStr)
 {
 	for (int i = 0; i < inStr.length(); i++)
 	{
 		inStr.at(i) = std::tolower(inStr.at(i));
 	}
+	return inStr;
 }
 
 void GrabAllWords(std::string inStr, std::vector<std::string>& inVect)
@@ -43,7 +44,7 @@ void GrabAllWords(std::string inStr, std::vector<std::string>& inVect)
 	}
 }
 
-void GrabNextWord(std::string& inStr, std::vector<std::string>& inVect)
+void GrabNextArg(std::string& inStr, std::vector<std::string>& inVect)
 {
 	int firstSpace = inStr.find(" ");
 	inVect.push_back(inStr.substr(0, firstSpace));
@@ -51,7 +52,7 @@ void GrabNextWord(std::string& inStr, std::vector<std::string>& inVect)
 
 }
 
-void RemoveExtraSpaces(std::string& inStr)
+std::string RemoveExtraSpaces(std::string inStr)
 {
 	for (int i = 0; i < inStr.length(); i++)
 	{
@@ -62,5 +63,6 @@ void RemoveExtraSpaces(std::string& inStr)
 
 		}
 	}
+	return inStr;
 }
 

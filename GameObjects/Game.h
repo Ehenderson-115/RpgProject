@@ -1,12 +1,12 @@
 #ifndef GAME_H
 #define GAME_H
-#include "Player.h"
-#include "Room.h"
-#include "Entity.h"
 #include <string>
 #include <memory>
 #include <vector>
 
+class Room;
+class Player;
+class Entity;
 
 class Game
 {
@@ -20,7 +20,7 @@ private:
 	enum class GameState {Error, Loading, Menu, Combat, Main};
 	
 	void GameLoop();
-	void ParseCommand(std::string& inCommandStr);
+	std::string FormatCommand(std::string inStr);
 	void ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& inCommandVect);
 	
 	bool runGame;

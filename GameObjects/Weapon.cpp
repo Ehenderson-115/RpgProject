@@ -3,8 +3,8 @@
 
 Weapon::Weapon() : Item(ClassType::Weapon, true){}
 
-void Weapon::SetDamage(int input)
+void Weapon::Damage(int input)
 {
-	mBaseDamage = input;
+	mDamageMod = input;
 }
 

@@ -2,6 +2,9 @@
 #include "Character.h"
 #include "Enemy.h"
 #include "Weapon.h"
+#include "Player.h"
+#include "Room.h"
+#include "Entity.h"
 #include "Item.h"
 #include "HelperFunctions.h"
 #include "Parser.h"
@@ -9,18 +12,15 @@
 
 void Game::StartGame()
 {
-	std::string response;
-	auto gameFileParser = std::make_shared<Parser>();
 	PrintString("Welcome to the Untitled RPG Game!");
-	std::vector<std::shared_ptr<Entity>> tempVect;
 	currState = GameState::Loading;
 
+	auto gameFileParser = std::make_shared<Parser>();
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
-
 	currPlayer = std::static_pointer_cast<Player>(mGameEntities.at(0));
-	currRoom = std::static_pointer_cast<Room>(mGameEntities.at(currPlayer->GetCurrRoomId()));
-
+	currRoom = std::static_pointer_cast<Room>(mGameEntities.at(currPlayer->RoomId()));
 	PrintString("Data Loaded Successfully!");
+	
 	currState = GameState::Main;
 	GameLoop();
 }
@@ -28,42 +28,39 @@ void Game::StartGame()
 void Game::GameLoop()
 {
 	runGame = true;
-	std::string command;
+	std::string commandStr;
+	std::vector<std::string>commands;
 	while (runGame)
 	{
-		getline(std::cin, command);
+		getline(std::cin, commandStr);
 		system("cls");
-		ParseCommand(command);
-
+		commandStr = FormatCommand(commandStr);
+		ExecuteCommand(commandStr, commands);
 	}
 }
 
-void Game::ParseCommand(std::string& inCommandStr)
+std::string Game::FormatCommand(std::string inStr)
 {
-	std::vector<std::string> command;
-	RemoveExtraSpaces(inCommandStr);
-	GrabNextWord(inCommandStr, command);
-	ExecuteCommand(inCommandStr, command);
-
+	inStr = StrToLower(inStr);
+	inStr = RemoveExtraSpaces(inStr);
 }
 
+//Not Working at the moment
 void Game::ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& inCommandVect)
 {
 	std::string command = inCommandVect.front();
 	std::string argument = "";
-	StrToLower(command);
 	switch (currState)
 	{
 	case GameState::Main:
 		if (command == "move" || command == "goto")
 		{
-			GrabNextWord(inCommandStr, inCommandVect);
+			GrabNextArg(inCommandStr, inCommandVect);
 			argument = inCommandVect.back();
-			StrToLower(argument);
-			int nextRoomId = currRoom->GetRoom(argument);
+			int nextRoomId = currRoom->RoomConnection(argument);
 			if (nextRoomId != NULL)
 			{
-				currPlayer->SetCurrRoomId(nextRoomId);
+				currPlayer->RoomId(nextRoomId);
 				currRoom = std::static_pointer_cast<Room>(mGameEntities.at(nextRoomId));
 				PrintString("You enter the room");
 
@@ -71,9 +68,8 @@ void Game::ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& i
 		}
 		else if (command == "open")
 		{
-			GrabNextWord(inCommandStr, inCommandVect);
+			GrabNextArg(inCommandStr, inCommandVect);
 			argument = inCommandVect.back();
-			StrToLower(argument);
 			if (argument == "inventory" || argument == "inven")
 			{
 				currState = GameState::Menu;
@@ -133,9 +129,8 @@ void Game::ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& i
 		}
 		else if (command == "look")
 		{
-			GrabNextWord(inCommandStr, inCommandVect);
+			GrabNextArg(inCommandStr, inCommandVect);
 			argument = inCommandVect.back();
-			StrToLower(argument);
 			if (argument == "at")
 			{
 				PrintString(currPlayer->CheckItem(inCommandStr));
