@@ -1,9 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
-#include <iostream>
 #include <memory>
 #include <vector>
-#include <fstream>
 
 class Character;
 class Enemy;

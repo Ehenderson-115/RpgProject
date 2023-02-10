@@ -6,10 +6,11 @@ class Weapon : public Item
 {
 public:
 	Weapon();
-	void SetDamage(int input);
+
+	void Damage(int input);
 
 private:
-	int mBaseDamage;
+	int mDamageMod;
 
 };
 #endif

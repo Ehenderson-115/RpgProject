@@ -11,7 +11,6 @@ public:
 	
 protected:
 
-
 	bool mEquipable;
 };
 #endif

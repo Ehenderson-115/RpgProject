@@ -1,29 +1,34 @@
 #include "Player.h"
 #include "HelperFunctions.h"
+#include "Item.h"
+#include "Weapon.h"
 
-Player::Player() : Character(ClassType::Player) {}
+Player::Player() : Character(ClassType::Player), mEqWeapon{ nullptr } {}
 
 void Player::AddItem(std::shared_ptr<Item> inItem)
 {
 	mInventory.push_back(inItem);
 }
 
-void Player::SetCurrRoomId(int inRoomId)
+void Player::RoomId(int inRoomId)
 {
-	mCurrRoomId = inRoomId;
+	mRoomId = inRoomId;
+}
+
+int Player::RoomId() const
+{
+	return mRoomId;
 }
 
 std::string Player::CheckInventory()
 {
 	std::string output = "";
-	std::shared_ptr<Item> currItem = nullptr;
 	if(mInventory.size() == 0)
 	{
 		output = "Your pockets contain only dust and sadness......";
 	}
-	for (int i = 0; i < mInventory.size(); i++)
+	for (auto currItem : mInventory)
 	{
-		currItem = mInventory.at(i);
 		output += currItem->Name();
 		if (mInventory.size() > 1)
 		{
@@ -34,9 +39,9 @@ std::string Player::CheckInventory()
 
 }
 
-std::string Player::CheckItem(std::string nameToFind)
+std::string Player::CheckItem(std::string nameToFind) const
 {
-    StrToLower(nameToFind);
+    nameToFind = StrToLower(nameToFind);
     std::string output = "";
 	std::string currItemName;
     std::shared_ptr<Item> currItem = nullptr;
@@ -44,7 +49,7 @@ std::string Player::CheckItem(std::string nameToFind)
 	for (auto currItem : mInventory)
     {
 		currItemName = currItem->Name();
-        StrToLower(currItemName);
+        currItemName = StrToLower(currItemName);
         if (currItemName == nameToFind)
         {
 			output = currItem->Descript();
@@ -53,26 +58,21 @@ std::string Player::CheckItem(std::string nameToFind)
     return output;
 }
 
-int Player::GetCurrRoomId()
-{
-	return mCurrRoomId;
-}
+
 
 void Player::EquipWeapon(std::string nameToFind)
 {
-	StrToLower(nameToFind);
+	nameToFind = StrToLower(nameToFind);
 	std::string output = "";
 	std::string currItemName;
-	std::shared_ptr<Item> currItem = nullptr;
 
-	for (int i = 0; i < mInventory.size(); i++)
+	for (auto currItem : mInventory)
 	{
-		currItem = mInventory.at(i);
 		currItemName = currItem->Name();
-		StrToLower(currItemName);
+		currItemName = StrToLower(currItemName);
 		if (currItemName == nameToFind && currItem->isEquipable())
 		{
-			mCurrWeapon = std::static_pointer_cast<Weapon>(currItem);
+			mEqWeapon = std::static_pointer_cast<Weapon>(currItem);
 		}
 	}
 }
