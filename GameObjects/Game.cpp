@@ -9,6 +9,40 @@
 #include "HelperFunctions.h"
 #include "Parser.h"
 
+std::string Game::FormatCommand(std::string inStr)
+{
+	inStr = StrToLower(inStr);
+	inStr = RemoveExtraSpaces(inStr);
+	return inStr;
+}
+
+std::string Game::GrabNextArg(std::string inStr)
+{
+	int firstSpace = inStr.find(" ");
+	commands.push_back(inStr.substr(0, firstSpace));
+	inStr = inStr.substr(firstSpace + 1);
+	return inStr;
+
+}
+
+void Game::PrintHud()
+{
+	switch (currState)
+	{
+	case GameState::Main:
+		PrintString("Current Location: " + currRoom->Name() + "\n");
+		break;
+	case GameState::Menu:
+		PrintString(currPlayer->GetStatus() + "\n");
+		break;
+	}
+}
+
+void Game::UpdateHud()
+{
+	system("cls");
+	PrintHud();
+}
 
 void Game::StartGame()
 {
@@ -28,131 +62,217 @@ void Game::StartGame()
 void Game::GameLoop()
 {
 	runGame = true;
-	std::string commandStr;
-	std::vector<std::string>commands;
 	while (runGame)
 	{
 		getline(std::cin, commandStr);
 		system("cls");
+		PrintHud();
+		
 		commandStr = FormatCommand(commandStr);
-		ExecuteCommand(commandStr, commands);
+		commandStr = GrabNextArg(commandStr);
+		
+		ProcessUserCommands();
+		
+		commandStr.clear();
+		commands.clear();
 	}
 }
 
-std::string Game::FormatCommand(std::string inStr)
+void Game::ProcessUserCommands()
 {
-	inStr = StrToLower(inStr);
-	inStr = RemoveExtraSpaces(inStr);
-}
-
-//Not Working at the moment
-void Game::ExecuteCommand(std::string& inCommandStr, std::vector<std::string>& inCommandVect)
-{
-	std::string command = inCommandVect.front();
+	std::string command = commands.front();
 	std::string argument = "";
 	switch (currState)
 	{
 	case GameState::Main:
-		if (command == "move" || command == "goto")
-		{
-			GrabNextArg(inCommandStr, inCommandVect);
-			argument = inCommandVect.back();
-			int nextRoomId = currRoom->RoomConnection(argument);
-			if (nextRoomId != NULL)
-			{
-				currPlayer->RoomId(nextRoomId);
-				currRoom = std::static_pointer_cast<Room>(mGameEntities.at(nextRoomId));
-				PrintString("You enter the room");
-
-			}
-		}
-		else if (command == "open")
-		{
-			GrabNextArg(inCommandStr, inCommandVect);
-			argument = inCommandVect.back();
-			if (argument == "inventory" || argument == "inven")
-			{
-				currState = GameState::Menu;
-			}
-			else
-			{
-				PrintString("Invalid target " + argument);
-			}
-		}
-		else if (command == "look" || command == "check")
-		{
-			PrintString(currRoom->Descript());
-		}
-		else if (command == "search" || command == "survey")
-		{
-			PrintString(currRoom->CheckRoomContents());
-		}
-		else if (command == "grab" || command == "pickup")
-		{
-			std::shared_ptr<Item> foundItem = currRoom->GetItem(inCommandStr);
-			if (foundItem != nullptr)
-			{
-				currPlayer->AddItem(foundItem);
-				PrintString("You picked up the " + inCommandStr);
-			}
-			else
-			{
-				PrintString("There is no item with the name " + inCommandStr);
-			}
-		}
-		else if (command == "engage" || command == "attack")
-		{
-
-		}
-		else if (command == "exit" || command == "quit")
-		{
-			runGame = false;
-		}
-		else
-		{
-			PrintString("Invalid Command: " + command);
-
-		}
+		ExecuteMainCommand(command);
 		break;
 	case GameState::Menu:
-		if (command == "list" || command == "ls")
-		{
-			PrintString(currPlayer->CheckInventory());
-		}
-		else if (command == "exit" || command == "close")
-		{
-			currState = GameState::Main;
-		}
-		else if (command == "examine" || command == "inspect")
-		{
-			PrintString(currPlayer->CheckItem(inCommandStr));
-		}
-		else if (command == "look")
-		{
-			GrabNextArg(inCommandStr, inCommandVect);
-			argument = inCommandVect.back();
-			if (argument == "at")
-			{
-				PrintString(currPlayer->CheckItem(inCommandStr));
-			}
-			else 
-			{
-				PrintString("No look target specified");
-			}
-		}
-		else if (command == "equip")
-		{
-			currPlayer->EquipWeapon(inCommandStr);
-		}
-		else
-		{
-			PrintString("Invalid Command: " + command + " try closing inventory first.");
-		}
+		ExecuteMenuCommand(command);
 		break;
 	case GameState::Combat:
 		break;
 		
 	
 	}
+
+}
+
+//Main Commands
+void Game::ExecuteMainCommand(const std::string& command)
+{
+	if (command == "move" || command == "goto")
+	{
+		Main_Move();
+	}
+	else if (command == "open")
+	{
+		Main_Open();
+	}
+	else if (command == "look" || command == "check")
+	{
+		Main_Look();
+	}
+	else if (command == "search" || command == "survey")
+	{
+		Main_Search();
+	}
+	else if (command == "grab" || command == "pickup")
+	{
+		Main_GrabItem();
+	}
+	else if (command == "engage" || command == "attack")
+	{
+		Main_StartCombat();
+	}
+	else if (command == "exit" || command == "quit")
+	{
+		Main_Close();
+	}
+	else
+	{
+		InvalidCommand(command);
+	}
+}
+
+void Game::Main_Move()
+{
+	std::string argument;
+	commandStr = GrabNextArg(commandStr);
+	argument = commands.back();
+	
+
+	int nextRoomId = currRoom->RoomConnection(argument);
+	if (nextRoomId != NULL)
+	{
+		currPlayer->RoomId(nextRoomId);
+		currRoom = std::static_pointer_cast<Room>(mGameEntities.at(nextRoomId));
+		PrintString("You enter the room");
+	}
+}
+
+void Game::Main_Look()
+{
+	PrintString(currRoom->Descript());
+}
+
+void Game::Main_Search()
+{
+	if (currState == GameState::Main)
+	{
+		PrintString(currRoom->CheckRoomContents());
+	}
+}
+
+void Game::Main_StartCombat()
+{
+
+}
+
+void Game::InvalidCommand(const std::string& commmand)
+{
+	PrintString("Invalid Command: " + commmand);
+}
+
+void Game::Main_Open()
+{
+	commandStr = GrabNextArg(commandStr);
+	std::string argument = commands.back();
+	if (argument == "inventory" || argument == "i")
+	{
+		currState = GameState::Menu;
+		UpdateHud();
+	}
+	else
+	{
+		PrintString("Invalid target " + argument);
+	}
+}
+
+void Game::Main_Close()
+{
+	runGame = false;
+}
+
+void Game::Main_GrabItem()
+{
+
+	std::shared_ptr<Item> foundItem = currRoom->GetItem(commandStr);
+	if (foundItem != nullptr)
+	{
+		currPlayer->AddItem(foundItem);
+		PrintString("You picked up the " + foundItem->Name());
+	}
+	else
+	{
+		PrintString("There is no item with the name " + commandStr);
+	}
+
+}
+
+//Menu Commands
+void Game::ExecuteMenuCommand(const std::string& command)
+{
+	if (command == "list" || command == "ls")
+	{
+		Menu_ListItems();
+	}
+	else if (command == "exit" || command == "close")
+	{
+		Menu_Close();
+	}
+	else if (command == "examine" || command == "inspect")
+	{
+		Menu_InspectItem();
+	}
+	else if (command == "look")
+	{
+		Menu_Look();
+	}
+	else if (command == "equip")
+	{
+		Menu_Equip();
+	}
+	else
+	{
+		InvalidCommand(command);
+	}
+}
+
+void Game::Menu_ListItems()
+{
+	PrintString(currPlayer->CheckInventory());
+}
+
+void Game::Menu_Close()
+{
+	currState = GameState::Main;
+	UpdateHud();
+}
+
+void Game::Menu_InspectItem()
+{
+	PrintString(currPlayer->CheckItem(commandStr));
+}
+
+void Game::Menu_Look()
+{
+	commandStr = GrabNextArg(commandStr);
+	std::string argument = commands.back();
+	if (argument == "at")
+	{
+		PrintString(currPlayer->CheckItem(commandStr));
+	}
+	else
+	{
+		PrintString("No look target specified");
+	}
+}
+
+void Game::Menu_Equip()
+{
+	std::string output = currPlayer->EquipWeapon(commandStr);
+	UpdateHud();
+	PrintString(output);
 
 }

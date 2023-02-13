@@ -119,7 +119,6 @@ int Room::RoomConnection(Direction inDir) const
     }
 }
 
-
 Room::Direction Room::TranslateDirection(std::string inStr)
 {
    inStr = StripString(inStr, " ");
