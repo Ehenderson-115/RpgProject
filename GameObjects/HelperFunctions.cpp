@@ -44,14 +44,6 @@ void GrabAllWords(std::string inStr, std::vector<std::string>& inVect)
 	}
 }
 
-void GrabNextArg(std::string& inStr, std::vector<std::string>& inVect)
-{
-	int firstSpace = inStr.find(" ");
-	inVect.push_back(inStr.substr(0, firstSpace));
-	inStr = inStr.substr(firstSpace + 1);
-
-}
-
 std::string RemoveExtraSpaces(std::string inStr)
 {
 	for (int i = 0; i < inStr.length(); i++)
