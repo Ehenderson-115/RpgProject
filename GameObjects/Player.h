@@ -14,15 +14,19 @@ public:
 	Player();
 	
 	int RoomId() const;
-	void RoomId(int inRoomId);
+	void RoomId(const int& inRoomId);
 
 	std::string CheckInventory();
 	std::string CheckItem(std::string nameToFind) const;
 	
-	void AddItem(std::shared_ptr<Item> inItem);
+	void AddItem(const std::shared_ptr<Item>& inItem);
 	
 	std::string EquipWeapon(std::string nameToFind);
 	std::string GetStatus() const;
+
+	int Attack(const int& modifier);
+
+	std::string GetWepName() const;
 
 private:
 	int mRoomId;

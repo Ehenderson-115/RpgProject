@@ -6,6 +6,7 @@
 #include<memory>
 
 class Item;
+class Character;
 
 class Room : public Entity
 {
@@ -18,10 +19,13 @@ public:
 	void RoomConnection(int roomId, const std::string& inStr);
 
 	int RoomConnection(const std::string& inStr);
-	int RoomConnection(Direction inDir) const;
+	int RoomConnection(const Direction& inDir) const;
 
 	std::string CheckRoomContents();
+
 	std::shared_ptr<Item>GetItem(std::string nameToFind);
+	std::shared_ptr<Character>GetCharacter(std::string nameToFind) const;
+	void RemoveContent(std::string nameToFind);
 
 private:
 

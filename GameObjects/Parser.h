@@ -19,7 +19,7 @@ public:
 
 private:
 	enum class ObjectType { Empty, Player, Character, Enemy, Entity, Weapon, Item, Room };
-	enum class DataType { Empty, ID, Name, Race, Hitpoints, Descript, Damage, South, North, East, West, Contents };
+	enum class DataType { Empty, ID, Name, Race, Hitpoints, Descript, Damage, South, North, East, West, Contents, Attack };
 	
 	std::string dataSource;
 

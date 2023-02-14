@@ -8,6 +8,7 @@ public:
 	Weapon();
 
 	void Damage(int input);
+	int Damage() const;
 
 private:
 	int mDamageMod;

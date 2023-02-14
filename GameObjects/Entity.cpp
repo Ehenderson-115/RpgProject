@@ -8,24 +8,24 @@ Entity::Entity(ClassType classType, bool holdable) : mClassType{ classType }, mH
 Entity::Entity(ClassType classType, bool holdable, bool item) : mClassType{ classType }, mHoldable{ holdable }, mItem{ item }, mId{ -1 } {}
 
 //Setter Functions
-void Entity::Id(int input)
+void Entity::Id(const int& inId)
 {
-	mId = input;
+	mId = inId;
 }
 
-void Entity::Name(std::string input)
+void Entity::Name(const std::string& inStr)
 {
-	mName = input;
+	mName = inStr;
 }
 
-void Entity::Descript(std::string input)
+void Entity::Descript(const std::string& inStr)
 {
-	int descriptStart = input.find_first_of("\"");
+	int descriptStart = inStr.find_first_of("\"");
 	descriptStart++;
-	int descriptEnd = input.find_last_of("\"");
+	int descriptEnd = inStr.find_last_of("\"");
 	descriptEnd--;
 
-	mDescript = input.substr(descriptStart, descriptEnd);
+	mDescript = inStr.substr(descriptStart, descriptEnd);
 }
 
 //Getter Functions

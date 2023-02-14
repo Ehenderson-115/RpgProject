@@ -6,8 +6,11 @@
 	<Race>
 	Human
 	</Race>
+	<Attack>
+	1
+	</Attack>
 	<HitPoints>
-	20/20
+	30/30
 	</HitPoints>
 </Player>
 
@@ -19,8 +22,11 @@
 	<Race>
 	Orc
 	</Race>
+	<Attack>
+	2
+	</Attack>
 	<HitPoints>
-	10/10
+	50/50
 	</HitPoints>
 </Enemy>
 

@@ -1,6 +1,7 @@
 #include "Room.h"
 #include "HelperFunctions.h"
 #include "Item.h"
+#include "Character.h"
 
 Room::Room() : Entity(ClassType::Room), mNorthId{ -1 }, mSouthId{ -1 }, mEastId{ -1 }, mWestId{ -1 } {}
 
@@ -31,6 +32,60 @@ void Room::RoomConnection(int roomId, Direction inDir)
 void Room::RoomConnection(int roomId, const std::string& inStr)
 {
     RoomConnection(roomId, TranslateDirection(inStr));
+}
+
+int Room::RoomConnection(const std::string& inStr)
+{
+    return RoomConnection(TranslateDirection(inStr));
+}
+
+int Room::RoomConnection(const Direction& inDir) const
+{
+    switch(inDir)
+    {
+    case Direction::North:
+        return mNorthId;
+        break;
+    case Direction::South:
+        return mSouthId;
+        break;
+    case Direction::East:
+        return mEastId;
+        break;
+    case Direction::West:
+        return mWestId;
+        break;
+    default:
+        return NULL;
+    }
+}
+
+Room::Direction Room::TranslateDirection(std::string inStr)
+{
+    inStr = StripString(inStr, " ");
+    inStr = StrToLower(inStr);
+
+    if (inStr == "north" || inStr == "n")
+    {
+        return Direction::North;
+    }
+    else if (inStr == "south" || inStr == "s")
+    {
+        return Direction::South;
+    }
+    else if (inStr == "east" || inStr == "e")
+    {
+        return Direction::East;
+    }
+    else if (inStr == "west" || inStr == "w")
+    {
+        return Direction::West;
+    }
+    else
+    {
+        return Direction::Invalid;
+    }
+
 }
 
 std::string Room::CheckRoomContents()
@@ -93,56 +148,35 @@ std::shared_ptr<Item> Room::GetItem(std::string nameToFind)
     return output;
 }
 
-int Room::RoomConnection(const std::string& inStr)
+std::shared_ptr<Character> Room::GetCharacter(std::string nameToFind) const
 {
-    return RoomConnection(TranslateDirection(inStr));
+    nameToFind = StrToLower(nameToFind);
+    std::string currEntName;
+    std::shared_ptr<Character> output = nullptr;
+    for (auto content : mContents)
+    {
+        currEntName = StrToLower(content->Name());
+        if (currEntName == nameToFind && !content->isHoldable())
+        {
+            output = std::static_pointer_cast<Character>(content);
+        }
+    }
+    return output;
 }
 
-int Room::RoomConnection(Direction inDir) const
+void Room::RemoveContent(std::string nameToFind)
 {
-    switch(inDir)
+    nameToFind = StrToLower(nameToFind);
+    std::string currEntName;
+    for (int i = 0; i < mContents.size(); i++)
     {
-    case Direction::North:
-        return mNorthId;
-        break;
-    case Direction::South:
-        return mSouthId;
-        break;
-    case Direction::East:
-        return mEastId;
-        break;
-    case Direction::West:
-        return mWestId;
-        break;
-    default:
-        return NULL;
+        auto content = mContents.at(i);
+        currEntName = StrToLower(content->Name());
+        if (currEntName == nameToFind && !content->isHoldable())
+        {
+            mContents.erase(mContents.begin() + i);
+        }
     }
 }
 
-Room::Direction Room::TranslateDirection(std::string inStr)
-{
-   inStr = StripString(inStr, " ");
-    inStr = StrToLower(inStr);
 
-    if (inStr == "north" || inStr == "n")
-    {
-        return Direction::North;
-    }
-    else if (inStr == "south" || inStr == "s")
-    {
-        return Direction::South;
-    }
-    else if (inStr == "east" || inStr == "e")
-    {
-        return Direction::East;
-    }
-    else if (inStr == "west" || inStr == "w")
-    {
-        return Direction::West;
-    }
-    else
-    {
-        return Direction::Invalid;
-    }
-
-}
