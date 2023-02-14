@@ -22,9 +22,9 @@ public:
 	ClassType classType() const;
 
 	//Setters
-	void Descript(std::string input);
-	void Name(std::string input);
-	void Id(int input);
+	void Descript(const std::string& input);
+	void Name(const std::string& input);
+	void Id(const int& input);
 
 	
 protected:

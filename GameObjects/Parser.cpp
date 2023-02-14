@@ -192,6 +192,10 @@ Parser::DataType Parser::TagToDataType(const std::string& tag)
 	{
 		return DataType::Contents;
 	}
+	else if (tag == "<attack>")
+	{
+		return DataType::Attack;
+	}
 	else
 	{
 		return DataType::Empty;
@@ -230,6 +234,9 @@ void Parser::SetData(const DataType& dataType, Player& inPlayer)
 		break;
 	case DataType::Hitpoints:
 		inPlayer.Hitpoints(dataToAdd);
+		break;
+	case DataType::Attack:
+		inPlayer.BaseAttack(std::stoi(dataToAdd));
 		break;
 	}
 }
@@ -356,6 +363,9 @@ void Parser::SetData(const DataType& dataType, Enemy& inEnemy)
 	case DataType::Hitpoints:
 		inEnemy.Hitpoints(dataToAdd);
 		break;
+	case DataType::Attack:
+		inEnemy.BaseAttack(std::stoi(dataToAdd));
+		break;
 	}
 }
 
@@ -425,6 +435,9 @@ void Parser::SetData(const DataType& dataType, Character& inCharacter)
 		break;
 	case DataType::Hitpoints:
 		inCharacter.Hitpoints(dataToAdd);
+		break;
+	case DataType::Attack:
+		inCharacter.BaseAttack(std::stoi(dataToAdd));
 		break;
 	}
 }

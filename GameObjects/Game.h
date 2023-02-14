@@ -6,6 +6,7 @@
 
 class Room;
 class Player;
+class Character;
 class Entity;
 
 class Game
@@ -14,9 +15,6 @@ public:
 	void StartGame();
 
 private:
-	//Unused for now
-	enum class Command {Unknown, Move, Pickup, Look, Search, Attack};
-
 	enum class GameState {Error, Loading, Menu, Combat, Main};
 	
 	void GameLoop();
@@ -24,38 +22,52 @@ private:
 	std::string FormatCommand(std::string inStr);
 	std::string GrabNextArg(std::string inStr);
 
-	void ProcessUserCommands();
+	void ProcessUserCommand();
+	void ProcessAdversaryCommand();
 	
+	//Main Commands
 	void ExecuteMainCommand(const std::string& command);
-	void Main_Move();
-	void Main_Look();
-	void Main_Open();
-	void Main_Close();
-	void Main_GrabItem();
-	void Main_Search();
-	void Main_StartCombat();
+	void MainMove();
+	void MainLook();
+	void MainOpen();
+	void MainClose();
+	void MainGrabItem();
+	void MainSearch();
+	void MainStartCombat();
 
+	//Menu Commands
 	void ExecuteMenuCommand(const std::string& command);
-	void Menu_ListItems();
-	void Menu_Close();
-	void Menu_InspectItem();
-	void Menu_Look();
-	void Menu_Equip();
+	void MenuListItems();
+	void MenuClose();
+	void MenuInspectItem();
+	void MenuLook();
+	void MenuEquip();
+
+	//Combat Commands
+	void ExecuteCombatCommand(const std::string& command, bool isPlayerAction);
+	void CombatAttack(bool isPlayerAction);
+	void CombatDefend(bool isPlayerAction);
+	//Unused for now
+	void CombatFlee(bool isPlayerAction);
+	void EndCombat();
 
 	void PrintHud();
 	void UpdateHud();
-	
 
+	void UpdateState(GameState inState);
+	
 
 	void InvalidCommand(const std::string& command);
 
 	bool runGame;
+	int randOffset;
 	GameState currState;
 	std::string commandStr;
 	std::vector<std::string>commands;
 
 	std::shared_ptr<Player> currPlayer;
 	std::shared_ptr<Room> currRoom;
+	std::shared_ptr<Character> currAdversary;
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
 
 };

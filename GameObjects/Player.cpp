@@ -5,12 +5,12 @@
 
 Player::Player() : Character(ClassType::Player), mEqWeapon{ nullptr }, mRoomId{ -1 } {}
 
-void Player::AddItem(std::shared_ptr<Item> inItem)
+void Player::AddItem(const std::shared_ptr<Item>& inItem)
 {
 	mInventory.push_back(inItem);
 }
 
-void Player::RoomId(int inRoomId)
+void Player::RoomId(const int& inRoomId)
 {
 	mRoomId = inRoomId;
 }
@@ -94,4 +94,27 @@ std::string Player::GetStatus() const
 	}
 
 	return output;
+}
+
+int Player::Attack(const int& modifier)
+{
+	mCurrAction = Action::Attacking;
+	int output = (mBaseAttack + modifier);
+	if (mEqWeapon != nullptr)
+	{
+		output += mEqWeapon->Damage();
+	}
+	return output;
+}
+
+std::string Player::GetWepName() const
+{
+	if (mEqWeapon == nullptr)
+	{
+		return "Bare Hands";
+	}
+	else
+	{
+		return mEqWeapon->Name();
+	}
 }
