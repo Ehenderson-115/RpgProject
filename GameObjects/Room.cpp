@@ -3,7 +3,13 @@
 #include "Item.h"
 #include "Character.h"
 
-Room::Room() : Entity(ClassType::Room), mNorthId{ -1 }, mSouthId{ -1 }, mEastId{ -1 }, mWestId{ -1 } {}
+Room::Room() 
+    : Entity(ClassType::Room)
+    , mNorthId{ -1 }
+    , mSouthId{ -1 }
+    , mEastId{ -1 }
+    , mWestId{ -1 } 
+{}
 
 void Room::AddRoomObject(std::shared_ptr<Entity> inEntity)
 {

@@ -1,8 +1,22 @@
 #include "Character.h"
 #include "Entity.h"
 
-Character::Character() : Entity(ClassType::Character), mRace{ CharRace::Unknown }, mCurrAction{ Action::Idle }, mCurrhp{ 0 }, mMaxhp{ 0 }, mBaseAttack{ 0 } {}
-Character::Character(ClassType classType) : Entity(classType), mRace{ CharRace::Unknown }, mCurrAction{ Action::Idle }, mCurrhp{ 0 }, mMaxhp{ 0 }, mBaseAttack{ 0 }{}
+Character::Character() 
+	: Entity(ClassType::Character)
+	, mRace{ CharRace::Unknown }
+	, mCurrAction{ Action::Idle }
+	, mCurrhp{ 0 }, mMaxhp{ 0 }
+	, mBaseAttack{ 0 } 
+{}
+
+Character::Character(ClassType classType) 
+	: Entity(classType)
+	, mRace{ CharRace::Unknown }
+	, mCurrAction{ Action::Idle }
+	, mCurrhp{ 0 }
+	, mMaxhp{ 0 }
+	, mBaseAttack{ 0 }
+{}
 
 int Character::HitPoints() const
 {
