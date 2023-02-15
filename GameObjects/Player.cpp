@@ -3,7 +3,11 @@
 #include "Item.h"
 #include "Weapon.h"
 
-Player::Player() : Character(ClassType::Player), mEqWeapon{ nullptr }, mRoomId{ -1 } {}
+Player::Player() 
+	: Character(ClassType::Player)
+	, mEqWeapon{ nullptr }
+	, mRoomId{ -1 }
+{}
 
 void Player::AddItem(const std::shared_ptr<Item>& inItem)
 {

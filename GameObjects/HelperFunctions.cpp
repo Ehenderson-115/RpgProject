@@ -14,9 +14,29 @@ std::string StripString(std::string inStr, const std::string& stripStr)
 }
 
 
-void PrintString(const std::string& inStr)
+void FormattedPrint(std::string inStr)
 {
+	inStr = AddLineBreaks(inStr);
 	std::cout << inStr << std::endl;
+}
+
+std::string AddLineBreaks(std::string inStr)
+{
+	std::string output = "";
+	if (inStr.length() >= 100)
+	{
+		int breakPoint = inStr.substr(0, 100).find_last_of(" ");
+		inStr.erase(breakPoint, 1);
+		inStr.insert(breakPoint, "\n");
+		output += inStr.substr(0, 100);
+		output += AddLineBreaks(inStr.substr(100));
+	}
+	else
+	{
+		output = inStr;
+		return output;
+	}
+	return output;
 }
 
 std::string StrToLower(std::string inStr)
@@ -52,8 +72,11 @@ std::string RemoveExtraSpaces(std::string inStr)
 		{
 			inStr.erase(i, 1);
 			i--;
-
 		}
+	}
+	if (inStr.at(inStr.length() - 1) == ' ')
+	{
+		inStr.erase(inStr.length() - 1, 1);
 	}
 	return inStr;
 }

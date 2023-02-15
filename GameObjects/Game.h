@@ -44,15 +44,17 @@ private:
 	void MenuEquip();
 
 	//Combat Commands
-	void ExecuteCombatCommand(const std::string& command, bool isPlayerAction);
-	void CombatAttack(bool isPlayerAction);
-	void CombatDefend(bool isPlayerAction);
+	void ExecuteCombatCommand(const std::string& command);
+	void CombatAttackPlayer();
+	void CombatAttackAdversary();
+	void CombatDefendAdversary();
+	void CombatDefendPlayer();
 	//Unused for now
-	void CombatFlee(bool isPlayerAction);
+	void CombatFleePlayer();
 	void EndCombat();
 
 	void PrintHud();
-	void UpdateHud();
+	void UpdateHud(std::string reprintStr);
 
 	void UpdateState(GameState inState);
 	
@@ -60,14 +62,18 @@ private:
 	void InvalidCommand(const std::string& command);
 
 	bool runGame;
+	bool firstTurn;
 	int randOffset;
+	std::string prevTurnResult;
 	GameState currState;
+
 	std::string commandStr;
 	std::vector<std::string>commands;
 
 	std::shared_ptr<Player> currPlayer;
 	std::shared_ptr<Room> currRoom;
 	std::shared_ptr<Character> currAdversary;
+
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
 
 };
