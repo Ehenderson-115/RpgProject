@@ -1,4 +1,7 @@
 #include "Game.h"
+#include "../GameCommands/CommandParser.h"
+#include "../GameCommands/GameCommand.h"
+#include "ActiveGameData.h"
 #include "Character.h"
 #include "Enemy.h"
 #include "Weapon.h"
@@ -65,11 +68,16 @@ void Game::StartGame()
 	FormattedPrint("Welcome to the Untitled RPG Game!");
 	currState = GameState::Loading;
 
+	commandParser = std::make_shared<CommandParser>();
 	auto gameFileParser = std::make_shared<Parser>();
+
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
 	currPlayer = std::static_pointer_cast<Player>(mGameEntities.at(0));
 	currRoom = std::static_pointer_cast<Room>(mGameEntities.at(currPlayer->RoomId()));
 	currAdversary = nullptr;
+
+	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, currState);
+
 	srand(time(0));
 	FormattedPrint("Data Loaded Successfully!");
 
@@ -87,12 +95,14 @@ void Game::GameLoop()
 		{
 			MainClose();
 		}
-		getline(std::cin, commandStr);
+		getline(std::cin, commandInputStr);
 
 		UpdateHud();
 		
-		commandStr = FormatCommand(commandStr);
-		commandStr = GrabNextArg(commandStr);
+		commandInputStr = FormatCommand(commandInputStr);
+		auto command = commandParser->GetCommand(activeData, commandInputStr);
+		command->Execute();
+		commandInputStr = GrabNextArg(commandInputStr);
 		
 		ProcessUserCommand();
 
@@ -101,7 +111,7 @@ void Game::GameLoop()
 			ProcessAdversaryCommand();
 		}
 
-		commandStr.clear();
+		commandInputStr.clear();
 		commands.clear();
 	}
 }
@@ -179,7 +189,7 @@ void Game::ExecuteMainCommand(const std::string& command)
 void Game::MainMove()
 {
 	std::string argument;
-	commandStr = GrabNextArg(commandStr);
+	commandInputStr = GrabNextArg(commandInputStr);
 	argument = commands.back();
 
 
@@ -213,10 +223,10 @@ void Game::MainSearch()
 
 void Game::MainStartCombat()
 {
-	currAdversary = currRoom->GetCharacter(commandStr);
+	currAdversary = currRoom->GetCharacter(commandInputStr);
 	if (currAdversary == nullptr)
 	{
-		FormattedPrint("The is no \"" + commandStr + "\" to fight.");
+		FormattedPrint("The is no \"" + commandInputStr + "\" to fight.");
 	}
 	else
 	{
@@ -227,7 +237,7 @@ void Game::MainStartCombat()
 
 void Game::MainOpen()
 {
-	commandStr = GrabNextArg(commandStr);
+	commandInputStr = GrabNextArg(commandInputStr);
 	std::string argument = commands.back();
 	if (argument == "inventory" || argument == "i")
 	{
@@ -247,7 +257,7 @@ void Game::MainClose()
 void Game::MainGrabItem()
 {
 
-	std::shared_ptr<Item> foundItem = currRoom->GetItem(commandStr);
+	auto foundItem = currRoom->GetItem(commandInputStr);
 	if (foundItem != nullptr)
 	{
 		currPlayer->AddItem(foundItem);
@@ -255,7 +265,7 @@ void Game::MainGrabItem()
 	}
 	else
 	{
-		FormattedPrint("There is no item with the name " + commandStr);
+		FormattedPrint("There is no item with the name " + commandInputStr);
 	}
 
 }
@@ -306,16 +316,16 @@ void Game::MenuClose()
 
 void Game::MenuInspectItem()
 {
-	FormattedPrint(currPlayer->CheckItem(commandStr));
+	FormattedPrint(currPlayer->CheckItem(commandInputStr));
 }
 
 void Game::MenuLook()
 {
-	commandStr = GrabNextArg(commandStr);
+	commandInputStr = GrabNextArg(commandInputStr);
 	std::string argument = commands.back();
 	if (argument == "at")
 	{
-		FormattedPrint(currPlayer->CheckItem(commandStr));
+		FormattedPrint(currPlayer->CheckItem(commandInputStr));
 	}
 	else
 	{
@@ -325,7 +335,7 @@ void Game::MenuLook()
 
 void Game::MenuEquip()
 {
-	std::string output = currPlayer->EquipWeapon(commandStr);
+	std::string output = currPlayer->EquipWeapon(commandInputStr);
 	UpdateHud();
 	FormattedPrint(output);
 

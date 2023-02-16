@@ -13,15 +13,20 @@ add_subdirectory(GameObjects)
 
 list(APPEND GAME_OBJECTS GameObjects)
 
+add_subdirectory(GameCommands)
+
+list(APPEND GAME_COMMANDS GameCommands)
+
 
 install(FILES config.txt DESTINATION Assets)
 
 
-add_executable(RpgGame rpgGame.cpp)
-install(TARGETS RpgGame DESTINATION ${CMAKE_INSTALL_PREFIX})
+add_executable(${PROJECT_NAME} rpgGame.cpp)
 
-target_link_libraries(RpgGame PUBLIC ${GAME_OBJECTS})
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
 
-target_include_directories(RpgGame PUBLIC
+target_link_libraries(${PROJECT_NAME} PUBLIC ${GAME_OBJECTS} ${GAME_COMMANDS})
+
+target_include_directories(${PROJECT_NAME} PUBLIC
                            "${PROJECT_BINARY_DIR}"
                            )

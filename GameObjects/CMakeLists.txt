@@ -8,7 +8,8 @@ set (SOURCE_FILES
 			Room.cpp
 			Game.cpp
 			HelperFunctions.cpp
-			Parser.cpp)
+			Parser.cpp
+			ActiveGameData.cpp)
 
 set (HEADER_FILES 
 			Character.h  
@@ -20,9 +21,10 @@ set (HEADER_FILES
 			Room.h
 			Game.h
 			HelperFunctions.h
-			Parser.h)
+			Parser.h
+			ActiveGameData.h)
 
 add_library(GameObjects ${SOURCE_FILES} ${HEADER_FILES})
 
-target_include_directories(GameObjects INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(GameObjects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
