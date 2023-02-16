@@ -8,14 +8,16 @@ class Room;
 class Player;
 class Character;
 class Entity;
+class CommandParser;
+class ActiveGameData;
 
 class Game
 {
 public:
+	enum class GameState { Error, Loading, Menu, Combat, Main };
 	void StartGame();
 
 private:
-	enum class GameState {Error, Loading, Menu, Combat, Main};
 	
 	void GameLoop();
 	
@@ -64,10 +66,14 @@ private:
 	bool runGame;
 	bool firstTurn;
 	int randOffset;
+
+	std::shared_ptr<CommandParser> commandParser;
+	std::shared_ptr<ActiveGameData> activeData;
+
 	std::string prevTurnResult;
 	GameState currState;
 
-	std::string commandStr;
+	std::string commandInputStr;
 	std::vector<std::string>commands;
 
 	std::shared_ptr<Player> currPlayer;

@@ -68,15 +68,15 @@ std::string RemoveExtraSpaces(std::string inStr)
 {
 	for (int i = 0; i < inStr.length(); i++)
 	{
-		if (inStr.at(i) == ' ' && !std::isalpha(inStr.at(i + 1)))
+		if (i == (inStr.length() - 1) && inStr.at(i) == ' ')
+		{
+			inStr.erase(i, 1);
+		}
+		else if (inStr.at(i) == ' ' && !std::isalpha(inStr.at(i + 1)))
 		{
 			inStr.erase(i, 1);
 			i--;
 		}
-	}
-	if (inStr.at(inStr.length() - 1) == ' ')
-	{
-		inStr.erase(inStr.length() - 1, 1);
 	}
 	return inStr;
 }
