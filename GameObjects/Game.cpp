@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "../GameCommands/CommandParser.h"
+#include "../GameCommands/CommandProcessor.h"
 #include "../GameCommands/GameCommand.h"
 #include "ActiveGameData.h"
 #include "Character.h"
@@ -28,6 +28,46 @@ std::string Game::GrabNextArg(std::string inStr)
 	inStr = inStr.substr(firstSpace + 1);
 	return inStr;
 
+}
+
+void Game::InitEntityPointers()
+{
+	for (auto entity : mGameEntities)
+	{
+		if (entity->classType() == Entity::ClassType::Room)
+		{
+			auto room = std::static_pointer_cast<Room>(entity);
+			if (room->North() == nullptr && (room->RoomId("north") != -1))
+			{
+				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("north")));
+				room->North(roomToAdd);
+			}
+			if (room->South() == nullptr && (room->RoomId("south") != -1))
+			{
+				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("south")));
+				room->South(roomToAdd);
+			}
+			if (room->East() == nullptr && (room->RoomId("east") != -1))
+			{
+				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("east")));
+				room->East(roomToAdd);
+			}
+			if (room->West() == nullptr && (room->RoomId("west") != -1))
+			{
+				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("west")));
+				room->West(roomToAdd);
+			}
+		}
+		else if (entity->classType() == Entity::ClassType::Player)
+		{
+			auto player = std::static_pointer_cast<Player>(entity);
+			if (player->Location() == nullptr && player->RoomId() != -1)
+			{
+				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(player->RoomId()));
+				player->Location(roomToAdd);
+			}
+		}
+	}
 }
 
 void Game::PrintHud()
@@ -68,7 +108,7 @@ void Game::StartGame()
 	FormattedPrint("Welcome to the Untitled RPG Game!");
 	currState = GameState::Loading;
 
-	commandParser = std::make_shared<CommandParser>();
+	commandProcessor = std::make_shared<CommandProcessor>();
 	auto gameFileParser = std::make_shared<Parser>();
 
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
@@ -100,11 +140,9 @@ void Game::GameLoop()
 		UpdateHud();
 		
 		commandInputStr = FormatCommand(commandInputStr);
-		auto command = commandParser->GetCommand(activeData, commandInputStr);
-		command->Execute();
-		commandInputStr = GrabNextArg(commandInputStr);
+		commandProcessor ->ProcessCommandString(activeData, commandInputStr);
 		
-		ProcessUserCommand();
+		//ProcessUserCommand();
 
 		if (currState == GameState::Combat && !currAdversary->isDead() && !firstTurn)
 		{
@@ -112,7 +150,6 @@ void Game::GameLoop()
 		}
 
 		commandInputStr.clear();
-		commands.clear();
 	}
 }
 
@@ -160,10 +197,6 @@ void Game::ExecuteMainCommand(const std::string& command)
 	{
 		MainOpen();
 	}
-	else if (command == "look" || command == "check")
-	{
-		MainLook();
-	}
 	else if (command == "search" || command == "survey")
 	{
 		MainSearch();
@@ -193,7 +226,7 @@ void Game::MainMove()
 	argument = commands.back();
 
 
-	int nextRoomId = currRoom->RoomConnection(argument);
+	int nextRoomId = currRoom->RoomId(argument);
 	if (nextRoomId != -1 && nextRoomId != NULL)
 	{
 		currPlayer->RoomId(nextRoomId);
@@ -209,11 +242,6 @@ void Game::MainMove()
 	{
 		FormattedPrint("There is nothing in that direction.");
 	}
-}
-
-void Game::MainLook()
-{
-	FormattedPrint(currRoom->Descript());
 }
 
 void Game::MainSearch()

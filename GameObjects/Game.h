@@ -8,21 +8,23 @@ class Room;
 class Player;
 class Character;
 class Entity;
-class CommandParser;
-class ActiveGameData;
+class CommandProcessor;
+struct ActiveGameData;
 
 class Game
 {
 public:
 	enum class GameState { Error, Loading, Menu, Combat, Main };
 	void StartGame();
-
+	std::string GrabNextArg(std::string inStr);
+	void UpdateHud(std::string reprintStr);
 private:
 	
 	void GameLoop();
 	
 	std::string FormatCommand(std::string inStr);
-	std::string GrabNextArg(std::string inStr);
+
+	void InitEntityPointers();
 
 	void ProcessUserCommand();
 	void ProcessAdversaryCommand();
@@ -30,7 +32,6 @@ private:
 	//Main Commands
 	void ExecuteMainCommand(const std::string& command);
 	void MainMove();
-	void MainLook();
 	void MainOpen();
 	void MainClose();
 	void MainGrabItem();
@@ -56,7 +57,7 @@ private:
 	void EndCombat();
 
 	void PrintHud();
-	void UpdateHud(std::string reprintStr);
+	
 
 	void UpdateState(GameState inState);
 	
@@ -67,7 +68,7 @@ private:
 	bool firstTurn;
 	int randOffset;
 
-	std::shared_ptr<CommandParser> commandParser;
+	std::shared_ptr<CommandProcessor> commandProcessor;
 	std::shared_ptr<ActiveGameData> activeData;
 
 	std::string prevTurnResult;
