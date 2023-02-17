@@ -7,6 +7,7 @@ Player::Player()
 	: Character(ClassType::Player)
 	, mEqWeapon{ nullptr }
 	, mRoomId{ -1 }
+	, mCurrRoom {nullptr}
 {}
 
 void Player::AddItem(const std::shared_ptr<Item>& inItem)
@@ -17,6 +18,16 @@ void Player::AddItem(const std::shared_ptr<Item>& inItem)
 void Player::RoomId(const int& inRoomId)
 {
 	mRoomId = inRoomId;
+}
+
+std::shared_ptr<Room> Player::Location() const
+{
+	return mCurrRoom;
+}
+
+void Player::Location(std::shared_ptr<Room> inRoom)
+{
+	mCurrRoom = inRoom;
 }
 
 int Player::RoomId() const

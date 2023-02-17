@@ -274,16 +274,16 @@ void Parser::SetData(const DataType& dataType, Room& inRoom)
 		inRoom.Descript(dataToAdd);
 		break;
 	case DataType::North:
-		inRoom.RoomConnection(std::stoi(dataToAdd), "north");
+		inRoom.RoomId(std::stoi(dataToAdd), "north");
 		break;
 	case DataType::South:
-		inRoom.RoomConnection(std::stoi(dataToAdd), "south");
+		inRoom.RoomId(std::stoi(dataToAdd), "south");
 		break;
 	case DataType::East:
-		inRoom.RoomConnection(std::stoi(dataToAdd), "east");
+		inRoom.RoomId(std::stoi(dataToAdd), "east");
 		break;
 	case DataType::West:
-		inRoom.RoomConnection(std::stoi(dataToAdd), "west");
+		inRoom.RoomId(std::stoi(dataToAdd), "west");
 		break;
 	case DataType::Contents:
 		currTag = FetchTag();

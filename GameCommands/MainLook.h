@@ -2,9 +2,10 @@
 #define MAIN_LOOK_H
 #include "GameCommand.h"
 
-class MainLook : GameCommand
+class MainLook : public GameCommand
 {
 public:
+	MainLook(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
 	void Execute();
 
 private:

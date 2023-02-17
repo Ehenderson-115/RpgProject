@@ -13,13 +13,27 @@ class Room : public Entity
 public:
 	enum class Direction {North, South, East, West, Invalid};
 	Room();
+
+	std::shared_ptr<Room> North() const;
+	std::shared_ptr<Room> South() const;
+	std::shared_ptr<Room> East() const;
+	std::shared_ptr<Room> West() const;
+
+	void North(std::shared_ptr<Room> inRoom);
+	void South(std::shared_ptr<Room> inRoom);
+	void East(std::shared_ptr<Room> inRoom);
+	void West(std::shared_ptr<Room> inRoom);
+
+	std::shared_ptr<Room> Room::ConnectedRoom(const Direction& inDir) const;
+	std::shared_ptr<Room> Room::ConnectedRoom(const std::string& inStr);
+
 	void AddRoomObject(std::shared_ptr<Entity> inEntity);
 
-	void RoomConnection(int roomId, Direction inDir);
-	void RoomConnection(int roomId, const std::string& inStr);
+	void RoomId(int roomId, Direction inDir);
+	void RoomId(int roomId, const std::string& inStr);
 
-	int RoomConnection(const std::string& inStr);
-	int RoomConnection(const Direction& inDir) const;
+	int RoomId(const std::string& inStr);
+	int RoomId(const Direction& inDir) const;
 
 	std::string CheckRoomContents();
 
@@ -38,6 +52,13 @@ private:
 	int mSouthId;
 	int mEastId;
 	int mWestId;
+
+	std::shared_ptr<Room> mNorth;
+	std::shared_ptr<Room> mSouth;
+	std::shared_ptr<Room> mEast;
+	std::shared_ptr<Room> mWest;
+
+
 };
 
 #endif 
