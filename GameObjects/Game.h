@@ -8,21 +8,26 @@ class Room;
 class Player;
 class Character;
 class Entity;
-class CommandProcessor;
+class CommandParser;
 struct ActiveGameData;
 
 class Game
 {
 public:
-	enum class GameState { Error, Loading, Menu, Combat, Main };
+	enum class GameState { Error, Loading, Menu, Combat, Main, Closing};
+	std::string GrabNextArg(std::string& inStr);
+	
 	void StartGame();
-	std::string GrabNextArg(std::string inStr);
-	void UpdateHud(std::string reprintStr);
+
+	void CurrRoom(std::shared_ptr<Room> inRoom);
+	
+	void UpdateHud(std::string reprintStr="");
 private:
 	
 	void GameLoop();
 	
 	std::string FormatCommand(std::string inStr);
+
 
 	void InitEntityPointers();
 
@@ -58,17 +63,16 @@ private:
 
 	void PrintHud();
 	
+	void UpdateGameData();
 
 	void UpdateState(GameState inState);
-	
 
-	void InvalidCommand(const std::string& command);
+	void PrintInvalidCommand(const std::string& command);
 
-	bool runGame;
 	bool firstTurn;
 	int randOffset;
 
-	std::shared_ptr<CommandProcessor> commandProcessor;
+	std::shared_ptr<CommandParser> commandParser;
 	std::shared_ptr<ActiveGameData> activeData;
 
 	std::string prevTurnResult;

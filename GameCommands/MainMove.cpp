@@ -4,17 +4,21 @@
 #include "../GameObjects/Player.h"
 #include "../GameObjects/Character.h"
 
+MainMove::MainMove(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+	: GameCommand(inData, inArgs)
+{};
+
 void MainMove::Execute()
 {
 	std::string argument;
-	argument = Game::GrabNextArg(mArgs);
+	argument = mGameData->mGame->GrabNextArg(mArgs);
 
 	auto nextRoom = mGameData->mRoom->ConnectedRoom(argument);
 	if (nextRoom != nullptr)
 	{
 		mGameData->mPlayer->Location(nextRoom);
 		mGameData->mRoom = nextRoom;
-		Game::UpdateHud();
+		mGameData->mGame->UpdateHud();
 		FormattedPrint("you enter the room.");
 	}
 	else if (nextRoom == nullptr) 

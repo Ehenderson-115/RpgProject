@@ -2,9 +2,10 @@
 #define MAIN_GRAB_ITEM_H
 #include "GameCommand.h"
 
-class MainGrabItem : GameCommand
+class MainGrabItem : public GameCommand
 {
 public:
+	MainGrabItem(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
 	void Execute();
 
 private:

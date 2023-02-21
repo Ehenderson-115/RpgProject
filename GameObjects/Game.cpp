@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "../GameCommands/CommandProcessor.h"
+#include "../GameCommands/CommandParser.h"
 #include "../GameCommands/GameCommand.h"
 #include "ActiveGameData.h"
 #include "Character.h"
@@ -21,13 +21,17 @@ std::string Game::FormatCommand(std::string inStr)
 	return inStr;
 }
 
-std::string Game::GrabNextArg(std::string inStr)
+void Game::CurrRoom(std::shared_ptr<Room> inRoom)
+{
+	currRoom = inRoom;
+}
+
+std::string Game::GrabNextArg(std::string& inStr)
 {
 	int firstSpace = inStr.find(" ");
-	commands.push_back(inStr.substr(0, firstSpace));
+	std::string output = inStr.substr(0, firstSpace);
 	inStr = inStr.substr(firstSpace + 1);
-	return inStr;
-
+	return output;
 }
 
 void Game::InitEntityPointers()
@@ -87,7 +91,19 @@ void Game::PrintHud()
 	}
 }
 
-void Game::UpdateHud(std::string reprintStr="")
+void Game::UpdateGameData()
+{
+	currRoom = activeData->mRoom;
+	currPlayer = activeData->mPlayer;
+	currAdversary = activeData->mAdversary;
+	if (currState != activeData->mState)
+	{
+		UpdateState(activeData->mState);
+	}
+	
+}
+
+void Game::UpdateHud(std::string reprintStr)
 {
 	system("cls");
 	PrintHud();
@@ -96,6 +112,7 @@ void Game::UpdateHud(std::string reprintStr="")
 		FormattedPrint(reprintStr);
 	}
 }
+
 
 void Game::UpdateState(GameState inState)
 {
@@ -108,28 +125,28 @@ void Game::StartGame()
 	FormattedPrint("Welcome to the Untitled RPG Game!");
 	currState = GameState::Loading;
 
-	commandProcessor = std::make_shared<CommandProcessor>();
+	commandParser = std::make_shared<CommandParser>();
 	auto gameFileParser = std::make_shared<Parser>();
 
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
 	currPlayer = std::static_pointer_cast<Player>(mGameEntities.at(0));
 	currRoom = std::static_pointer_cast<Room>(mGameEntities.at(currPlayer->RoomId()));
 	currAdversary = nullptr;
+	InitEntityPointers();
 
-	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, currState);
 
 	srand(time(0));
 	FormattedPrint("Data Loaded Successfully!");
 
 	
 	UpdateState(GameState::Main);
+	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, std::make_shared<Game>(*this), currState);
 	GameLoop();
 }
 
 void Game::GameLoop()
 {
-	runGame = true;
-	while (runGame)
+	while (currState != GameState::Closing)
 	{
 		if (currPlayer->isDead())
 		{
@@ -140,8 +157,16 @@ void Game::GameLoop()
 		UpdateHud();
 		
 		commandInputStr = FormatCommand(commandInputStr);
-		commandProcessor ->ProcessCommandString(activeData, commandInputStr);
-		
+		auto command = commandParser->ParseCommandString(activeData, commandInputStr);
+		if (command != nullptr)
+		{
+			command->Execute();
+			UpdateGameData();
+		}
+		else
+		{
+			PrintInvalidCommand(commandInputStr);
+		}
 		//ProcessUserCommand();
 
 		if (currState == GameState::Combat && !currAdversary->isDead() && !firstTurn)
@@ -215,7 +240,7 @@ void Game::ExecuteMainCommand(const std::string& command)
 	}
 	else
 	{
-		InvalidCommand(command);
+		PrintInvalidCommand(command);
 	}
 }
 
@@ -279,7 +304,6 @@ void Game::MainOpen()
 
 void Game::MainClose()
 {
-	runGame = false;
 }
 
 void Game::MainGrabItem()
@@ -298,7 +322,7 @@ void Game::MainGrabItem()
 
 }
 
-void Game::InvalidCommand(const std::string& commmand)
+void Game::PrintInvalidCommand(const std::string& commmand)
 {
 	FormattedPrint("Invalid Command: " + commmand);
 }
@@ -328,7 +352,7 @@ void Game::ExecuteMenuCommand(const std::string& command)
 	}
 	else
 	{
-		InvalidCommand(command);
+		PrintInvalidCommand(command);
 	}
 }
 

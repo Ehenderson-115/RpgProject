@@ -6,7 +6,7 @@ class MainLook : public GameCommand
 {
 public:
 	MainLook(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
-	void Execute();
+	virtual void Execute();
 
 private:
 

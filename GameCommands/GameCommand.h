@@ -8,7 +8,7 @@ class GameCommand
 {
 public:
 	GameCommand(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
-	void Execute();
+	virtual void Execute();
 
 protected:
 	std::string mArgs;
