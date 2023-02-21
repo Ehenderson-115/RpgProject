@@ -2,9 +2,10 @@
 #define MAIN_OPEN_H
 #include "GameCommand.h"
 
-class MainOpen : GameCommand
+class MainOpen : public GameCommand
 {
 public:
+	MainOpen(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
 	void Execute();
 
 private:

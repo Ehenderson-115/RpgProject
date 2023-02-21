@@ -2,15 +2,14 @@
 #define MAIN_CLOSE_H
 #include "GameCommand.h"
 
-class MainClose : GameCommand
+class MainClose : public GameCommand
 {
 public:
+	MainClose(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
 	void Execute();
 
 private:
 
 };
-
-
 
 #endif

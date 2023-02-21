@@ -2,10 +2,11 @@
 #define MAIN_MOVE_H
 #include "GameCommand.h"
 
-class MainMove : GameCommand
+class MainMove : public GameCommand
 {
 public:
-	void Execute();
+	MainMove(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	virtual void Execute();
 
 private:
 
