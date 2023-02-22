@@ -13,7 +13,6 @@ std::string StripString(std::string inStr, const std::string& stripStr)
 	return inStr;
 }
 
-
 void FormattedPrint(std::string inStr)
 {
 	inStr = AddLineBreaks(inStr);
@@ -48,21 +47,6 @@ std::string StrToLower(std::string inStr)
 	return inStr;
 }
 
-void GrabAllWords(std::string inStr, std::vector<std::string>& inVect)
-{
-	int StartOfWord = 0;
-	int EndOfWord = inStr.find(" ");
-	for (int i = 0; i < inStr.length(); i++)
-	{
-		inVect.push_back(inStr.substr(StartOfWord, EndOfWord));
-		StartOfWord = EndOfWord;
-		inStr = inStr.substr(StartOfWord, inStr.length());
-		EndOfWord = inStr.find(" ");
-		if (i % 100 == 0) {
-			inVect.push_back("\n");
-		}
-	}
-}
 
 std::string RemoveExtraSpaces(std::string inStr)
 {
@@ -79,5 +63,16 @@ std::string RemoveExtraSpaces(std::string inStr)
 		}
 	}
 	return inStr;
+}
+
+std::string GrabNextArg(std::string& inStr, bool removeArg)
+{
+	int firstSpace = inStr.find(" ");
+	std::string output = inStr.substr(0, firstSpace);
+	if (removeArg)
+	{
+		inStr = inStr.substr(firstSpace + 1);
+	}
+	return output;
 }
 

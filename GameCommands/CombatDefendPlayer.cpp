@@ -1,6 +1,6 @@
-#include "CombatAttackPlayer.h"
+#include "CombatDefendPlayer.h"
 
-void CombatAttackPlayer::Execute()
+void CombatDefendPlayer::Execute()
 {
 
 }

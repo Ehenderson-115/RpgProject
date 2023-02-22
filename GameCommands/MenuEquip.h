@@ -2,10 +2,11 @@
 #define MENU_EQUIP_H
 #include "GameCommand.h"
 
-class MenuEquip : GameCommand
+class MenuEquip : public GameCommand
 {
 public:
-	void Execute();
+	MenuEquip(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	virtual void Execute();
 
 private:
 

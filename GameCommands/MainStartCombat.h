@@ -2,10 +2,11 @@
 #define MAIN_START_COMBAT_H
 #include "GameCommand.h"
 
-class MainStartCombat : GameCommand
+class MainStartCombat : public  GameCommand
 {
 public:
-	void Execute();
+	MainStartCombat(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	virtual void Execute();
 
 private:
 

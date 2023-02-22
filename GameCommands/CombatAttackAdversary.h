@@ -2,7 +2,7 @@
 #define COMBAT_ATTACK_ADV_H
 #include "GameCommand.h"
 
-class CombatAttackAdversary : GameCommand
+class CombatAttackAdversary : public GameCommand
 {
 public:
 	void Execute();
