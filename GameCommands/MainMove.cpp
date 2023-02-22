@@ -11,22 +11,22 @@ MainMove::MainMove(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
 void MainMove::Execute()
 {
 	std::string argument;
-	argument = mGameData->mGame->GrabNextArg(mArgs);
+	argument = GrabNextArg(mArgs);
 
 	auto nextRoom = mGameData->mRoom->ConnectedRoom(argument);
 	if (nextRoom != nullptr)
 	{
 		mGameData->mPlayer->Location(nextRoom);
 		mGameData->mRoom = nextRoom;
-		mGameData->mGame->UpdateHud();
-		FormattedPrint("you enter the room.");
+		Game::UpdateHud(mGameData);
+		FormattedPrint("You enter the room.");
 	}
 	else if (nextRoom == nullptr) 
 	{
-		FormattedPrint("the direction \"" + argument + "\" is invalid.");
+		FormattedPrint("The direction \"" + argument + "\" is invalid.");
 	}
 	else
 	{
-		FormattedPrint("there is nothing in that direction.");
+		FormattedPrint("There is nothing in that direction.");
 	}
 }

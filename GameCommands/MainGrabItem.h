@@ -6,7 +6,7 @@ class MainGrabItem : public GameCommand
 {
 public:
 	MainGrabItem(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
-	void Execute();
+	virtual void Execute();
 
 private:
 

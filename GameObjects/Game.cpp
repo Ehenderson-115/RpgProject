@@ -21,19 +21,6 @@ std::string Game::FormatCommand(std::string inStr)
 	return inStr;
 }
 
-void Game::CurrRoom(std::shared_ptr<Room> inRoom)
-{
-	currRoom = inRoom;
-}
-
-std::string Game::GrabNextArg(std::string& inStr)
-{
-	int firstSpace = inStr.find(" ");
-	std::string output = inStr.substr(0, firstSpace);
-	inStr = inStr.substr(firstSpace + 1);
-	return output;
-}
-
 void Game::InitEntityPointers()
 {
 	for (auto entity : mGameEntities)
@@ -84,8 +71,10 @@ void Game::PrintHud()
 	case GameState::Menu:
 		FormattedPrint(currPlayer->GetStatus() + "\n");
 		break;
-
 	case GameState::Combat:
+		FormattedPrint(currPlayer->Character::GetStatus() + " ||| " + currAdversary->GetStatus());
+		break;
+	case GameState::CombatStart:
 		FormattedPrint(currPlayer->Character::GetStatus() + " ||| " + currAdversary->GetStatus());
 		break;
 	}
@@ -103,7 +92,7 @@ void Game::UpdateGameData()
 	
 }
 
-void Game::UpdateHud(std::string reprintStr)
+void Game::UpdateHud(const std::string& reprintStr)
 {
 	system("cls");
 	PrintHud();
@@ -113,6 +102,34 @@ void Game::UpdateHud(std::string reprintStr)
 	}
 }
 
+void Game::UpdateHud(const std::shared_ptr<ActiveGameData>& inData, const std::string& reprintStr)
+{
+	system("cls");
+	PrintHud(inData);
+	if (!reprintStr.empty())
+	{
+		FormattedPrint(reprintStr);
+	}
+}
+
+void Game::PrintHud(const std::shared_ptr<ActiveGameData>& inData)
+{
+	switch (inData->mState)
+	{
+	case Game::GameState::Main:
+		FormattedPrint("Current Location: " + inData->mRoom->Name() + "\n");
+		break;
+	case Game::GameState::Menu:
+		FormattedPrint(inData->mPlayer->GetStatus() + "\n");
+		break;
+	case Game::GameState::Combat:
+		FormattedPrint(inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus());
+		break;
+	case Game::GameState::CombatStart:
+		FormattedPrint(inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus());
+		break;
+	}
+}
 
 void Game::UpdateState(GameState inState)
 {
@@ -140,7 +157,7 @@ void Game::StartGame()
 
 	
 	UpdateState(GameState::Main);
-	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, std::make_shared<Game>(*this), currState);
+	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, currState);
 	GameLoop();
 }
 
@@ -167,34 +184,14 @@ void Game::GameLoop()
 		{
 			PrintInvalidCommand(commandInputStr);
 		}
-		//ProcessUserCommand();
 
-		if (currState == GameState::Combat && !currAdversary->isDead() && !firstTurn)
+		if (currState == GameState::Combat && !currAdversary->isDead())
 		{
 			ProcessAdversaryCommand();
 		}
 
 		commandInputStr.clear();
 	}
-}
-
-void Game::ProcessUserCommand()
-{
-	std::string command = commands.front();
-	std::string argument = "";
-	switch (currState)
-	{
-	case GameState::Main:
-		ExecuteMainCommand(command);
-		break;
-	case GameState::Menu:
-		ExecuteMenuCommand(command);
-		break;
-	case GameState::Combat:
-		ExecuteCombatCommand(command);
-		break;
-	}
-
 }
 
 void Game::ProcessAdversaryCommand()
@@ -211,186 +208,9 @@ void Game::ProcessAdversaryCommand()
 
 }
 
-//Main Commands
-void Game::ExecuteMainCommand(const std::string& command)
-{
-	if (command == "move" || command == "goto")
-	{
-		MainMove(); 
-	}
-	else if (command == "open")
-	{
-		MainOpen();
-	}
-	else if (command == "search" || command == "survey")
-	{
-		MainSearch();
-	}
-	else if (command == "grab" || command == "pickup")
-	{
-		MainGrabItem();
-	}
-	else if (command == "engage" || command == "attack")
-	{
-		MainStartCombat();
-	}
-	else if (command == "exit" || command == "quit")
-	{
-		MainClose();
-	}
-	else
-	{
-		PrintInvalidCommand(command);
-	}
-}
-
-void Game::MainMove()
-{
-	std::string argument;
-	commandInputStr = GrabNextArg(commandInputStr);
-	argument = commands.back();
-
-
-	int nextRoomId = currRoom->RoomId(argument);
-	if (nextRoomId != -1 && nextRoomId != NULL)
-	{
-		currPlayer->RoomId(nextRoomId);
-		currRoom = std::static_pointer_cast<Room>(mGameEntities.at(nextRoomId));
-		UpdateHud();
-		FormattedPrint("You enter the room.");
-	}
-	else if (nextRoomId == NULL) 
-	{
-		FormattedPrint("The direction \"" + argument + "\" is invalid.");
-	}
-	else
-	{
-		FormattedPrint("There is nothing in that direction.");
-	}
-}
-
-void Game::MainSearch()
-{
-	FormattedPrint(currRoom->CheckRoomContents());
-}
-
-void Game::MainStartCombat()
-{
-	currAdversary = currRoom->GetCharacter(commandInputStr);
-	if (currAdversary == nullptr)
-	{
-		FormattedPrint("The is no \"" + commandInputStr + "\" to fight.");
-	}
-	else
-	{
-		UpdateState(GameState::Combat);
-		firstTurn = true;
-	}
-}
-
-void Game::MainOpen()
-{
-	commandInputStr = GrabNextArg(commandInputStr);
-	std::string argument = commands.back();
-	if (argument == "inventory" || argument == "i")
-	{
-		UpdateState(GameState::Menu);
-	}
-	else
-	{
-		FormattedPrint("Invalid target " + argument);
-	}
-}
-
-void Game::MainClose()
-{
-}
-
-void Game::MainGrabItem()
-{
-
-	auto foundItem = currRoom->GetItem(commandInputStr);
-	if (foundItem != nullptr)
-	{
-		currPlayer->AddItem(foundItem);
-		FormattedPrint("You picked up the " + foundItem->Name());
-	}
-	else
-	{
-		FormattedPrint("There is no item with the name " + commandInputStr);
-	}
-
-}
-
 void Game::PrintInvalidCommand(const std::string& commmand)
 {
 	FormattedPrint("Invalid Command: " + commmand);
-}
-
-//Menu Commands
-void Game::ExecuteMenuCommand(const std::string& command)
-{
-	if (command == "list" || command == "ls")
-	{
-		MenuListItems();
-	}
-	else if (command == "exit" || command == "close")
-	{
-		MenuClose();
-	}
-	else if (command == "examine" || command == "inspect")
-	{
-		MenuInspectItem();
-	}
-	else if (command == "look")
-	{
-		MenuLook();
-	}
-	else if (command == "equip")
-	{
-		MenuEquip();
-	}
-	else
-	{
-		PrintInvalidCommand(command);
-	}
-}
-
-void Game::MenuListItems()
-{
-	FormattedPrint(currPlayer->CheckInventory());
-}
-
-void Game::MenuClose()
-{
-	UpdateState(GameState::Main);
-}
-
-void Game::MenuInspectItem()
-{
-	FormattedPrint(currPlayer->CheckItem(commandInputStr));
-}
-
-void Game::MenuLook()
-{
-	commandInputStr = GrabNextArg(commandInputStr);
-	std::string argument = commands.back();
-	if (argument == "at")
-	{
-		FormattedPrint(currPlayer->CheckItem(commandInputStr));
-	}
-	else
-	{
-		FormattedPrint("No look target specified");
-	}
-}
-
-void Game::MenuEquip()
-{
-	std::string output = currPlayer->EquipWeapon(commandInputStr);
-	UpdateHud();
-	FormattedPrint(output);
-
 }
 
 //Combat Commands
@@ -466,10 +286,6 @@ void Game::CombatAttackPlayer()
 	currAdversary->Damage(totalDamage);
 	UpdateHud();
 	FormattedPrint(turnDescript);
-	if (firstTurn)
-	{
-		firstTurn = false;
-	}
 	if (currAdversary->isDead())
 	{
 		FormattedPrint("The " + adversaryName + " has been killed.");

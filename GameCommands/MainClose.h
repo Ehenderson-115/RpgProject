@@ -6,7 +6,7 @@ class MainClose : public GameCommand
 {
 public:
 	MainClose(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
-	void Execute();
+	virtual void Execute();
 
 private:
 

@@ -2,10 +2,11 @@
 #define MENU_LIST_ITEMS_H
 #include "GameCommand.h"
 
-class MenuListItems : GameCommand
+class MenuListItems : public GameCommand
 {
 public:
-	void Execute();
+	MenuListItems(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	virtual void Execute();
 
 private:
 

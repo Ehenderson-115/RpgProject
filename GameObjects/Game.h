@@ -14,43 +14,21 @@ struct ActiveGameData;
 class Game
 {
 public:
-	enum class GameState { Error, Loading, Menu, Combat, Main, Closing};
-	std::string GrabNextArg(std::string& inStr);
+	enum class GameState { Error, Loading, Menu, Combat, CombatStart, Main, Closing};
 	
 	void StartGame();
-
-	void CurrRoom(std::shared_ptr<Room> inRoom);
-	
-	void UpdateHud(std::string reprintStr="");
+	static void UpdateHud(const std::shared_ptr<ActiveGameData>& inData, const std::string& reprintStr = "");
+	static void PrintHud(const std::shared_ptr<ActiveGameData>& inData);
 private:
 	
 	void GameLoop();
 	
 	std::string FormatCommand(std::string inStr);
 
-
 	void InitEntityPointers();
 
-	void ProcessUserCommand();
 	void ProcessAdversaryCommand();
 	
-	//Main Commands
-	void ExecuteMainCommand(const std::string& command);
-	void MainMove();
-	void MainOpen();
-	void MainClose();
-	void MainGrabItem();
-	void MainSearch();
-	void MainStartCombat();
-
-	//Menu Commands
-	void ExecuteMenuCommand(const std::string& command);
-	void MenuListItems();
-	void MenuClose();
-	void MenuInspectItem();
-	void MenuLook();
-	void MenuEquip();
-
 	//Combat Commands
 	void ExecuteCombatCommand(const std::string& command);
 	void CombatAttackPlayer();
@@ -62,14 +40,13 @@ private:
 	void EndCombat();
 
 	void PrintHud();
-	
+	void UpdateHud(const std::string& reprintStr="");
+
 	void UpdateGameData();
 
 	void UpdateState(GameState inState);
+	void PrintInvalidCommand(const std::string& commmand);
 
-	void PrintInvalidCommand(const std::string& command);
-
-	bool firstTurn;
 	int randOffset;
 
 	std::shared_ptr<CommandParser> commandParser;

@@ -9,8 +9,9 @@ set (SOURCE_FILES
 			MainClose.cpp
 			MainGrabItem.cpp
 			MenuListItems.cpp
-			MenuLook.cpp
+			MenuInspect.cpp
 			MenuEquip.cpp
+			MenuClose.cpp
 			CombatAttackPlayer.cpp
 			CombatAttackAdversary.cpp
 			CombatDefendPlayer.cpp
@@ -27,15 +28,15 @@ set (HEADER_FILES
 			MainClose.h
 			MainGrabItem.h
 			MenuListItems.h
-			MenuLook.h
+			MenuInspect.h
 			MenuEquip.h
+			MenuClose.h
 			CombatAttackPlayer.h
 			CombatAttackAdversary.h
 			CombatDefendPlayer.h
 			CombatDefendAdversary.h)
 			
+
 add_library(GameCommands ${SOURCE_FILES} ${HEADER_FILES})
-
-
 target_include_directories(GameCommands PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
