@@ -18,32 +18,12 @@ Character::Character(ClassType classType)
 	, mBaseAttack{ 0 }
 {}
 
-int Character::HitPoints() const
-{
-	return mCurrhp;
-}
-
 void Character::Hitpoints(const std::string& inStr)
 {
 	int split = inStr.find("/");
 	split++;
 	mCurrhp = std::stoi(inStr.substr(split));
 	mMaxhp = std::stoi(inStr.substr(split, inStr.length() - size_t(1)));
-}
-
-Character::CharRace Character::Race() const
-{
-	return mRace;
-}
-
-void Character::Race(const std::string& inStr)
-{
-	mRace = TranslateRace(inStr);
-}
-
-void Character::Race(const CharRace& inRace)
-{
-	mRace = inRace;
 }
 
 Character::CharRace Character::TranslateRace(const std::string& inStr)
@@ -93,17 +73,7 @@ std::string Character::TranslateRace(const CharRace& inRace)
 	}
 }
 
-void Character::BaseAttack(int inAttackStat)
-{
-	mBaseAttack = inAttackStat;
-}
-
-Character::Action Character::CurrAction() const
-{
-	return mCurrAction;
-}
-
-void Character::Damage(const int& damageTaken)
+void Character::Damage(int damageTaken)
 {
 	if (mCurrAction == Action::Defending)
 	{
@@ -119,15 +89,10 @@ void Character::Damage(const int& damageTaken)
 	}
 }
 
-int Character::Attack(const int& modifier)
+int Character::Attack(int modifier)
 {
 	mCurrAction = Action::Attacking;
 	return (mBaseAttack + modifier);
-}
-
-void Character::Defend()
-{
-	mCurrAction = Action::Defending;
 }
 
 std::string Character::GetStatus() const
@@ -137,9 +102,4 @@ std::string Character::GetStatus() const
 	output += "|";
 	output += (std::to_string(mCurrhp) + "/" + std::to_string(mMaxhp));
 	return output;
-}
-
-bool Character::isDead() const
-{
-	return (mCurrhp <= 0);
 }

@@ -14,19 +14,18 @@ public:
 	Entity(ClassType classType, bool holdable, bool item);
 	
 	//Getters
-	bool isHoldable() const;
-	bool isItem() const;
-	std::string Descript() const;
-	std::string Name() const;
-	int Id() const;
-	ClassType classType() const;
+	bool isHoldable() const { return mHoldable; }
+	bool isItem() const { return mItem; }
+	std::string Descript() const { return mDescript; }
+	std::string Name() const { return mName; }
+	int Id() const { return mId; }
+	ClassType classType() const { return mClassType; }
 
 	//Setters
-	void Descript(const std::string& input);
-	void Name(const std::string& input);
-	void Id(const int& input);
+	void Descript(const std::string& inStr) { mDescript = StripQuotes(inStr); }
+	void Name(const std::string& inStr) { mName = inStr; }
+	void Id(int inId) { mId = inId; }
 
-	
 protected:
 	int mId;
 	bool mHoldable;
@@ -34,7 +33,7 @@ protected:
 	std::string mName;
 	std::string mDescript;
 	ClassType mClassType;
-
+	std::string StripQuotes(std::string inStr);
 };
 
 #endif

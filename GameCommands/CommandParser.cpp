@@ -16,6 +16,11 @@
 #include "MenuListItems.h"
 #include "MenuClose.h"
 
+#include "CombatAttackPlayer.h"
+#include "CombatAttackAdversary.h"
+#include "CombatDefendPlayer.h"
+#include "CombatDefendAdversary.h"
+
 std::shared_ptr<GameCommand> CommandParser::ParseCommandString(std::shared_ptr<ActiveGameData>& gameData, std::string& commandStr)
 {
 	switch (gameData->mState)
@@ -119,5 +124,25 @@ std::shared_ptr<GameCommand> CommandParser::GenerateMenuCommand(std::shared_ptr<
 
 std::shared_ptr<GameCommand> CommandParser::GenerateCombatCommand(std::shared_ptr<ActiveGameData>& gameData, std::string& commandStr)
 {
-	return std::shared_ptr<GameCommand>();
+	std::string topLevelCommand = GrabNextArg(commandStr);
+	if (topLevelCommand == "attack" || topLevelCommand == "a")
+	{
+		auto command = std::make_shared<CombatAttackPlayer>(gameData, commandStr);
+		return command;
+	}
+	else if (topLevelCommand == "defend" || topLevelCommand == "d")
+	{
+		auto command = std::make_shared<CombatDefendPlayer>(gameData, commandStr);
+		return command;
+	}
+	else if (topLevelCommand == "adv::Attack")
+	{
+		auto command = std::make_shared<CombatAttackAdversary>(gameData, commandStr);
+		return command;
+	}
+	else if (topLevelCommand == "adv::Defend")
+	{
+		auto command = std::make_shared<CombatDefendAdversary>(gameData, commandStr);
+		return command;
+	}
 }

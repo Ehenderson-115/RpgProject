@@ -10,31 +10,29 @@ public:
 	enum class Action { Idle, Attacking, Defending};
 	Character();
 	Character(ClassType classType);
-	
-	int HitPoints() const;
+
+	//Getters
+	std::string GetStatus() const;
+	int HitPoints() const { return mCurrhp; }
+	CharRace Race() const { return mRace; }
+
+	//Setters
 	void Hitpoints(const std::string& inStr);
+	void Race(const std::string& inStr) { mRace = TranslateRace(inStr); }
+	void Race(const CharRace& inRace) { mRace = inRace; }
+	void BaseAttack(int inAttackStat) { mBaseAttack = inAttackStat; }
+	
+	//Combat Functions
+	Action CurrAction() const { return mCurrAction; }
+	void Damage(int damageTaken);
+	int Attack(int modifier);
+	void Defend() { mCurrAction = Action::Defending; }
+	
+	bool isDead() const { return (mCurrhp <= 0); }
 
-	CharRace Race() const;
-	void Race(const std::string& inStr);
-	void Race(const CharRace& inRace);
-
+protected:	
 	CharRace TranslateRace(const std::string& inStr);
 	std::string TranslateRace(const CharRace& inRace);
-
-	void BaseAttack(int inAttackStat);
-	
-	//Combat Actions
-	Action CurrAction() const;
-	void Damage(const int& damageTaken);
-	int Attack(const int& modifier);
-	void Defend();
-	
-	std::string GetStatus() const;
-
-	bool isDead() const;
-
-
-protected:
 	CharRace mRace;
 	Action mCurrAction;
 	int mBaseAttack;

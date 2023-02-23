@@ -10,31 +10,6 @@ Player::Player()
 	, mCurrRoom {nullptr}
 {}
 
-void Player::AddItem(const std::shared_ptr<Item>& inItem)
-{
-	mInventory.push_back(inItem);
-}
-
-void Player::RoomId(const int& inRoomId)
-{
-	mRoomId = inRoomId;
-}
-
-std::shared_ptr<Room> Player::Location() const
-{
-	return mCurrRoom;
-}
-
-void Player::Location(std::shared_ptr<Room> inRoom)
-{
-	mCurrRoom = inRoom;
-}
-
-int Player::RoomId() const
-{
-	return mRoomId;
-}
-
 std::string Player::CheckInventory()
 {
 	std::string output = "";
@@ -57,9 +32,8 @@ std::string Player::CheckInventory()
 std::string Player::CheckItem(std::string nameToFind) const
 {
     nameToFind = StrToLower(nameToFind);
-    std::string output = "Hours pass and you still the haven't found\"" + nameToFind + "\" that you were looking for...";
+    std::string output = "Hours pass and you still the haven't found the \"" + nameToFind + "\" that you were looking for...";
 	std::string currItemName;
-    std::shared_ptr<Item> currItem = nullptr;
 
 	for (auto currItem : mInventory)
     {

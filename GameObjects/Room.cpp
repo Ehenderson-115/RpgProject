@@ -15,53 +15,6 @@ Room::Room()
     , mWest{ nullptr }
 {};
 
-std::shared_ptr<Room> Room::North() const
-{
-    return mNorth;
-}
-
-std::shared_ptr<Room> Room::South() const
-{
-    return mSouth;
-}
-
-std::shared_ptr<Room> Room::East() const
-{
-    return mEast;
-}
-
-std::shared_ptr<Room> Room::West() const
-{
-    return mWest;
-}
-
-void Room::North(std::shared_ptr<Room> inRoom)
-{
-    mNorth = inRoom;
-}
-
-void Room::South(std::shared_ptr<Room> inRoom)
-{
-    mSouth = inRoom;
-}
-
-void Room::East(std::shared_ptr<Room> inRoom)
-{
-    mEast = inRoom;
-}
-
-void Room::West(std::shared_ptr<Room> inRoom)
-{
-    mWest = inRoom;
-}
-
-
-
-void Room::AddRoomObject(std::shared_ptr<Entity> inEntity)
-{
-    mContents.push_back(inEntity);
-}
-
 void Room::RoomId(int roomId, Direction inDir)
 {
     switch (inDir)
@@ -79,16 +32,6 @@ void Room::RoomId(int roomId, Direction inDir)
         mWestId = roomId;
         break;
     }
-}
-
-void Room::RoomId(int roomId, const std::string& inStr)
-{
-    RoomId(roomId, TranslateDirection(inStr));
-}
-
-int Room::RoomId(const std::string& inStr)
-{
-    return RoomId(TranslateDirection(inStr));
 }
 
 int Room::RoomId(const Direction& inDir) const
@@ -110,11 +53,6 @@ int Room::RoomId(const Direction& inDir) const
     default:
         return NULL;
     }
-}
-
-std::shared_ptr<Room> Room::ConnectedRoom(const std::string& inStr)
-{
-    return ConnectedRoom(TranslateDirection(inStr));
 }
 
 std::shared_ptr<Room> Room::ConnectedRoom(const Direction& inDir) const

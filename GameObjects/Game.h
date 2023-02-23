@@ -28,15 +28,7 @@ private:
 	void InitEntityPointers();
 
 	void ProcessAdversaryCommand();
-	
-	//Combat Commands
-	void ExecuteCombatCommand(const std::string& command);
-	void CombatAttackPlayer();
-	void CombatAttackAdversary();
-	void CombatDefendAdversary();
-	void CombatDefendPlayer();
-	//Unused for now
-	void CombatFleePlayer();
+
 	void EndCombat();
 
 	void PrintHud();
@@ -46,8 +38,6 @@ private:
 
 	void UpdateState(GameState inState);
 	void PrintInvalidCommand(const std::string& commmand);
-
-	int randOffset;
 
 	std::shared_ptr<CommandParser> commandParser;
 	std::shared_ptr<ActiveGameData> activeData;

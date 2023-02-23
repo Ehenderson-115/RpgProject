@@ -5,6 +5,7 @@
 class CombatDefendPlayer : public GameCommand
 {
 public:
+	CombatDefendPlayer(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
 	void Execute();
 
 private:

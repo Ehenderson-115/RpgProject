@@ -26,7 +26,7 @@
 	2
 	</Attack>
 	<HitPoints>
-	30/30
+	50/50
 	</HitPoints>
 </Enemy>
 
