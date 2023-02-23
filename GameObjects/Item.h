@@ -7,7 +7,7 @@ public:
 	Item();
 	Item(ClassType classType, bool equipable);
 
-	bool isEquipable() const;
+	bool isEquipable() const { return mEquipable; }
 	
 protected:
 

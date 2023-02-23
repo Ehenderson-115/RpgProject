@@ -14,31 +14,30 @@ public:
 	enum class Direction {North, South, East, West, Invalid};
 	Room();
 
-	std::shared_ptr<Room> North() const;
-	std::shared_ptr<Room> South() const;
-	std::shared_ptr<Room> East() const;
-	std::shared_ptr<Room> West() const;
-
-	void North(std::shared_ptr<Room> inRoom);
-	void South(std::shared_ptr<Room> inRoom);
-	void East(std::shared_ptr<Room> inRoom);
-	void West(std::shared_ptr<Room> inRoom);
-
-	std::shared_ptr<Room> Room::ConnectedRoom(const Direction& inDir) const;
-	std::shared_ptr<Room> Room::ConnectedRoom(const std::string& inStr);
-
-	void AddRoomObject(std::shared_ptr<Entity> inEntity);
-
-	void RoomId(int roomId, Direction inDir);
-	void RoomId(int roomId, const std::string& inStr);
-
-	int RoomId(const std::string& inStr);
+	//Getters
 	int RoomId(const Direction& inDir) const;
-
-	std::string CheckRoomContents();
-
+	int RoomId(const std::string& inStr) { return RoomId(TranslateDirection(inStr)); }
+	std::shared_ptr<Room> North() const { return mNorth; }
+	std::shared_ptr<Room> South() const { return mSouth; }
+	std::shared_ptr<Room> East() const { return mEast; }
+	std::shared_ptr<Room> West() const { return mWest; }
 	std::shared_ptr<Item>GetItem(std::string nameToFind);
 	std::shared_ptr<Character>GetCharacter(std::string nameToFind) const;
+	std::shared_ptr<Room> Room::ConnectedRoom(const Direction& inDir) const;
+	std::shared_ptr<Room> Room::ConnectedRoom(const std::string& inStr) { return ConnectedRoom(TranslateDirection(inStr)); }
+
+
+	//Setters
+	void North(std::shared_ptr<Room> inRoom) { mNorth = inRoom; }
+	void South(std::shared_ptr<Room> inRoom) { mSouth = inRoom; }
+	void East(std::shared_ptr<Room> inRoom) { mEast = inRoom; }
+	void West(std::shared_ptr<Room> inRoom) { mWest = inRoom; }
+	void AddRoomObject(std::shared_ptr<Entity> inEntity) { mContents.push_back(inEntity); }
+	void RoomId(int roomId, Direction inDir);
+	void RoomId(int roomId, const std::string& inStr) { RoomId(roomId, TranslateDirection(inStr)); }
+
+	std::string CheckRoomContents();
+	
 	void RemoveContent(std::string nameToFind);
 
 private:

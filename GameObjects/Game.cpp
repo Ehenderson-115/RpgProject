@@ -133,8 +133,16 @@ void Game::PrintHud(const std::shared_ptr<ActiveGameData>& inData)
 
 void Game::UpdateState(GameState inState)
 {
-	currState = inState;
-	UpdateHud();
+	if (currState == GameState::CombatStart && inState == GameState::Combat)
+	{
+		currState = inState;
+	}
+	else 
+	{
+		currState = inState;
+		UpdateHud();
+	}
+	
 }
 
 void Game::StartGame()
@@ -165,10 +173,7 @@ void Game::GameLoop()
 {
 	while (currState != GameState::Closing)
 	{
-		if (currPlayer->isDead())
-		{
-			MainClose();
-		}
+		
 		getline(std::cin, commandInputStr);
 
 		UpdateHud();
@@ -184,12 +189,19 @@ void Game::GameLoop()
 		{
 			PrintInvalidCommand(commandInputStr);
 		}
-
+		if (currAdversary != nullptr && currAdversary->isDead())
+		{
+			EndCombat();
+		}
 		if (currState == GameState::Combat && !currAdversary->isDead())
 		{
 			ProcessAdversaryCommand();
 		}
-
+		if (currPlayer->isDead())
+		{
+			EndCombat();
+			UpdateState(Game::GameState::Closing);
+		}
 		commandInputStr.clear();
 	}
 }
@@ -197,13 +209,19 @@ void Game::GameLoop()
 void Game::ProcessAdversaryCommand()
 {
 	int enemyChoice = rand() % 2;
+	std::string attack = "adv::Attack";
+	std::string defend = "adv::Defend";
 	if (enemyChoice == 0) 
 	{
-		CombatAttackAdversary();
+		auto command = commandParser->ParseCommandString(activeData, attack);
+		command->Execute();
+		UpdateGameData();
 	}
 	else
 	{
-		CombatDefendAdversary();
+		auto command = commandParser->ParseCommandString(activeData, defend);
+		command->Execute();
+		UpdateGameData();
 	}
 
 }
@@ -213,110 +231,11 @@ void Game::PrintInvalidCommand(const std::string& commmand)
 	FormattedPrint("Invalid Command: " + commmand);
 }
 
-//Combat Commands
-void Game::ExecuteCombatCommand(const std::string& command)
-{
-	if (currAdversary->isDead() || currPlayer->isDead()) 
-	{
-		EndCombat();
-		return;
-	}
-	if (command == "attack" || command == "a")
-	{
-		CombatAttackPlayer();
-	}
-	else if (command == "defend" || command == "d")
-	{
-		CombatDefendPlayer();
-	}
-	else if (command == "flee" || command == "f")
-	{
-		CombatFleePlayer();
-	}
-}
-
-void Game::CombatAttackAdversary()
-{
-	int damageMod = (rand() % 5);
-	int totalDamage;
-	std::string turnDescript = "";
-	std::string adversaryName = currAdversary->Name();
-	totalDamage = currAdversary->Attack(damageMod);
-	if (damageMod == 4)
-	{
-		totalDamage *= 2;
-		turnDescript += ("The " + adversaryName + " begins to glow.");
-		turnDescript += " They strike you with double the strength they had previously.";
-	}
-	else
-	{
-		turnDescript += ("The " + adversaryName + " attacks you.");
-	}
-	turnDescript += " You take " + std::to_string(totalDamage) + " points of damage.";
-	currPlayer->Damage(totalDamage);
-	UpdateHud(prevTurnResult);
-	FormattedPrint(turnDescript);
-	if (currPlayer->isDead())
-	{
-		FormattedPrint("You have been killed by the " + adversaryName + ".");
-		FormattedPrint("Game Over. Press enter to exit...");
-	};
-}
-
-void Game::CombatAttackPlayer()
-{
-	int damageMod = (rand() % 5);
-	int totalDamage;
-	std::string turnDescript = "";
-	std::string adversaryName = currAdversary->Name();
-	std::string wepName = currPlayer->GetWepName();
-	totalDamage = currPlayer->Attack(damageMod);
-	if (damageMod == 4)
-	{
-		totalDamage *= 2;
-		turnDescript += ("Your " + wepName + " begins to shine brightly.");
-		turnDescript += " You feel your strength increase as you let loose a devastating attack.";
-		turnDescript += " Critical Hit!";
-	}
-	else
-	{
-		turnDescript += ("You ready your " + wepName + " and strike the " + adversaryName + ".");
-	}
-	turnDescript += (" You deal " + std::to_string(totalDamage) + " to the " + adversaryName + ".");
-	currAdversary->Damage(totalDamage);
-	UpdateHud();
-	FormattedPrint(turnDescript);
-	if (currAdversary->isDead())
-	{
-		FormattedPrint("The " + adversaryName + " has been killed.");
-		FormattedPrint("Press enter to exit combat...");
-	}
-}
-
-void Game::CombatDefendAdversary()
-{
-	std::string turnResult = "The " + currAdversary->Name() + " prepares for you to attack.";
-	currAdversary->Defend();
-	FormattedPrint(turnResult);
-}
-
-void Game::CombatDefendPlayer()
-{
-	std::string turnResult = "You prepare for an oncoming attack.";
-	currPlayer->Defend();
-	FormattedPrint(turnResult);
-}
-
-//Unused for now
-void Game::CombatFleePlayer()
-{
-	FormattedPrint("You cannot run from this fight!");
-}
-
 void Game::EndCombat()
 {
-	std::cin;
-	currRoom->RemoveContent(currAdversary->Name());
-	currAdversary = nullptr;
-	UpdateState(GameState::Main);
+	getline(std::cin, commandInputStr);
+	activeData->mRoom->RemoveContent(currAdversary->Name());
+	activeData->mAdversary = nullptr;
+	activeData->mState = GameState::Main;
+	UpdateGameData();
 }

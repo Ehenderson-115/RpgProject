@@ -5,6 +5,8 @@
 class CombatAttackAdversary : public GameCommand
 {
 public:
+	CombatAttackAdversary(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+
 	void Execute();
 
 private:

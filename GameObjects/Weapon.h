@@ -7,8 +7,12 @@ class Weapon : public Item
 public:
 	Weapon();
 
-	void Damage(int input);
-	int Damage() const;
+	//Getters
+	int Damage() const { return mDamageMod; }
+	
+	//Setters
+	void Damage(int inDmg) { mDamageMod = inDmg; }
+	
 
 private:
 	int mDamageMod;
