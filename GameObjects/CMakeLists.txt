@@ -9,7 +9,10 @@ set (SOURCE_FILES
 			Game.cpp
 			HelperFunctions.cpp
 			Parser.cpp
-			ActiveGameData.cpp)
+			ActiveGameData.cpp
+			World.cpp
+			Connection.cpp
+			PlayerLocation.cpp)
 
 set (HEADER_FILES 
 			Character.h  
@@ -22,7 +25,10 @@ set (HEADER_FILES
 			Game.h
 			HelperFunctions.h
 			Parser.h
-			ActiveGameData.h)
+			ActiveGameData.h
+			World.h
+			Connection.h
+			PlayerLocation.h)
 
 add_library(GameObjects ${SOURCE_FILES} ${HEADER_FILES})
 

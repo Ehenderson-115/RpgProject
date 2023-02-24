@@ -273,18 +273,6 @@ void Parser::SetData(const DataType& dataType, Room& inRoom)
 	case DataType::Descript:
 		inRoom.Descript(dataToAdd);
 		break;
-	case DataType::North:
-		inRoom.RoomId(std::stoi(dataToAdd), "north");
-		break;
-	case DataType::South:
-		inRoom.RoomId(std::stoi(dataToAdd), "south");
-		break;
-	case DataType::East:
-		inRoom.RoomId(std::stoi(dataToAdd), "east");
-		break;
-	case DataType::West:
-		inRoom.RoomId(std::stoi(dataToAdd), "west");
-		break;
 	case DataType::Contents:
 		currTag = FetchTag();
 		while (currTag != "</contents>")
@@ -295,8 +283,7 @@ void Parser::SetData(const DataType& dataType, Room& inRoom)
 			switch (contentObjType)
 			{
 			case ObjectType::Player:
-				roomPlayer = std::static_pointer_cast<Player>(mParsedEntites.at(std::stoi(dataToAdd)));
-				roomPlayer->RoomId(inRoom.Id());
+				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
 				break;
 			case ObjectType::Character:
 				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
