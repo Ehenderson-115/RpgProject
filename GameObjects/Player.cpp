@@ -5,9 +5,7 @@
 
 Player::Player() 
 	: Character(ClassType::Player)
-	, mEqWeapon{ nullptr }
-	, mRoomId{ -1 }
-	, mCurrRoom {nullptr}
+	, mEqWeapon{ nullptr } 
 {}
 
 std::string Player::CheckInventory()
