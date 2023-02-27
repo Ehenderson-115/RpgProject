@@ -9,6 +9,7 @@ public:
 	
 	Entity();
 	Entity(ClassType classType);
+	Entity(ClassType classType, std::string inName);
 	Entity(bool holdable);
 	Entity(ClassType classType, bool holdable);
 	Entity(ClassType classType, bool holdable, bool item);

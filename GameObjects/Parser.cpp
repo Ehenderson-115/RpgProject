@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "Weapon.h"
 #include "Item.h"
+#include "World.h"
 #include "HelperFunctions.h"
 
 std::string Parser::FetchTag() const
@@ -56,6 +57,7 @@ std::vector<std::shared_ptr<Entity>> Parser::InitGameDataFromFile(const std::str
 
 	fileStr = StripString(fileStr, "\t");
 	dataSource = fileStr;
+	mParsedEntites.push_back(std::make_shared<World>());
 	ParseFileData();
 	return mParsedEntites;
 }
@@ -83,9 +85,6 @@ void Parser::LoadObject(const ObjectType& obj)
 {
 	switch (obj)
 	{
-	case ObjectType::Player:
-		CreatePlayer();
-		break;
 	case ObjectType::Character:
 		CreateCharacter();
 		break;
@@ -112,11 +111,7 @@ void Parser::LoadObject(const ObjectType& obj)
 
 Parser::ObjectType Parser::TagToObjType(const std::string& tag)
 {
-	if (tag == "<player>")
-	{
-		return ObjectType::Player;
-	}
-	else if (tag == "<character>")
+	if (tag == "<character>")
 	{
 		return ObjectType::Character;
 	}
@@ -202,48 +197,10 @@ Parser::DataType Parser::TagToDataType(const std::string& tag)
 	}
 }
 
-void Parser::CreatePlayer()
-{
-	Player newPlayer = Player();
-	DataType dataType = ConsumeDataTag();
-
-	while (dataType != DataType::Empty)
-	{
-		SetData(dataType, newPlayer);
-		StripCurrTag();
-		dataType = ConsumeDataTag();
-	}
-
-	mParsedEntites.push_back(std::make_shared<Player>(newPlayer));
-}
-
-void Parser::SetData(const DataType& dataType, Player& inPlayer)
-{
-	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
-	switch (dataType)
-	{
-	case DataType::ID:
-		inPlayer.Id(std::stoi(dataToAdd));
-		break;
-	case DataType::Name:
-		inPlayer.Name(dataToAdd);
-		break;
-	case DataType::Race:
-		dataToAdd = StrToLower(dataToAdd);
-		inPlayer.Race(dataToAdd);
-		break;
-	case DataType::Hitpoints:
-		inPlayer.Hitpoints(dataToAdd);
-		break;
-	case DataType::Attack:
-		inPlayer.BaseAttack(std::stoi(dataToAdd));
-		break;
-	}
-}
 
 void Parser::CreateRoom()
 {
-	Room newRoom = Room();
+	auto newRoom = std::make_shared<Room>();
 	DataType dataType = ConsumeDataTag();
 
 	while (dataType != DataType::Empty)
@@ -253,25 +210,62 @@ void Parser::CreateRoom()
 		dataType = ConsumeDataTag();
 	}
 
-	mParsedEntites.push_back(std::make_shared<Room>(newRoom));
+	mParsedEntites.push_back(newRoom);
 }
 
-void Parser::SetData(const DataType& dataType, Room& inRoom)
+void Parser::SetData(const DataType& dataType, std::shared_ptr<Room> inRoom)
 {
 	std::string dataToAdd = dataSource.substr(0, dataSource.find("<"));
 	DataType contentType = DataType::Empty;
 	ObjectType contentObjType = ObjectType::Empty;
 	std::string currTag = "";
+	auto world = std::static_pointer_cast<World>(mParsedEntites.at(0));
 	switch (dataType)
 	{
 	case DataType::ID:
-		inRoom.Id(std::stoi(dataToAdd));
+		inRoom->Id(std::stoi(dataToAdd));
 		break;
 	case DataType::Name:
-		inRoom.Name(dataToAdd);
+		inRoom->Name(dataToAdd);
 		break;
 	case DataType::Descript:
-		inRoom.Descript(dataToAdd);
+		inRoom->Descript(dataToAdd);
+		break;
+	case DataType::North:
+		if (mParsedEntites.size() > std::stoi(dataToAdd))
+		{
+			world->AddRoomConnection(
+				inRoom
+				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
+				, Connection::TranslateDirection("north"));
+		}
+		break;
+	case DataType::South:
+		if (mParsedEntites.size() > std::stoi(dataToAdd))
+		{
+			world->AddRoomConnection(
+				inRoom
+				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
+				, Connection::TranslateDirection("south"));
+		}
+		break;
+	case DataType::East:
+		if (mParsedEntites.size() > std::stoi(dataToAdd))
+		{
+			world->AddRoomConnection(
+				inRoom
+				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
+				, Connection::TranslateDirection("east"));
+		}
+		break;
+	case DataType::West:
+		if (mParsedEntites.size() > std::stoi(dataToAdd))
+		{
+			world->AddRoomConnection(
+				inRoom
+				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
+				, Connection::TranslateDirection("west"));
+		}
 		break;
 	case DataType::Contents:
 		currTag = FetchTag();
@@ -279,29 +273,25 @@ void Parser::SetData(const DataType& dataType, Room& inRoom)
 		{
 			contentObjType = ConsumeObjTag();
 			dataToAdd = dataSource.substr(0, dataSource.find("<"));
-			std::shared_ptr<Player> roomPlayer = nullptr;
 			switch (contentObjType)
 			{
-			case ObjectType::Player:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
-				break;
 			case ObjectType::Character:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
+				inRoom->AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
 				break;
 			case ObjectType::Enemy:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
+				inRoom->AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
 				break;
 			case ObjectType::Entity:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
+				inRoom->AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
 				break;
 			case ObjectType::Weapon:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
+				inRoom->AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
 				break;
 			case ObjectType::Item:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
+				inRoom->AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
 				break;
 			case ObjectType::Room:
-				inRoom.AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
+				inRoom->AddRoomObject(mParsedEntites.at(std::stoi(dataToAdd)));
 				break;
 			default:
 				break;

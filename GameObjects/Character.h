@@ -10,6 +10,7 @@ public:
 	enum class Action { Idle, Attacking, Defending};
 	Character();
 	Character(ClassType classType);
+	Character(ClassType classType, std::string inName);
 
 	//Getters
 	std::string GetStatus() const;

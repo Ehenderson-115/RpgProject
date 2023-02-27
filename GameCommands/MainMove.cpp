@@ -2,6 +2,7 @@
 #include "../GameObjects/HelperFunctions.h"
 #include "../GameObjects/Room.h"
 #include "../GameObjects/Player.h"
+#include "../GameObjects/World.h"
 #include "../GameObjects/Character.h"
 
 MainMove::MainMove(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
@@ -13,10 +14,10 @@ void MainMove::Execute()
 	std::string argument;
 	argument = GrabNextArg(mArgs);
 
-	auto nextRoom = mGameData->mRoom->ConnectedRoom(argument);
+	auto nextRoom = mGameData->mWorld->GetConnectedRoom(mGameData->mRoom, Connection::TranslateDirection(argument));
 	if (nextRoom != nullptr)
 	{
-		mGameData->mPlayer->Location(nextRoom);
+		mGameData->mWorld->AddPlayerLocation(mGameData->mPlayer, nextRoom);
 		mGameData->mRoom = nextRoom;
 		Game::UpdateHud(mGameData);
 		FormattedPrint("You enter the room.");
