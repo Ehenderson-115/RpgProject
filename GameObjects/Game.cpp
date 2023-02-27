@@ -11,6 +11,7 @@
 #include "Item.h"
 #include "HelperFunctions.h"
 #include "Parser.h"
+#include "World.h"
 #include <time.h>
 #include <random>
 
@@ -19,46 +20,6 @@ std::string Game::FormatCommand(std::string inStr)
 	inStr = StrToLower(inStr);
 	inStr = RemoveExtraSpaces(inStr);
 	return inStr;
-}
-
-void Game::InitEntityPointers()
-{
-	for (auto entity : mGameEntities)
-	{
-		if (entity->classType() == Entity::ClassType::Room)
-		{
-			auto room = std::static_pointer_cast<Room>(entity);
-			if (room->North() == nullptr && (room->RoomId("north") != -1))
-			{
-				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("north")));
-				room->North(roomToAdd);
-			}
-			if (room->South() == nullptr && (room->RoomId("south") != -1))
-			{
-				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("south")));
-				room->South(roomToAdd);
-			}
-			if (room->East() == nullptr && (room->RoomId("east") != -1))
-			{
-				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("east")));
-				room->East(roomToAdd);
-			}
-			if (room->West() == nullptr && (room->RoomId("west") != -1))
-			{
-				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(room->RoomId("west")));
-				room->West(roomToAdd);
-			}
-		}
-		else if (entity->classType() == Entity::ClassType::Player)
-		{
-			auto player = std::static_pointer_cast<Player>(entity);
-			if (player->Location() == nullptr && player->RoomId() != -1)
-			{
-				auto roomToAdd = std::static_pointer_cast<Room>(mGameEntities.at(player->RoomId()));
-				player->Location(roomToAdd);
-			}
-		}
-	}
 }
 
 void Game::PrintHud()
@@ -85,6 +46,7 @@ void Game::UpdateGameData()
 	currRoom = activeData->mRoom;
 	currPlayer = activeData->mPlayer;
 	currAdversary = activeData->mAdversary;
+	mWorld = activeData->mWorld;
 	if (currState != activeData->mState)
 	{
 		UpdateState(activeData->mState);
@@ -145,6 +107,28 @@ void Game::UpdateState(GameState inState)
 	
 }
 
+std::shared_ptr<Player> Game::CreatePlayer()
+{
+	std::string playerName;
+	FormattedPrint("Please enter the name of your character");
+	getline(std::cin, playerName);
+	auto newPlayer = std::make_shared<Player>(playerName);
+	mGameEntities.push_back(newPlayer);
+	return newPlayer;
+}
+
+std::shared_ptr<Room> Game::FindStartingRoom()
+{
+	for (auto entity : mGameEntities)
+	{
+		if (StrToLower(entity->Name()) == "starting room")
+		{
+			return std::static_pointer_cast<Room>(entity);
+		}
+	}
+	return nullptr;
+}
+
 void Game::StartGame()
 {
 	FormattedPrint("Welcome to the Untitled RPG Game!");
@@ -154,18 +138,18 @@ void Game::StartGame()
 	auto gameFileParser = std::make_shared<Parser>();
 
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
-	currPlayer = std::static_pointer_cast<Player>(mGameEntities.at(0));
-	currRoom = std::static_pointer_cast<Room>(mGameEntities.at(currPlayer->RoomId()));
+
+	currRoom = FindStartingRoom();
+	currPlayer = CreatePlayer();
 	currAdversary = nullptr;
-	InitEntityPointers();
-
-
+	mWorld = std::static_pointer_cast<World>(mGameEntities.at(0));
+	mWorld->AddPlayerLocation(currPlayer, currRoom);
 	srand(time(0));
+	
 	FormattedPrint("Data Loaded Successfully!");
 
-	
 	UpdateState(GameState::Main);
-	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, currState);
+	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, mWorld, currState);
 	GameLoop();
 }
 
@@ -205,6 +189,7 @@ void Game::GameLoop()
 		commandInputStr.clear();
 	}
 }
+
 
 void Game::ProcessAdversaryCommand()
 {

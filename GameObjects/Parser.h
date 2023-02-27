@@ -18,7 +18,7 @@ public:
 	std::vector<std::shared_ptr<Entity>> InitGameDataFromFile(const std::string& fileToParse);
 
 private:
-	enum class ObjectType { Empty, Player, Character, Enemy, Entity, Weapon, Item, Room };
+	enum class ObjectType { Empty, Character, Enemy, Entity, Weapon, Item, Room };
 	enum class DataType { Empty, ID, Name, Race, Hitpoints, Descript, Damage, South, North, East, West, Contents, Attack };
 	
 	std::string dataSource;
@@ -32,13 +32,11 @@ private:
 	void CreateCharacter();
 	void CreateEntity();
 	void CreateWeapon();
-	void CreatePlayer();
 	void CreateRoom();
 	void CreateEnemy();
 	void CreateItem();
 
-	void SetData(const DataType& dataType, Player& inPlayer);
-	void SetData(const DataType& dataType, Room& inRoom);
+	void SetData(const DataType& dataType, std::shared_ptr<Room> inRoom);
 	void SetData(const DataType& dataType, Enemy& inEnemy);
 	void SetData(const DataType& dataType, Item& inItem);
 	void SetData(const DataType& dataType, Character& inCharacter);

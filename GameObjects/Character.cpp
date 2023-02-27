@@ -18,6 +18,15 @@ Character::Character(ClassType classType)
 	, mBaseAttack{ 0 }
 {}
 
+Character::Character(ClassType classType, std::string inName)
+	: Entity(classType, inName)
+	, mRace{ CharRace::Human }
+	, mCurrAction{ Action::Idle }
+	, mCurrhp{ 30 }
+	, mMaxhp{ 30 }
+	, mBaseAttack{ 1 }
+{}
+
 void Character::Hitpoints(const std::string& inStr)
 {
 	int split = inStr.find("/");

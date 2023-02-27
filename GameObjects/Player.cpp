@@ -8,6 +8,11 @@ Player::Player()
 	, mEqWeapon{ nullptr } 
 {}
 
+Player::Player(std::string inName)
+	: Character(ClassType::Player, inName)
+	, mEqWeapon{ nullptr }
+{}
+
 std::string Player::CheckInventory()
 {
 	std::string output = "";

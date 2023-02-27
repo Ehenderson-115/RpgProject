@@ -9,6 +9,7 @@ class Player;
 class Character;
 class Entity;
 class CommandParser;
+class World;
 struct ActiveGameData;
 
 class Game
@@ -20,13 +21,14 @@ public:
 	static void UpdateHud(const std::shared_ptr<ActiveGameData>& inData, const std::string& reprintStr = "");
 	static void PrintHud(const std::shared_ptr<ActiveGameData>& inData);
 private:
-	
+
+	std::shared_ptr<Room> FindStartingRoom();
+
 	void GameLoop();
 	
 	std::string FormatCommand(std::string inStr);
 
-	void InitEntityPointers();
-
+	std::shared_ptr<Player> CreatePlayer();
 	void ProcessAdversaryCommand();
 
 	void EndCombat();
@@ -51,8 +53,10 @@ private:
 	std::shared_ptr<Player> currPlayer;
 	std::shared_ptr<Room> currRoom;
 	std::shared_ptr<Character> currAdversary;
+	std::shared_ptr<World> mWorld;
 
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
+
 
 };
 

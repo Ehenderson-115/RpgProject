@@ -16,6 +16,14 @@ Entity::Entity(ClassType classType)
 	, mId{ -1 }
 {}
 
+Entity::Entity(ClassType classType, std::string inName)
+	: mClassType{ classType }
+	, mName{ inName }
+	, mHoldable{ false }
+	, mItem{ false }
+	, mId{ -1 }
+{}
+
 Entity::Entity(bool holdable) 
 	: mClassType{ ClassType::Entity }
 	, mHoldable{ holdable }

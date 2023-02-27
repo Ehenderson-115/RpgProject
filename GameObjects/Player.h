@@ -13,6 +13,7 @@ class Player : public Character
 {
 public:
 	Player();
+	Player(std::string inName);
 
 	//Getters
 	std::string CheckInventory();
