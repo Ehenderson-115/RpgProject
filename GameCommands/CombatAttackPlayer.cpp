@@ -1,8 +1,7 @@
 #include "CombatAttackPlayer.h"
 #include "../GameObjects/Character.h"
 #include "../GameObjects/Player.h"
-#include "../GameObjects/HelperFunctions.h"
-
+#include "../GameObjects/OutputManager.h"
 CombatAttackPlayer::CombatAttackPlayer(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
@@ -33,11 +32,5 @@ void CombatAttackPlayer::Execute()
 	}
 	turnDescript += (" You deal " + std::to_string(totalDamage) + " to the " + adversaryName + ".");
 	mGameData->mAdversary->Damage(totalDamage);
-	Game::UpdateHud(mGameData);
-	FormattedPrint(turnDescript);
-	if (mGameData->mAdversary->isDead())
-	{
-		FormattedPrint("The " + adversaryName + " has been killed.");
-		FormattedPrint("Press enter to exit combat...");
-	}
+	mGameData->mOutputManager->AddToOutput(turnDescript);
 }

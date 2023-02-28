@@ -1,5 +1,5 @@
 #include "MainLook.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "../GameObjects/OutputManager.h"
 #include "../GameObjects/Room.h"
 
 MainLook::MainLook(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
@@ -8,6 +8,6 @@ MainLook::MainLook(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
 
 void MainLook::Execute()
 {
-	FormattedPrint(mGameData->mRoom->Descript());
+	mGameData->mOutputManager->AddToOutput(mGameData->mRoom->Descript());
 }
 

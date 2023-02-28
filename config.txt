@@ -49,7 +49,7 @@
 	Dark Hallway
 	</Name>
 	<Descript>
-	"You are now in a dark hallway illuminated only by a faint torch light at the end of the hall."
+	"You are now in a dark hallway illuminated only by a faint torch light at the end of the hall. There is a large door to the east."
 	</Descript>
 	<Contents>
 		<Enemy>1</Enemy>
@@ -57,4 +57,19 @@
 	<North>
 	3
 	</North>
+	<East>
+	5
+	</East>
+</Room>
+
+<Room>
+	<ID>5</ID>
+	<Name>
+	Dining Hall
+	</Name>
+	<Descript>
+	"This appears to be some kind of dining area. Strangely though, it is empty save for a few wooden tables."
+	</Descript>
+	<Contents>
+	</Contents>
 </Room>

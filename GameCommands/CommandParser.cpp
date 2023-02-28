@@ -145,4 +145,8 @@ std::shared_ptr<GameCommand> CommandParser::GenerateCombatCommand(std::shared_pt
 		auto command = std::make_shared<CombatDefendAdversary>(gameData, commandStr);
 		return command;
 	}
+	else
+	{
+		return nullptr;
+	}
 }

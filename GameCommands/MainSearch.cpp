@@ -1,6 +1,6 @@
 #include "MainSearch.h"
 #include "../GameObjects/Room.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "../GameObjects/OutputManager.h"
 
 
 MainSearch::MainSearch(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
@@ -9,5 +9,5 @@ MainSearch::MainSearch(std::shared_ptr<ActiveGameData> inData, std::string inArg
 
 void MainSearch::Execute()
 {
-	FormattedPrint(mGameData->mRoom->CheckRoomContents());
+	mGameData->mOutputManager->AddToOutput(mGameData->mRoom->CheckRoomContents());
 }

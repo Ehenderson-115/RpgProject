@@ -197,7 +197,6 @@ Parser::DataType Parser::TagToDataType(const std::string& tag)
 	}
 }
 
-
 void Parser::CreateRoom()
 {
 	auto newRoom = std::make_shared<Room>();

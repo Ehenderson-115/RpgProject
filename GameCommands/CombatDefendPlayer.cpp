@@ -1,6 +1,6 @@
 #include "CombatDefendPlayer.h"
 #include "../GameObjects/Player.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "../GameObjects/OutputManager.h"
 
 CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
@@ -12,7 +12,7 @@ void CombatDefendPlayer::Execute()
 	{
 		mGameData->mState = Game::GameState::Combat;
 	}
-	std::string turnResult = "You prepare for an oncoming attack.";
+
 	mGameData->mPlayer->Defend();
-	FormattedPrint(turnResult);
+	mGameData->mOutputManager->AddToOutput("You prepare for an oncoming attack.");
 }

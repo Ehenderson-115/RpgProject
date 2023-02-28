@@ -12,6 +12,7 @@
 #include "HelperFunctions.h"
 #include "Parser.h"
 #include "World.h"
+#include "OutputManager.h"
 #include <time.h>
 #include <random>
 
@@ -22,87 +23,30 @@ std::string Game::FormatCommand(std::string inStr)
 	return inStr;
 }
 
-void Game::PrintHud()
-{
-	switch (currState)
-	{
-	case GameState::Main:
-		FormattedPrint("Current Location: " + currRoom->Name() + "\n");
-		break;
-	case GameState::Menu:
-		FormattedPrint(currPlayer->GetStatus() + "\n");
-		break;
-	case GameState::Combat:
-		FormattedPrint(currPlayer->Character::GetStatus() + " ||| " + currAdversary->GetStatus());
-		break;
-	case GameState::CombatStart:
-		FormattedPrint(currPlayer->Character::GetStatus() + " ||| " + currAdversary->GetStatus());
-		break;
-	}
-}
-
 void Game::UpdateGameData()
 {
-	currRoom = activeData->mRoom;
-	currPlayer = activeData->mPlayer;
-	currAdversary = activeData->mAdversary;
-	mWorld = activeData->mWorld;
-	if (currState != activeData->mState)
+	mCurrRoom = mActiveData->mRoom;
+	mCurrPlayer = mActiveData->mPlayer;
+	mCurrAdversary = mActiveData->mAdversary;
+	mWorld = mActiveData->mWorld;
+	if (mCurrState != mActiveData->mState)
 	{
-		UpdateState(activeData->mState);
+		UpdateState(mActiveData->mState);
 	}
-	
+	mOutputManager = mActiveData->mOutputManager;
+	mOutputManager->UpdateStatusBar(mActiveData);
 }
 
-void Game::UpdateHud(const std::string& reprintStr)
-{
-	system("cls");
-	PrintHud();
-	if (!reprintStr.empty())
-	{
-		FormattedPrint(reprintStr);
-	}
-}
-
-void Game::UpdateHud(const std::shared_ptr<ActiveGameData>& inData, const std::string& reprintStr)
-{
-	system("cls");
-	PrintHud(inData);
-	if (!reprintStr.empty())
-	{
-		FormattedPrint(reprintStr);
-	}
-}
-
-void Game::PrintHud(const std::shared_ptr<ActiveGameData>& inData)
-{
-	switch (inData->mState)
-	{
-	case Game::GameState::Main:
-		FormattedPrint("Current Location: " + inData->mRoom->Name() + "\n");
-		break;
-	case Game::GameState::Menu:
-		FormattedPrint(inData->mPlayer->GetStatus() + "\n");
-		break;
-	case Game::GameState::Combat:
-		FormattedPrint(inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus());
-		break;
-	case Game::GameState::CombatStart:
-		FormattedPrint(inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus());
-		break;
-	}
-}
 
 void Game::UpdateState(GameState inState)
 {
-	if (currState == GameState::CombatStart && inState == GameState::Combat)
+	if (mCurrState == GameState::CombatStart && inState == GameState::Combat)
 	{
-		currState = inState;
+		mCurrState = inState;
 	}
 	else 
 	{
-		currState = inState;
-		UpdateHud();
+		mCurrState = inState;
 	}
 	
 }
@@ -132,38 +76,35 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 void Game::StartGame()
 {
 	FormattedPrint("Welcome to the Untitled RPG Game!");
-	currState = GameState::Loading;
-
-	commandParser = std::make_shared<CommandParser>();
+	mCurrState = GameState::Loading;
+	mCommandParser = std::make_shared<CommandParser>();
 	auto gameFileParser = std::make_shared<Parser>();
 
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
 
-	currRoom = FindStartingRoom();
-	currPlayer = CreatePlayer();
-	currAdversary = nullptr;
+	mCurrRoom = FindStartingRoom();
+	mCurrPlayer = CreatePlayer();
+	mCurrAdversary = nullptr;
 	mWorld = std::static_pointer_cast<World>(mGameEntities.at(0));
-	mWorld->AddPlayerLocation(currPlayer, currRoom);
+	mWorld->AddPlayerLocation(mCurrPlayer, mCurrRoom);
 	srand(time(0));
-	
-	FormattedPrint("Data Loaded Successfully!");
 
-	UpdateState(GameState::Main);
-	activeData = std::make_shared<ActiveGameData>(currPlayer, currAdversary, currRoom, mWorld, currState);
+	mOutputManager = std::make_shared<OutputManager>();
+	mActiveData = std::make_shared<ActiveGameData>(mCurrPlayer, mCurrAdversary, mCurrRoom, mWorld, mOutputManager, mCurrState);
+	mActiveData->mState = Game::GameState::Main;
+	UpdateGameData();
+	mOutputManager->PrintScreen();
 	GameLoop();
 }
 
 void Game::GameLoop()
 {
-	while (currState != GameState::Closing)
+	while (mCurrState != GameState::Closing)
 	{
+		getline(std::cin, mCommandStr);
 		
-		getline(std::cin, commandInputStr);
-
-		UpdateHud();
-		
-		commandInputStr = FormatCommand(commandInputStr);
-		auto command = commandParser->ParseCommandString(activeData, commandInputStr);
+		mCommandStr = FormatCommand(mCommandStr);
+		auto command = mCommandParser->ParseCommandString(mActiveData, mCommandStr);
 		if (command != nullptr)
 		{
 			command->Execute();
@@ -171,25 +112,29 @@ void Game::GameLoop()
 		}
 		else
 		{
-			PrintInvalidCommand(commandInputStr);
+			HandleInvalidCommand(mCommandStr);
 		}
-		if (currAdversary != nullptr && currAdversary->isDead())
+		if (mCurrState == GameState::Combat || mCurrState == GameState::CombatStart)
 		{
-			EndCombat();
+			DoCombatLogic();
+			UpdateGameData();
 		}
-		if (currState == GameState::Combat && !currAdversary->isDead())
-		{
-			ProcessAdversaryCommand();
-		}
-		if (currPlayer->isDead())
-		{
-			EndCombat();
-			UpdateState(Game::GameState::Closing);
-		}
-		commandInputStr.clear();
+		mOutputManager->PrintScreen();
+		mCommandStr.clear();
 	}
 }
 
+void Game::DoCombatLogic()
+{
+	if (isCombatOver())
+	{
+		HandleCombatEnd();
+	}
+	else if(mCurrState != GameState::CombatStart)
+	{
+		ProcessAdversaryCommand();
+	}
+}
 
 void Game::ProcessAdversaryCommand()
 {
@@ -198,29 +143,69 @@ void Game::ProcessAdversaryCommand()
 	std::string defend = "adv::Defend";
 	if (enemyChoice == 0) 
 	{
-		auto command = commandParser->ParseCommandString(activeData, attack);
+		auto command = mCommandParser->ParseCommandString(mActiveData, attack);
 		command->Execute();
-		UpdateGameData();
 	}
 	else
 	{
-		auto command = commandParser->ParseCommandString(activeData, defend);
+		auto command = mCommandParser->ParseCommandString(mActiveData, defend);
 		command->Execute();
-		UpdateGameData();
 	}
-
 }
 
-void Game::PrintInvalidCommand(const std::string& commmand)
+void Game::HandleInvalidCommand(const std::string& commmand)
 {
-	FormattedPrint("Invalid Command: " + commmand);
+	mOutputManager->AddToOutput("Invalid Command: " + commmand);
 }
 
-void Game::EndCombat()
+bool Game::isCombatOver()
 {
-	getline(std::cin, commandInputStr);
-	activeData->mRoom->RemoveContent(currAdversary->Name());
-	activeData->mAdversary = nullptr;
-	activeData->mState = GameState::Main;
-	UpdateGameData();
+	if (mCurrPlayer->isDead() && !mCurrAdversary->isDead())
+	{
+		return true;
+	}
+	else if (mActiveData->mAdversary->isDead() && !mCurrPlayer->isDead())
+	{
+		return true;
+	}
+	else if (mCurrPlayer->isDead() && mActiveData->mAdversary->isDead())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Game::HandleCombatEnd()
+{
+	if (mCurrPlayer->isDead() && !mCurrAdversary->isDead())
+	{
+		mActiveData->mOutputManager->AddToOutput("You have been killed by the " + mCurrAdversary->Name() + ".\n");
+		mActiveData->mOutputManager->AddToOutput("Game Over. Press enter to exit...");
+		getline(std::cin, mCommandStr);
+		mActiveData->mState = Game::GameState::Closing;
+	}
+	else if (mActiveData->mAdversary->isDead() && !mCurrPlayer->isDead())
+	{
+		mActiveData->mOutputManager->AddToOutput("The " + mCurrAdversary->Name() + " has been killed.\n");
+		mActiveData->mOutputManager->AddToOutput("Press enter to exit combat...");
+		getline(std::cin, mCommandStr);
+		mActiveData->mState = GameState::Main;
+		mActiveData->mRoom->RemoveContent(mCurrAdversary->Name());
+		mActiveData->mAdversary = nullptr;
+	}
+	else if (mCurrPlayer->isDead() && mActiveData->mAdversary->isDead())
+	{
+		mActiveData->mOutputManager->AddToOutput("You and the " + mCurrAdversary->Name() + " deal lethal blows to one another.\n");
+		mActiveData->mOutputManager->AddToOutput("Just as the world begins to fade to black, you feel a burning determination in your chest that won't let you die.\n");
+		mActiveData->mOutputManager->AddToOutput("1 HP has been restored.\n");
+		mActiveData->mOutputManager->AddToOutput("Press enter to exit combat...");
+		mActiveData->mPlayer->Heal(1);
+		getline(std::cin, mCommandStr);
+		mActiveData->mState = GameState::Main;
+		mActiveData->mRoom->RemoveContent(mCurrAdversary->Name());
+		mActiveData->mAdversary = nullptr;
+	}
 }
