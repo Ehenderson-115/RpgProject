@@ -1,5 +1,5 @@
 #include "MenuInspect.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "../GameObjects/OutputManager.h"
 #include "../GameObjects/Player.h"
 
 MenuInspect::MenuInspect(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
@@ -8,5 +8,5 @@ MenuInspect::MenuInspect(std::shared_ptr<ActiveGameData> inData, std::string inA
 
 void MenuInspect::Execute()
 {
-	FormattedPrint(mGameData->mPlayer->CheckItem(mArgs));
+	mGameData->mOutputManager->AddToOutput(mGameData->mPlayer->CheckItem(mArgs));
 }

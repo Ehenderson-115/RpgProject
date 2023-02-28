@@ -26,6 +26,7 @@ public:
 	//Combat Functions
 	Action CurrAction() const { return mCurrAction; }
 	void Damage(int damageTaken);
+	void Heal(int hpRestored);
 	int Attack(int modifier);
 	void Defend() { mCurrAction = Action::Defending; }
 	

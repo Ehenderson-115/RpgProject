@@ -1,4 +1,5 @@
 #include "MainMove.h"
+#include "../GameObjects/OutputManager.h"
 #include "../GameObjects/HelperFunctions.h"
 #include "../GameObjects/Room.h"
 #include "../GameObjects/Player.h"
@@ -19,15 +20,14 @@ void MainMove::Execute()
 	{
 		mGameData->mWorld->AddPlayerLocation(mGameData->mPlayer, nextRoom);
 		mGameData->mRoom = nextRoom;
-		Game::UpdateHud(mGameData);
-		FormattedPrint("You enter the room.");
+		mGameData->mOutputManager->AddToOutput("You enter the room.");
 	}
 	else if (nextRoom == nullptr) 
 	{
-		FormattedPrint("The direction \"" + argument + "\" is invalid.");
+		mGameData->mOutputManager->AddToOutput("The direction \"" + argument + "\" is invalid.");
 	}
 	else
 	{
-		FormattedPrint("There is nothing in that direction.");
+		mGameData->mOutputManager->AddToOutput("There is nothing in that direction.");
 	}
 }

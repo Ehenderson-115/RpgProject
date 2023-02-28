@@ -1,4 +1,5 @@
 #include "MainOpen.h"
+#include "../GameObjects/OutputManager.h"
 #include "../GameObjects/HelperFunctions.h"
 
 MainOpen::MainOpen(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
@@ -14,6 +15,6 @@ void MainOpen::Execute()
 	}
 	else
 	{
-		FormattedPrint("Invalid target " + argument);
+		mGameData->mOutputManager->AddToOutput("Invalid target " + argument);
 	}
 }

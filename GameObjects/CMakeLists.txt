@@ -12,7 +12,8 @@ set (SOURCE_FILES
 			ActiveGameData.cpp
 			World.cpp
 			Connection.cpp
-			PlayerLocation.cpp)
+			PlayerLocation.cpp
+			OutputManager.cpp)
 
 set (HEADER_FILES 
 			Character.h  
@@ -28,7 +29,8 @@ set (HEADER_FILES
 			ActiveGameData.h
 			World.h
 			Connection.h
-			PlayerLocation.h)
+			PlayerLocation.h
+			OutputManager.h)
 
 add_library(GameObjects ${SOURCE_FILES} ${HEADER_FILES})
 

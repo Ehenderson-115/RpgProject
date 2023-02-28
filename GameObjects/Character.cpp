@@ -98,6 +98,12 @@ void Character::Damage(int damageTaken)
 	}
 }
 
+void Character::Heal(int hpRestored)
+{
+	mCurrhp += hpRestored;
+}
+
+
 int Character::Attack(int modifier)
 {
 	mCurrAction = Action::Attacking;

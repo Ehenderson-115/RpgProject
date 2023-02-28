@@ -1,6 +1,6 @@
 #include "MenuListItems.h"
 #include "../GameObjects/Player.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "../GameObjects/OutputManager.h"
 
 MenuListItems::MenuListItems(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
@@ -8,5 +8,5 @@ MenuListItems::MenuListItems(std::shared_ptr<ActiveGameData> inData, std::string
 
 void MenuListItems::Execute()
 {
-	FormattedPrint(mGameData->mPlayer->CheckInventory());
+	mGameData->mOutputManager->AddToOutput(mGameData->mPlayer->CheckInventory());
 }

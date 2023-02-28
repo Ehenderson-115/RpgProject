@@ -1,5 +1,5 @@
 #include "MainGrabItem.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "../GameObjects/OutputManager.h"
 #include "../GameObjects/Room.h"
 #include "../GameObjects/Player.h"
 #include "../GameObjects/Item.h"
@@ -14,11 +14,11 @@ void MainGrabItem::Execute()
 	if (foundItem != nullptr)
 	{
 		mGameData->mPlayer->AddItem(foundItem);
-		FormattedPrint("You picked up the " + foundItem->Name());
+		mGameData->mOutputManager->AddToOutput("You picked up the " + foundItem->Name());
 	}
 	else
 	{
-		FormattedPrint("There is no item with the name " + mArgs);
+		mGameData->mOutputManager->AddToOutput("There is no item with the name " + mArgs);
 	}
 
 }

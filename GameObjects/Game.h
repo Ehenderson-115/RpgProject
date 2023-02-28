@@ -10,6 +10,7 @@ class Character;
 class Entity;
 class CommandParser;
 class World;
+class OutputManager;
 struct ActiveGameData;
 
 class Game
@@ -18,8 +19,6 @@ public:
 	enum class GameState { Error, Loading, Menu, Combat, CombatStart, Main, Closing};
 	
 	void StartGame();
-	static void UpdateHud(const std::shared_ptr<ActiveGameData>& inData, const std::string& reprintStr = "");
-	static void PrintHud(const std::shared_ptr<ActiveGameData>& inData);
 private:
 
 	std::shared_ptr<Room> FindStartingRoom();
@@ -29,31 +28,34 @@ private:
 	std::string FormatCommand(std::string inStr);
 
 	std::shared_ptr<Player> CreatePlayer();
+	
+	void DoCombatLogic();
+	
 	void ProcessAdversaryCommand();
 
-	void EndCombat();
+	bool isCombatOver();
 
-	void PrintHud();
-	void UpdateHud(const std::string& reprintStr="");
+
+	void HandleCombatEnd();
 
 	void UpdateGameData();
 
 	void UpdateState(GameState inState);
-	void PrintInvalidCommand(const std::string& commmand);
+	void HandleInvalidCommand(const std::string& commmand);
 
-	std::shared_ptr<CommandParser> commandParser;
-	std::shared_ptr<ActiveGameData> activeData;
+	std::shared_ptr<CommandParser> mCommandParser;
+	std::shared_ptr<ActiveGameData> mActiveData;
 
-	std::string prevTurnResult;
-	GameState currState;
+	GameState mCurrState;
 
-	std::string commandInputStr;
-	std::vector<std::string>commands;
+	std::string mCommandStr;
 
-	std::shared_ptr<Player> currPlayer;
-	std::shared_ptr<Room> currRoom;
-	std::shared_ptr<Character> currAdversary;
+	std::shared_ptr<Player> mCurrPlayer;
+	std::shared_ptr<Room> mCurrRoom;
+	std::shared_ptr<Character> mCurrAdversary;
 	std::shared_ptr<World> mWorld;
+
+	std::shared_ptr<OutputManager> mOutputManager;
 
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
 
