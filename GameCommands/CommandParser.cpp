@@ -23,7 +23,7 @@
 
 std::shared_ptr<GameCommand> CommandParser::ParseCommandString(std::shared_ptr<ActiveGameData>& gameData, std::string& commandStr)
 {
-	switch (gameData->mState)
+	switch (gameData->State())
 	{
 	case(Game::GameState::Main):
 		return GenerateMainCommand(gameData, commandStr);

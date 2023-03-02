@@ -11,7 +11,7 @@ void MainOpen::Execute()
 	std::string argument = GrabNextArg(mArgs);
 	if (argument == "inventory" || argument == "i")
 	{
-		mGameData->mState = Game::GameState::Menu;
+		mGameData->State(Game::GameState::Menu);
 	}
 	else
 	{

@@ -21,12 +21,23 @@ void FormattedPrint(std::string inStr)
 
 std::string AddLineBreaks(std::string inStr)
 {
+	bool noLineBreaks = true;
 	std::string output = "";
 	if (inStr.length() >= 100)
 	{
 		int breakPoint = inStr.substr(0, 100).find_last_of(" ");
-		inStr.erase(breakPoint, 1);
-		inStr.insert(breakPoint, "\n");
+		for (auto character : inStr.substr(0, 100))
+		{
+			if (character == '\n')
+			{
+				noLineBreaks = false;
+			}
+		}
+		if (noLineBreaks)
+		{
+			inStr.erase(breakPoint, 1);
+			inStr.insert(breakPoint, "\n");
+		}
 		output += inStr.substr(0, 100);
 		output += AddLineBreaks(inStr.substr(100));
 	}
