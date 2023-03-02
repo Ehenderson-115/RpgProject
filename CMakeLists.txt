@@ -8,7 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Header File for cmake defines
 configure_file(RpgGameConfig.h.in RpgGameConfig.h)
 
-
 add_subdirectory(GameObjects)
 
 list(APPEND GAME_OBJECTS GameObjects)
@@ -17,15 +16,19 @@ add_subdirectory(GameCommands)
 
 list(APPEND GAME_COMMANDS GameCommands)
 
+add_subdirectory(ThirdPartyLibraries)
 
-install(FILES config.txt DESTINATION Assets)
-
+list(APPEND THIRD_PARTY_LIBS ThirdPartyLibraries)
 
 add_executable(${PROJECT_NAME} rpgGame.cpp)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${GAME_OBJECTS} ${GAME_COMMANDS} ${THIRD_PARTY_LIBS})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${GAME_OBJECTS} ${GAME_COMMANDS})
+install(FILES config.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/Assets)
+install(TARGETS ThirdPartyLibraries DESTINATION ${CMAKE_INSTALL_PREFIX}/SharedLibraries)
+
+install(FILES config.txt DESTINATION ${CMAKE_DEBUG_LOC}/Assets)
+install(TARGETS ThirdPartyLibraries DESTINATION ${CMAKE_DEBUG_LOC}/SharedLibraries)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
                            "${PROJECT_BINARY_DIR}"

@@ -1,4 +1,5 @@
 #include "ActiveGameData.h"
+#include "OutputManager.h"
 
 ActiveGameData::ActiveGameData(
 	std::shared_ptr<Player> inPlayer,
@@ -13,4 +14,15 @@ ActiveGameData::ActiveGameData(
 	, mWorld {inWorld}
 	, mOutputManager {inOutputManager}
 	, mState {inState}
-{};
+{}
+
+void ActiveGameData::State(Game::GameState inState)
+{
+	mState = inState;
+	mOutputManager->UpdateStatusBar(std::make_shared<ActiveGameData>(*this));
+}
+
+Game::GameState ActiveGameData::State()
+{
+	return mState;
+}

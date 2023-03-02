@@ -12,7 +12,7 @@ OutputManager::OutputManager()
 
 void OutputManager::UpdateStatusBar(const std::shared_ptr<ActiveGameData>& inData)
 {
-	switch (inData->mState)
+	switch (inData->State())
 	{
 	case Game::GameState::Main:
 		mStatusBar = ("Current Location: " + inData->mRoom->Name() + "\n");
@@ -24,6 +24,12 @@ void OutputManager::UpdateStatusBar(const std::shared_ptr<ActiveGameData>& inDat
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
 		break;
 	case Game::GameState::CombatStart:
+		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
+		break;
+	case Game::GameState::CombatEndMain:
+		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
+		break;
+	case Game::GameState::CombatEndClose:
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
 		break;
 	}

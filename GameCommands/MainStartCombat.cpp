@@ -15,6 +15,6 @@ void MainStartCombat::Execute()
 	}
 	else
 	{
-		mGameData->mState = Game::GameState::CombatStart;
+		mGameData->State(Game::GameState::CombatStart);
 	}
 }

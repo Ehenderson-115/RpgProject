@@ -8,9 +8,9 @@ CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ActiveGameData> inData, s
 
 void CombatDefendPlayer::Execute()
 {
-	if (mGameData->mState == Game::GameState::CombatStart)
+	if (mGameData->State() == Game::GameState::CombatStart)
 	{
-		mGameData->mState = Game::GameState::Combat;
+		mGameData->State(Game::GameState::Combat);
 	}
 
 	mGameData->mPlayer->Defend();

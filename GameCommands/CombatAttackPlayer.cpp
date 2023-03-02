@@ -9,9 +9,10 @@ CombatAttackPlayer::CombatAttackPlayer(std::shared_ptr<ActiveGameData> inData, s
 
 void CombatAttackPlayer::Execute()
 {
-	if (mGameData->mState == Game::GameState::CombatStart)
+	if (mGameData->State() == Game::GameState::CombatStart)
 	{
-		mGameData->mState = Game::GameState::Combat;
+		mGameData->mAdversary->Damage(30);
+		mGameData->State(Game::GameState::Combat);
 	}
 	int damageMod = (rand() % 5);
 	int totalDamage;
@@ -32,5 +33,5 @@ void CombatAttackPlayer::Execute()
 	}
 	turnDescript += (" You deal " + std::to_string(totalDamage) + " to the " + adversaryName + ".");
 	mGameData->mAdversary->Damage(totalDamage);
-	mGameData->mOutputManager->AddToOutput(turnDescript);
+	mGameData->mOutputManager->AddToOutput(turnDescript + "\n\n");
 }

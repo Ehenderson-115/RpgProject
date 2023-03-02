@@ -32,7 +32,6 @@ set (HEADER_FILES
 			PlayerLocation.h
 			OutputManager.h)
 
-add_library(GameObjects ${SOURCE_FILES} ${HEADER_FILES})
-
+add_library(GameObjects  ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(GameObjects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
