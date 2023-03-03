@@ -48,7 +48,6 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 
 void Game::StartGame()
 {
-	asio::io_context *test = nullptr;
 	FormattedPrint("Welcome to the Untitled RPG Game!");
 	srand(time(0));
 

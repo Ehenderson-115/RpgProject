@@ -22,13 +22,12 @@ list(APPEND THIRD_PARTY_LIBS ThirdPartyLibraries)
 
 add_executable(${PROJECT_NAME} rpgGame.cpp)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${GAME_OBJECTS} ${GAME_COMMANDS} ${THIRD_PARTY_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${GAME_OBJECTS} ${GAME_COMMANDS} asio)
 
 install(FILES config.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/Assets)
-install(TARGETS ThirdPartyLibraries DESTINATION ${CMAKE_INSTALL_PREFIX}/SharedLibraries)
 
 install(FILES config.txt DESTINATION ${CMAKE_DEBUG_LOC}/Assets)
-install(TARGETS ThirdPartyLibraries DESTINATION ${CMAKE_DEBUG_LOC}/SharedLibraries)
+
 
 target_include_directories(${PROJECT_NAME} PUBLIC
                            "${PROJECT_BINARY_DIR}"
