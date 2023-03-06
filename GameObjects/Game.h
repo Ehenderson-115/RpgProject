@@ -15,6 +15,7 @@ class Game
 public:
 	enum class GameState { Error, Menu, Combat, CombatStart, CombatEndMain, CombatEndClose, Main, Closing};
 	
+	void TestConnection();
 	void StartGame();
 private:
 

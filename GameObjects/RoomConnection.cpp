@@ -1,7 +1,7 @@
-#include "Connection.h"
+#include "RoomConnection.h"
 #include "HelperFunctions.h"
 
-Connection::Connection(std::shared_ptr<Room> inMainRoom
+RoomConnection::RoomConnection(std::shared_ptr<Room> inMainRoom
 	, std::shared_ptr<Room> inConnectedRoom
 	, Direction inConnectionDir)
 	: mMainRoom {inMainRoom}
@@ -9,29 +9,29 @@ Connection::Connection(std::shared_ptr<Room> inMainRoom
 	, mConnectionDir { inConnectionDir }
 {}
 
-Connection::Direction Connection::GetOpposite(const Direction& inDir)
+RoomConnection::Direction RoomConnection::GetOpposite(const Direction& inDir)
 {
     switch (inDir)
     {
-    case Connection::Direction::North:
-        return Connection::Direction::South;
+    case RoomConnection::Direction::North:
+        return RoomConnection::Direction::South;
         break;
-    case Connection::Direction::South:
-        return Connection::Direction::North;
+    case RoomConnection::Direction::South:
+        return RoomConnection::Direction::North;
         break;
-    case Connection::Direction::East:
-        return Connection::Direction::West;
+    case RoomConnection::Direction::East:
+        return RoomConnection::Direction::West;
         break;
-    case Connection::Direction::West:
-        return Connection::Direction::East;
+    case RoomConnection::Direction::West:
+        return RoomConnection::Direction::East;
         break;
-    case Connection::Direction::Invalid:
-        return Connection::Direction::Invalid;
+    default:
+        return RoomConnection::Direction::Invalid;
         break;
     }
 }
 
-Connection::Direction Connection::TranslateDirection(std::string inStr)
+RoomConnection::Direction RoomConnection::TranslateDirection(std::string inStr)
 {
     inStr = StripString(inStr, " ");
     inStr = StrToLower(inStr);
@@ -59,23 +59,23 @@ Connection::Direction Connection::TranslateDirection(std::string inStr)
 
 }
 
-std::string Connection::TranslateDirection(const Connection::Direction& inDir)
+std::string RoomConnection::TranslateDirection(const RoomConnection::Direction& inDir)
 {
     switch (inDir)
     {
-    case Connection::Direction::North:
+    case RoomConnection::Direction::North:
         return "north";
         break;
-    case Connection::Direction::South:
+    case RoomConnection::Direction::South:
         return "south";
         break;
-    case Connection::Direction::East:
+    case RoomConnection::Direction::East:
         return "east";
         break;
-    case Connection::Direction::West:
+    case RoomConnection::Direction::West:
         return "west";
         break;
-    case Connection::Direction::Invalid:
+    default:
         return "invalid";
         break;
     }

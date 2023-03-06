@@ -1,14 +1,14 @@
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#ifndef ROOM_CONNECTION_H
+#define ROOM_CONNECTION_H
 #include <string>
 #include <memory>
 
 class Room;
 
-struct Connection 
+struct RoomConnection 
 {
 	enum class Direction { North, South, East, West, Invalid };
-	Connection(std::shared_ptr<Room> inRoom1
+	RoomConnection(std::shared_ptr<Room> inRoom1
 		, std::shared_ptr<Room> inRoom2
 		, Direction inConnectionDir);
 

@@ -14,6 +14,7 @@
 #include "World.h"
 #include "OutputManager.h"
 #include "../ThirdPartyLibraries/asio-1.24.0/include/asio.hpp"
+#include "Server.h"
 #include <time.h>
 #include <random>
 
@@ -44,6 +45,15 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 		}
 	}
 	return nullptr;
+}
+
+void Game::TestConnection()
+{
+	asio::io_context io_context;
+
+	Server activeGameServer(io_context);
+
+
 }
 
 void Game::StartGame()

@@ -15,7 +15,7 @@ void MainMove::Execute()
 	std::string argument;
 	argument = GrabNextArg(mArgs);
 
-	auto nextRoom = mGameData->mWorld->GetConnectedRoom(mGameData->mRoom, Connection::TranslateDirection(argument));
+	auto nextRoom = mGameData->mWorld->GetConnectedRoom(mGameData->mRoom, RoomConnection::TranslateDirection(argument));
 	if (nextRoom != nullptr)
 	{
 		mGameData->mWorld->AddPlayerLocation(mGameData->mPlayer, nextRoom);

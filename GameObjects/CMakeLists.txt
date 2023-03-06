@@ -11,9 +11,11 @@ set (SOURCE_FILES
 			Parser.cpp
 			ActiveGameData.cpp
 			World.cpp
-			Connection.cpp
+			RoomConnection.cpp
 			PlayerLocation.cpp
-			OutputManager.cpp)
+			OutputManager.cpp
+			Client.cpp
+			Server.cpp)
 
 set (HEADER_FILES 
 			Character.h  
@@ -28,9 +30,11 @@ set (HEADER_FILES
 			Parser.h
 			ActiveGameData.h
 			World.h
-			Connection.h
+			RoomConnection.h
 			PlayerLocation.h
-			OutputManager.h)
+			OutputManager.h
+			Client.h
+			Server.h)
 
 add_library(GameObjects  ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(GameObjects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
