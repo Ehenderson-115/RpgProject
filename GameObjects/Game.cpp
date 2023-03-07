@@ -50,8 +50,10 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 void Game::TestConnection()
 {
 	asio::io_context io_context;
+	const short port = 13;
 
-	Server activeGameServer(io_context);
+	Server activeGameServer(io_context, port);
+	activeGameServer.CheckForNewClients();
 
 
 }

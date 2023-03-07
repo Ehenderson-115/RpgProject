@@ -1,11 +1,12 @@
 #include "Client.h"
-
-
+#include <string>
+#include "asio.hpp"
 
 int main(int argc, char* argv[])
-{
-	Client myClient;
-	myClient.OpenConnection();
+{	
+	asio::io_context io;
+	Client myClient(io);
+	myClient.TestConnection();
 
   return 0;
 }

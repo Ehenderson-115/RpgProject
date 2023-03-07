@@ -1,12 +1,17 @@
 #ifndef CLIENT_H
 #define CLIENT_H
+#include <string>
+#include "../ThirdPartyLibraries/asio-1.24.0/include/asio.hpp"
 
 class Client
 {
 public:
-	void OpenConnection();
+	Client(asio::io_context& io);
+	void TestConnection();
 	
-protected:
-
+private:
+	asio::io_context& mIo;
+	asio::ip::tcp::socket mSocket;
+	asio::ip::tcp::resolver mResolver;
 };
 #endif
