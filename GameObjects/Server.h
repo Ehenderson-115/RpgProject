@@ -12,6 +12,7 @@ public:
 private:
 	static void Session(asio::ip::tcp::socket socket);
 	void HandleAccept();
+
 	asio::io_context& mIo;
 	short mPort;
 	asio::ip::tcp::acceptor mAcceptor;

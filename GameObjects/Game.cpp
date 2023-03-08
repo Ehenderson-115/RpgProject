@@ -49,17 +49,17 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 
 void Game::TestConnection()
 {
-	asio::io_context io_context;
-	const short port = 13;
-
-	Server activeGameServer(io_context, port);
-	activeGameServer.CheckForNewClients();
-
-
+	std::string strPort;
+	std::getline(std::cin, strPort);
+	if (std::numeric_limits<short>::max() >= std::stoi(strPort))
+	{
+		
+	}
 }
 
-void Game::StartGame()
+void Game::InitServer()
 {
+	const unsigned short port = GetPortFromUser();
 	FormattedPrint("Welcome to the Untitled RPG Game!");
 	srand(time(0));
 
@@ -79,6 +79,43 @@ void Game::StartGame()
 	mActiveData->State(Game::GameState::Main);
 	mActiveData->mOutputManager->PrintScreen();
 	GameLoop();
+}
+
+unsigned short Game::GetPortFromUser()
+{
+	std::string strPort;
+	FormattedPrint("Please enter the port number to host on: ");
+	while (true)
+	{
+		std::getline(std::cin, strPort);
+		strPort = StripString(strPort, "\n");
+		strPort = StripString(strPort, "\t");
+		strPort = StripString(strPort, "\r");
+		strPort = StripString(strPort, " ");
+		if (std::numeric_limits<unsigned short>::max() >= std::stoi(strPort))
+		{
+			return (unsigned short) std::stoi(strPort);
+		}
+		FormattedPrint((strPort + " is not a valid port enter a new one: "));
+	}
+}
+
+void Game::InitNewClientConnection()
+{
+
+	//mIo.run();
+	//while (true)
+	//{
+	//	std::make_shared<std::thread>(Session, mAcceptor.accept())->detach();
+	//}
+}
+
+void Game::StartNewSession()
+{
+}
+
+void Game::Session()
+{
 }
 
 void Game::GameLoop()
@@ -120,6 +157,7 @@ void Game::GameLoop()
 		mCommandStr.clear();
 	}
 }
+
 
 void Game::DoCombatLogic()
 {

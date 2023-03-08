@@ -9,7 +9,7 @@ Client::Client(asio::io_context& io)
     ,mResolver(mIo)
 {}
 
-void Client::TestConnection()
+void Client::ConnectToServer()
 {
     std::string host = "localhost";
     std::string port = "13";
@@ -30,6 +30,11 @@ void Client::TestConnection()
         std::cout.write(reply, reply_length);
         std::cout << "\n";
     }
+}
+
+void Client::GetUserCommand()
+{
+
 }
 	
 	

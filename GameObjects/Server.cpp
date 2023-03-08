@@ -1,6 +1,7 @@
 #include "Server.h"
 #include <thread>
 #include <string>
+#include <iostream>
 using asio::ip::tcp;
 
 Server::Server(asio::io_context& io, const short inPort)
@@ -23,24 +24,36 @@ void Server::CheckForNewClients()
 //Theoretically game commands
 void Server::Session(tcp::socket socket)
 {
+	std::cout << "Thread Opened" << std::endl;
+	asio::streambuf sbuf;
+	asio::error_code error;
+	std::string clientPrefix = "";
 	while (true)
 	{
 		
-		asio::streambuf sbuf;
-		sbuf._Lock();
-		asio::streambuf::mutable_buffers_type mutbuf = sbuf.prepare(1024);
-		asio::error_code error;
+		auto mutbuf = sbuf.prepare(1024);
 		int msgLen = socket.read_some(mutbuf, error);
 		if (error)
-			break; 
-	
+		{
+			std::cout << "Thread Closed" << std::endl;
+			return;
+		}
 		sbuf.commit(msgLen);
-
+		if (clientPrefix.empty())
+		{
+			auto conBuf = sbuf.data();
+			clientPrefix = std::string(asio::buffers_begin(conBuf),
+				asio::buffers_begin(conBuf) + conBuf.size());
+			std::cout << "Client Connected with id: " + clientPrefix << std::endl;
+		}
+		
 		//Only echos back to the at the moment
 		//Execute command would be here and the result string would be written back out the client through the socket.
-
+		if (sbuf.size() > 0)
+		{
+			std::cout << "Sending Message To Client: " + clientPrefix << std::endl;
+		}
 		asio::write(socket, sbuf);
-		sbuf._Unlock();
 	}
 }
 

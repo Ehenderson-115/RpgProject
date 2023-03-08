@@ -7,7 +7,8 @@ class Client
 {
 public:
 	Client(asio::io_context& io);
-	void TestConnection();
+	void ConnectToServer();
+	void GetUserCommand();
 	
 private:
 	asio::io_context& mIo;

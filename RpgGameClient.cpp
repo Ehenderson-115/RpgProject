@@ -6,7 +6,7 @@ int main(int argc, char* argv[])
 {	
 	asio::io_context io;
 	Client myClient(io);
-	myClient.TestConnection();
+	myClient.ConnectToServer();
 
   return 0;
 }

@@ -16,8 +16,13 @@ public:
 	enum class GameState { Error, Menu, Combat, CombatStart, CombatEndMain, CombatEndClose, Main, Closing};
 	
 	void TestConnection();
-	void StartGame();
+	void InitServer();
 private:
+	//Networking Functions
+	unsigned short GetPortFromUser();
+	void InitNewClientConnection();
+	void StartNewSession();
+	void Session();
 
 	std::shared_ptr<Room> FindStartingRoom();
 
@@ -39,10 +44,11 @@ private:
 
 	std::shared_ptr<CommandParser> mCommandParser;
 	std::shared_ptr<ActiveGameData> mActiveData;
-
 	std::string mCommandStr;
-
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
+
+	//asio::io_context mIo;
+	//asio::ip::tcp::acceptor mAcceptor;
 };
 
 
