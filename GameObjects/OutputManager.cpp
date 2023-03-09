@@ -3,33 +3,33 @@
 #include "Character.h"
 #include "Player.h"
 #include "Room.h"
-#include "ActiveGameData.h"
+#include "ClientData.h"
 
 OutputManager::OutputManager()
 	: mOutput{""}
 	, mStatusBar{""}
 {}
 
-void OutputManager::UpdateStatusBar(const std::shared_ptr<ActiveGameData>& inData)
+void OutputManager::UpdateStatusBar(const std::shared_ptr<ClientData>& inData)
 {
 	switch (inData->State())
 	{
-	case Game::GameState::Main:
+	case ClientData::GameState::Main:
 		mStatusBar = ("Current Location: " + inData->mRoom->Name() + "\n");
 		break;
-	case Game::GameState::Menu:
+	case ClientData::GameState::Menu:
 		mStatusBar = (inData->mPlayer->GetStatus() + "\n");
 		break;
-	case Game::GameState::Combat:
+	case ClientData::GameState::Combat:
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
 		break;
-	case Game::GameState::CombatStart:
+	case ClientData::GameState::CombatStart:
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
 		break;
-	case Game::GameState::CombatEndMain:
+	case ClientData::GameState::CombatEndMain:
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
 		break;
-	case Game::GameState::CombatEndClose:
+	case ClientData::GameState::CombatEndClose:
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
 		break;
 	}

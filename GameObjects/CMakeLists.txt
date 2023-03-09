@@ -9,7 +9,7 @@ set (SOURCE_FILES
 			Game.cpp
 			HelperFunctions.cpp
 			Parser.cpp
-			ActiveGameData.cpp
+			ClientData.cpp
 			World.cpp
 			RoomConnection.cpp
 			PlayerLocation.cpp
@@ -28,7 +28,7 @@ set (HEADER_FILES
 			Game.h
 			HelperFunctions.h
 			Parser.h
-			ActiveGameData.h
+			ClientData.h
 			World.h
 			RoomConnection.h
 			PlayerLocation.h

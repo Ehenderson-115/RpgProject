@@ -2,7 +2,7 @@
 #include "../GameObjects/OutputManager.h"
 #include "../GameObjects/Room.h"
 
-MainLook::MainLook(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MainLook::MainLook(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 

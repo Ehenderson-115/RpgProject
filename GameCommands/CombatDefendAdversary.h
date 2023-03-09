@@ -5,7 +5,7 @@
 class CombatDefendAdversary : public GameCommand
 {
 public:
-	CombatDefendAdversary(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	CombatDefendAdversary(std::shared_ptr<ClientData> inData, std::string inArgs);
 
 	void Execute();
 

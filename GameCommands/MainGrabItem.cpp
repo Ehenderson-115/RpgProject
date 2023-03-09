@@ -4,7 +4,7 @@
 #include "../GameObjects/Player.h"
 #include "../GameObjects/Item.h"
 
-MainGrabItem::MainGrabItem(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MainGrabItem::MainGrabItem(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 

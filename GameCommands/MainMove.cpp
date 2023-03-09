@@ -6,7 +6,7 @@
 #include "../GameObjects/World.h"
 #include "../GameObjects/Character.h"
 
-MainMove::MainMove(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MainMove::MainMove(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 

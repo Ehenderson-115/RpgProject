@@ -2,17 +2,17 @@
 #include "../GameObjects/Character.h"
 #include "../GameObjects/Player.h"
 #include "../GameObjects/OutputManager.h"
-CombatAttackPlayer::CombatAttackPlayer(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+CombatAttackPlayer::CombatAttackPlayer(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 
 
 void CombatAttackPlayer::Execute()
 {
-	if (mGameData->State() == Game::GameState::CombatStart)
+	if (mGameData->State() == ClientData::GameState::CombatStart)
 	{
 		mGameData->mAdversary->Damage(30);
-		mGameData->State(Game::GameState::Combat);
+		mGameData->State(ClientData::GameState::Combat);
 	}
 	int damageMod = (rand() % 5);
 	int totalDamage;

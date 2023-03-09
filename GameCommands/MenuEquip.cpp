@@ -2,7 +2,7 @@
 #include "../GameObjects/OutputManager.h"
 #include "../GameObjects/Player.h"
 
-MenuEquip::MenuEquip(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MenuEquip::MenuEquip(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 

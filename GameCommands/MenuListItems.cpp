@@ -2,7 +2,7 @@
 #include "../GameObjects/Player.h"
 #include "../GameObjects/OutputManager.h"
 
-MenuListItems::MenuListItems(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MenuListItems::MenuListItems(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 

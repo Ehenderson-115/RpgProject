@@ -1,6 +1,6 @@
 #include "CommandParser.h"
 #include "GameCommand.h"
-#include "../GameObjects/ActiveGameData.h"
+#include "../GameObjects/ClientData.h"
 #include "../GameObjects/HelperFunctions.h"
 
 #include "MainLook.h"
@@ -21,24 +21,24 @@
 #include "CombatDefendPlayer.h"
 #include "CombatDefendAdversary.h"
 
-std::shared_ptr<GameCommand> CommandParser::ParseCommandString(std::shared_ptr<ActiveGameData>& gameData, std::string& commandStr)
+std::shared_ptr<GameCommand> CommandParser::ParseCommandString(std::shared_ptr<ClientData>& gameData, std::string& commandStr)
 {
 	switch (gameData->State())
 	{
-	case(Game::GameState::Main):
+	case(ClientData::GameState::Main):
 		return GenerateMainCommand(gameData, commandStr);
-	case(Game::GameState::Menu):
+	case(ClientData::GameState::Menu):
 		return GenerateMenuCommand(gameData, commandStr);
-	case(Game::GameState::Combat):
+	case(ClientData::GameState::Combat):
 		return GenerateCombatCommand(gameData, commandStr);
-	case(Game::GameState::CombatStart):
+	case(ClientData::GameState::CombatStart):
 		return GenerateCombatCommand(gameData, commandStr);
 	default:
 		return nullptr;
 	}
 }
 
-std::shared_ptr<GameCommand> CommandParser::GenerateMainCommand(std::shared_ptr<ActiveGameData>& gameData, std::string& commandStr)
+std::shared_ptr<GameCommand> CommandParser::GenerateMainCommand(std::shared_ptr<ClientData>& gameData, std::string& commandStr)
 {
 	std::string topLevelCommand = GrabNextArg(commandStr);
 	if (topLevelCommand == "look")
@@ -82,7 +82,7 @@ std::shared_ptr<GameCommand> CommandParser::GenerateMainCommand(std::shared_ptr<
 	}
 }
 
-std::shared_ptr<GameCommand> CommandParser::GenerateMenuCommand(std::shared_ptr<ActiveGameData>& gameData, std::string& commandStr)
+std::shared_ptr<GameCommand> CommandParser::GenerateMenuCommand(std::shared_ptr<ClientData>& gameData, std::string& commandStr)
 {
 	std::string topLevelCommand = GrabNextArg(commandStr);
 	if (topLevelCommand == "look")
@@ -122,7 +122,7 @@ std::shared_ptr<GameCommand> CommandParser::GenerateMenuCommand(std::shared_ptr<
 	}
 }
 
-std::shared_ptr<GameCommand> CommandParser::GenerateCombatCommand(std::shared_ptr<ActiveGameData>& gameData, std::string& commandStr)
+std::shared_ptr<GameCommand> CommandParser::GenerateCombatCommand(std::shared_ptr<ClientData>& gameData, std::string& commandStr)
 {
 	std::string topLevelCommand = GrabNextArg(commandStr);
 	if (topLevelCommand == "attack" || topLevelCommand == "a")

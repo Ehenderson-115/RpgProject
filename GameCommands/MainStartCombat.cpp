@@ -2,7 +2,7 @@
 #include "../GameObjects/OutputManager.h"
 #include "../GameObjects/Room.h"
 
-MainStartCombat::MainStartCombat(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MainStartCombat::MainStartCombat(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 
@@ -15,6 +15,6 @@ void MainStartCombat::Execute()
 	}
 	else
 	{
-		mGameData->State(Game::GameState::CombatStart);
+		mGameData->State(ClientData::GameState::CombatStart);
 	}
 }

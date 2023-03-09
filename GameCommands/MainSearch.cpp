@@ -3,7 +3,7 @@
 #include "../GameObjects/OutputManager.h"
 
 
-MainSearch::MainSearch(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MainSearch::MainSearch(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 

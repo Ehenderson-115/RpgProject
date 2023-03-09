@@ -2,7 +2,7 @@
 #include "../GameObjects/Character.h"
 #include "../GameObjects/OutputManager.h"
 
-CombatDefendAdversary::CombatDefendAdversary(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+CombatDefendAdversary::CombatDefendAdversary(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 

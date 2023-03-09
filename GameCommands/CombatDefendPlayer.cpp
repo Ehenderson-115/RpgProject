@@ -2,15 +2,15 @@
 #include "../GameObjects/Player.h"
 #include "../GameObjects/OutputManager.h"
 
-CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 
 void CombatDefendPlayer::Execute()
 {
-	if (mGameData->State() == Game::GameState::CombatStart)
+	if (mGameData->State() == ClientData::GameState::CombatStart)
 	{
-		mGameData->State(Game::GameState::Combat);
+		mGameData->State(ClientData::GameState::Combat);
 	}
 
 	mGameData->mPlayer->Defend();

@@ -5,7 +5,7 @@
 class MenuEquip : public GameCommand
 {
 public:
-	MenuEquip(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	MenuEquip(std::shared_ptr<ClientData> inData, std::string inArgs);
 	virtual void Execute();
 
 private:

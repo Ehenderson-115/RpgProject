@@ -11,6 +11,7 @@ Client::Client(asio::io_context& io)
 
 void Client::ConnectToServer()
 {
+    //Based on example code from the doc
     std::string host = "localhost";
     std::string port = "13";
     asio::connect(mSocket, mResolver.resolve(host.c_str(), port.c_str()));

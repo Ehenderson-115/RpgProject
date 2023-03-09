@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "../GameCommands/CommandParser.h"
 #include "../GameCommands/GameCommand.h"
-#include "ActiveGameData.h"
+#include "ClientData.h"
 #include "Character.h"
 #include "Enemy.h"
 #include "Weapon.h"
@@ -13,10 +13,12 @@
 #include "Parser.h"
 #include "World.h"
 #include "OutputManager.h"
-#include "../ThirdPartyLibraries/asio-1.24.0/include/asio.hpp"
 #include "Server.h"
+#include <thread>
 #include <time.h>
 #include <random>
+
+using asio::ip::tcp;
 
 std::string Game::FormatCommand(std::string inStr)
 {
@@ -47,6 +49,11 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 	return nullptr;
 }
 
+Game::Game()
+	: mAcceptor(mIo, tcp::endpoint(tcp::v4(), mPort))
+{
+}
+
 void Game::TestConnection()
 {
 	std::string strPort;
@@ -59,26 +66,11 @@ void Game::TestConnection()
 
 void Game::InitServer()
 {
-	const unsigned short port = GetPortFromUser();
-	FormattedPrint("Welcome to the Untitled RPG Game!");
 	srand(time(0));
-
-	mCommandParser = std::make_shared<CommandParser>();
+	mPort = GetPortFromUser();	
 	auto gameFileParser = std::make_shared<Parser>();
-
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
-
-	auto initRoom = FindStartingRoom();
-	auto initPlayer = CreatePlayer();
-	auto initWorld = std::static_pointer_cast<World>(mGameEntities.at(0));
-	initWorld->AddPlayerLocation(initPlayer, initRoom);
-
-
-	auto initOutputManager = std::make_shared<OutputManager>();
-	mActiveData = std::make_shared<ActiveGameData>(initPlayer, nullptr, initRoom, initWorld, initOutputManager, Game::GameState::Main);
-	mActiveData->State(Game::GameState::Main);
-	mActiveData->mOutputManager->PrintScreen();
-	GameLoop();
+	mStartingRoom = FindStartingRoom();
 }
 
 unsigned short Game::GetPortFromUser()
@@ -92,7 +84,7 @@ unsigned short Game::GetPortFromUser()
 		strPort = StripString(strPort, "\t");
 		strPort = StripString(strPort, "\r");
 		strPort = StripString(strPort, " ");
-		if (std::numeric_limits<unsigned short>::max() >= std::stoi(strPort))
+		if (strPort.length() > 0 && strPort.length() <= 5 && std::numeric_limits<unsigned short>::max() >= std::stoi(strPort))
 		{
 			return (unsigned short) std::stoi(strPort);
 		}
@@ -100,27 +92,23 @@ unsigned short Game::GetPortFromUser()
 	}
 }
 
-void Game::InitNewClientConnection()
+void Game::AcceptNewClientConnections()
 {
-
-	//mIo.run();
-	//while (true)
-	//{
-	//	std::make_shared<std::thread>(Session, mAcceptor.accept())->detach();
-	//}
+	mIo.run();
+	while (true)
+	{
+		std::make_shared<std::thread>(Session, mAcceptor.accept())->detach();
+	}
 }
 
-void Game::StartNewSession()
-{
-}
-
-void Game::Session()
-{
+void Game::Session(tcp::socket socket)
+{ 
+	//auto data = std::make_shared<ClientData>();
 }
 
 void Game::GameLoop()
 {
-	while (mActiveData->State() != GameState::Closing)
+	while (mActiveData->State() != ClientData::GameState::Closing)
 	{
 		getline(std::cin, mCommandStr);
 		
@@ -135,22 +123,22 @@ void Game::GameLoop()
 		{
 			HandleInvalidCommand(mCommandStr);
 		}
-		if (mActiveData->State() == GameState::Combat || mActiveData->State() == GameState::CombatStart)
+		if (mActiveData->State() == ClientData::GameState::Combat || mActiveData->State() == ClientData::GameState::CombatStart)
 		{
 			DoCombatLogic();
 		}
-		if (mActiveData->State() == GameState::CombatEndClose)
+		if (mActiveData->State() == ClientData::GameState::CombatEndClose)
 		{
 			mActiveData->mOutputManager->AddToOutput("Press enter to exit the game...");
 			mActiveData->mOutputManager->PrintScreen();
 			getline(std::cin, mCommandStr);
 		}
-		else if (mActiveData->State() == GameState::CombatEndMain)
+		else if (mActiveData->State() == ClientData::GameState::CombatEndMain)
 		{
 			mActiveData->mOutputManager->AddToOutput("Press enter to exit combat...");
 			mActiveData->mOutputManager->PrintScreen();
 			getline(std::cin, mCommandStr);
-			mActiveData->State(GameState::Main);
+			mActiveData->State(ClientData::GameState::Main);
 		}
 
 		mActiveData->mOutputManager->PrintScreen();
@@ -165,7 +153,7 @@ void Game::DoCombatLogic()
 	{
 		HandleCombatEnd();
 	}
-	else if(mActiveData->State() != GameState::CombatStart)
+	else if(mActiveData->State() != ClientData::GameState::CombatStart)
 	{
 		ProcessAdversaryCommand();
 	}
@@ -223,12 +211,12 @@ void Game::HandleCombatEnd()
 	if (mActiveData->mPlayer->isDead() && !mActiveData->mAdversary->isDead())
 	{
 		mActiveData->mOutputManager->AddToOutput("You have been killed by the " + mActiveData->mAdversary->Name() + ".\n");
-		mActiveData->State(Game::GameState::CombatEndClose);
+		mActiveData->State(ClientData::GameState::CombatEndClose);
 	}
 	else if (mActiveData->mAdversary->isDead() && !mActiveData->mPlayer->isDead())
 	{
 		mActiveData->mOutputManager->AddToOutput("The " + mActiveData->mAdversary->Name() + " has been killed.\n");
-		mActiveData->State(GameState::CombatEndMain);
+		mActiveData->State(ClientData::GameState::CombatEndMain);
 		mActiveData->mRoom->RemoveContent(mActiveData->mAdversary->Name());
 		mActiveData->mAdversary = nullptr;
 	}
@@ -238,7 +226,7 @@ void Game::HandleCombatEnd()
 		mActiveData->mOutputManager->AddToOutput("Just as the world begins to fade to black, you feel a burning determination in your chest that won't let you die.");
 		mActiveData->mOutputManager->AddToOutput("1 HP has been restored.\n");
 		mActiveData->mPlayer->Heal(1);
-		mActiveData->State(GameState::CombatEndMain);
+		mActiveData->State(ClientData::GameState::CombatEndMain);
 		mActiveData->mRoom->RemoveContent(mActiveData->mAdversary->Name());
 		mActiveData->mAdversary = nullptr;
 	}
