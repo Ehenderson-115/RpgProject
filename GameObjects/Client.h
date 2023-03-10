@@ -6,13 +6,14 @@
 class Client
 {
 public:
-	Client(asio::io_context& io);
-	void ConnectToServer();
-	void GetUserCommand();
+	Client();
+	void InitServerConnection();
+	std::string GetCommandFromUser();
 	
 private:
-	asio::io_context& mIo;
+	asio::io_context mIo;
 	asio::ip::tcp::socket mSocket;
 	asio::ip::tcp::resolver mResolver;
+	unsigned short mPort;
 };
 #endif

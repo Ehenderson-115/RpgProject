@@ -20,7 +20,6 @@ public:
 	void InitServer();
 private:
 	//Networking Functions
-	unsigned short GetPortFromUser();
 	void AcceptNewClientConnections();
 	static void Session(asio::ip::tcp::socket socket);
 

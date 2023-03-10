@@ -4,9 +4,8 @@
 
 int main(int argc, char* argv[])
 {	
-	asio::io_context io;
-	Client myClient(io);
-	myClient.ConnectToServer();
+	Client myClient;
+	myClient.InitServerConnection();
 
   return 0;
 }

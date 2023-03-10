@@ -87,3 +87,21 @@ std::string GrabNextArg(std::string& inStr, bool removeArg)
 	return output;
 }
 
+unsigned short GetPortFromUser()
+{
+	std::string strPort;
+	FormattedPrint("Please enter a valid port number");
+	while (true)
+	{
+		std::getline(std::cin, strPort);
+		strPort = StripString(strPort, "\n");
+		strPort = StripString(strPort, "\t");
+		strPort = StripString(strPort, "\r");
+		strPort = StripString(strPort, " ");
+		if (strPort.length() > 0 && strPort.length() <= 5 && std::numeric_limits<unsigned short>::max() >= std::stoi(strPort))
+		{
+			return (unsigned short)std::stoi(strPort);
+		}
+		FormattedPrint((strPort + " is not a valid port enter a new one"));
+	}
+}

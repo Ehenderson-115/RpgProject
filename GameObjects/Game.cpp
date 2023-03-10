@@ -49,10 +49,6 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 	return nullptr;
 }
 
-Game::Game()
-	: mAcceptor(mIo, tcp::endpoint(tcp::v4(), mPort))
-{
-}
 
 void Game::TestConnection()
 {
@@ -68,29 +64,12 @@ void Game::InitServer()
 {
 	srand(time(0));
 	mPort = GetPortFromUser();	
+	mAcceptor = tcp::acceptor(mIo, tcp::endpoint(tcp::v4(), mPort));
 	auto gameFileParser = std::make_shared<Parser>();
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
 	mStartingRoom = FindStartingRoom();
 }
 
-unsigned short Game::GetPortFromUser()
-{
-	std::string strPort;
-	FormattedPrint("Please enter the port number to host on: ");
-	while (true)
-	{
-		std::getline(std::cin, strPort);
-		strPort = StripString(strPort, "\n");
-		strPort = StripString(strPort, "\t");
-		strPort = StripString(strPort, "\r");
-		strPort = StripString(strPort, " ");
-		if (strPort.length() > 0 && strPort.length() <= 5 && std::numeric_limits<unsigned short>::max() >= std::stoi(strPort))
-		{
-			return (unsigned short) std::stoi(strPort);
-		}
-		FormattedPrint((strPort + " is not a valid port enter a new one: "));
-	}
-}
 
 void Game::AcceptNewClientConnections()
 {

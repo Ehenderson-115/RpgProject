@@ -8,3 +8,4 @@ std::string AddLineBreaks(std::string inStr);
 std::string StrToLower(std::string inStr);
 std::string RemoveExtraSpaces(std::string inStr);
 std::string GrabNextArg(std::string& inStr, bool removeArg = true);
+unsigned short GetPortFromUser();

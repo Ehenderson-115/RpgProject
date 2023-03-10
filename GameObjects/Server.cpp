@@ -55,7 +55,6 @@ void Server::Session(tcp::socket socket)
 			std::string testStr = "This is a string!";
 			//auto testStream = std::stringstream(testStr);
 			auto newBuf = asio::buffer(testStr, testStr.length());
-			sbuf.prepare(testStr.length());
 			//mutbuf = newBuf;
 			//sbuf.commit(testStr.length());
 			asio::write(socket, newBuf);
