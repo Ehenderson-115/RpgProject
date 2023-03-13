@@ -1,6 +1,6 @@
 #include "MainStartCombat.h"
-#include "../GameObjects/OutputManager.h"
-#include "../GameObjects/Room.h"
+#include "OutputManager.h"
+#include "Room.h"
 
 MainStartCombat::MainStartCombat(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)

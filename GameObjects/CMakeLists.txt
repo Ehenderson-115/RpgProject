@@ -37,5 +37,5 @@ set (HEADER_FILES
 			Server.h)
 
 add_library(GameObjects  ${SOURCE_FILES} ${HEADER_FILES})
-target_include_directories(GameObjects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(GameObjects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ../ThirdPartyLibraries/asio-1.24.0/include)
 

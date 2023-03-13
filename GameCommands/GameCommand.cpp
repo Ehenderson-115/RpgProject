@@ -1,5 +1,5 @@
 #include "GameCommand.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "HelperFunctions.h"
 
 GameCommand::GameCommand(std::shared_ptr<ClientData> inData, std::string inArgs) 
 	: mGameData{inData}

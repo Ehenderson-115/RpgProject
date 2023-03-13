@@ -10,7 +10,7 @@
 #include "Game.h"
 
 #endif 
-
+#include "RpgGameConfig.h"
 
 int main(int argc, char* argv[])
 {

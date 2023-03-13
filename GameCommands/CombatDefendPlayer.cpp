@@ -1,6 +1,6 @@
 #include "CombatDefendPlayer.h"
-#include "../GameObjects/Player.h"
-#include "../GameObjects/OutputManager.h"
+#include "Player.h"
+#include "OutputManager.h"
 
 CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)

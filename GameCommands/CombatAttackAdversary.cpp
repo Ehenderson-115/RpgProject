@@ -1,7 +1,7 @@
 #include "CombatAttackAdversary.h"
-#include "../GameObjects/Character.h"
-#include "../GameObjects/Player.h"
-#include "../GameObjects/OutputManager.h"
+#include "Character.h"
+#include "Player.h"
+#include "OutputManager.h"
 
 CombatAttackAdversary::CombatAttackAdversary(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)

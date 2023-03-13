@@ -18,15 +18,11 @@ add_subdirectory(GameCommands)
 
 list(APPEND GAME_COMMANDS GameCommands)
 
-add_subdirectory(ThirdPartyLibraries)
-
-list(APPEND THIRD_PARTY_LIBS ThirdPartyLibraries)
-
 add_executable(${SERVER_NAME} RpgGameServer.cpp)
 add_executable(${CLIENT_NAME} RpgGameClient.cpp)
 
-target_link_libraries(${SERVER_NAME} PUBLIC ${GAME_OBJECTS} ${GAME_COMMANDS} asio)
-target_link_libraries(${CLIENT_NAME} PUBLIC ${GAME_OBJECTS} asio)
+target_link_libraries(${SERVER_NAME} PUBLIC ${GAME_COMMANDS})
+target_link_libraries(${CLIENT_NAME} PUBLIC ${GAME_OBJECTS})
 
 install(FILES config.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/Assets)
 install(FILES config.txt DESTINATION ${CMAKE_DEBUG_LOC}/Assets)

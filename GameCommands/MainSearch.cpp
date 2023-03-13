@@ -1,6 +1,6 @@
 #include "MainSearch.h"
-#include "../GameObjects/Room.h"
-#include "../GameObjects/OutputManager.h"
+#include "Room.h"
+#include "OutputManager.h"
 
 
 MainSearch::MainSearch(std::shared_ptr<ClientData> inData, std::string inArgs)

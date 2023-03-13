@@ -1,7 +1,7 @@
 #include "CommandParser.h"
 #include "GameCommand.h"
-#include "../GameObjects/ClientData.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "ClientData.h"
+#include "HelperFunctions.h"
 
 #include "MainLook.h"
 #include "MainMove.h"

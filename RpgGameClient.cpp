@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "RpgGameConfig.h"
 #include <string>
 #include "asio.hpp"
 

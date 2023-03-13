@@ -1,8 +1,8 @@
 #include "MainGrabItem.h"
-#include "../GameObjects/OutputManager.h"
-#include "../GameObjects/Room.h"
-#include "../GameObjects/Player.h"
-#include "../GameObjects/Item.h"
+#include "OutputManager.h"
+#include "Room.h"
+#include "Player.h"
+#include "Item.h"
 
 MainGrabItem::MainGrabItem(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)

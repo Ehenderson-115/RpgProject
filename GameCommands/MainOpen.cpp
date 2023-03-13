@@ -1,6 +1,6 @@
 #include "MainOpen.h"
-#include "../GameObjects/OutputManager.h"
-#include "../GameObjects/HelperFunctions.h"
+#include "OutputManager.h"
+#include "HelperFunctions.h"
 
 MainOpen::MainOpen(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)

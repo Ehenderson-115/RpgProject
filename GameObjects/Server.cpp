@@ -2,7 +2,6 @@
 #include <thread>
 #include <string>
 #include <iostream>
-#include <sstream>
 using asio::ip::tcp;
 
 Server::Server(asio::io_context& io, const short inPort)
@@ -47,19 +46,14 @@ void Server::Session(tcp::socket socket)
 				asio::buffers_begin(conBuf) + conBuf.size());
 			std::cout << "Client Connected with id: " + clientPrefix << std::endl;
 		}
-
-		//How to write a string to the client???
+		sbuf.consume(1024);
 		if (sbuf.size() > 0)
 		{
 			std::cout << "Sending Message To Client: " + clientPrefix << std::endl;
 			std::string testStr = "This is a string!";
-			//auto testStream = std::stringstream(testStr);
 			auto newBuf = asio::buffer(testStr, testStr.length());
-			//mutbuf = newBuf;
-			//sbuf.commit(testStr.length());
 			asio::write(socket, newBuf);
 		}
-		//asio::write(socket, sbuf);
 	}
 }
 

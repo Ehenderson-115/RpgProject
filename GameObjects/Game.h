@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include "../ThirdPartyLibraries/asio-1.24.0/include/asio.hpp"
+#include "asio.hpp"
 
 
 class Room;
@@ -21,15 +21,18 @@ public:
 private:
 	//Networking Functions
 	void AcceptNewClientConnections();
-	static void Session(asio::ip::tcp::socket socket);
+	static void Session(asio::ip::tcp::socket socket, std::shared_ptr<Game> gamePtr);
+	static std::string GetStringFromClient(const asio::ip::tcp::socket& inSocket);
+	static void WriteStringToClient(const asio::ip::tcp::socket& inSocket, std::string);
 
+	//Threading Functions
 	std::shared_ptr<Room> FindStartingRoom();
 
 	void GameLoop();
 	
 	std::string FormatCommand(std::string inStr);
 
-	std::shared_ptr<Player> CreatePlayer();
+	std::shared_ptr<Player> CreatePlayer(const asio::ip::tcp::socket& inSocket);
 	
 	void DoCombatLogic();
 	

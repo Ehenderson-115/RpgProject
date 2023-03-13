@@ -2,7 +2,7 @@
 #define GAME_COMMAND_H
 #include <string>
 #include <memory>
-#include "../GameObjects/ClientData.h"
+#include "ClientData.h"
 
 class GameCommand
 {

@@ -1,6 +1,6 @@
 #include "MenuEquip.h"
-#include "../GameObjects/OutputManager.h"
-#include "../GameObjects/Player.h"
+#include "OutputManager.h"
+#include "Player.h"
 
 MenuEquip::MenuEquip(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)

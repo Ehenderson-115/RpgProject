@@ -1,10 +1,10 @@
 #include "MainMove.h"
-#include "../GameObjects/OutputManager.h"
-#include "../GameObjects/HelperFunctions.h"
-#include "../GameObjects/Room.h"
-#include "../GameObjects/Player.h"
-#include "../GameObjects/World.h"
-#include "../GameObjects/Character.h"
+#include "OutputManager.h"
+#include "HelperFunctions.h"
+#include "Room.h"
+#include "Player.h"
+#include "World.h"
+#include "Character.h"
 
 MainMove::MainMove(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)

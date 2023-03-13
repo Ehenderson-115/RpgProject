@@ -1,6 +1,6 @@
 #ifndef SERVER_H
 #define SERVER_H
-#include "../ThirdPartyLibraries/asio-1.24.0/include/asio.hpp"
+#include "asio.hpp"
 #include <memory>
 
 class Server 
