@@ -13,12 +13,10 @@
 #include "Parser.h"
 #include "World.h"
 #include "OutputManager.h"
-#include "Server.h"
 #include <thread>
 #include <time.h>
 #include <random>
 
-using asio::ip::tcp;
 
 std::string Game::FormatCommand(std::string inStr)
 {
@@ -27,16 +25,13 @@ std::string Game::FormatCommand(std::string inStr)
 	return inStr;
 }
 
-std::shared_ptr<Player> Game::CreatePlayer(const tcp::socket& socket)
+std::shared_ptr<Player> Game::CreatePlayer()
 {
-	
 	std::string playerName;
 	FormattedPrint("Please enter the name of your character");
 	getline(std::cin, playerName);
 	auto newPlayer = std::make_shared<Player>(playerName);
-	mMutex.lock();
 	mGameEntities.push_back(newPlayer);
-	mMutex.unlock();
 	return newPlayer;
 }
 
@@ -52,73 +47,16 @@ std::shared_ptr<Room> Game::FindStartingRoom()
 	return nullptr;
 }
 
-
-void Game::InitServer()
+void Game::StartGame()
 {
 	srand(time(0));
-	mPort = GetPortFromUser();	
-	mAcceptor = tcp::acceptor(mIo, tcp::endpoint(tcp::v4(), mPort));
 	auto gameFileParser = std::make_shared<Parser>();
 	mGameEntities = gameFileParser->InitGameDataFromFile("./Assets/config.txt");
 	mStartingRoom = FindStartingRoom();
-	mIo.run();
-	AcceptNewClientConnections();
+	GameLoop();
 }
 
 
-void Game::AcceptNewClientConnections()
-{
-	auto gamePtr = std::make_shared<Game>(*this);
-	while (true)
-	{
-		std::make_shared<std::thread>(Session, mAcceptor.accept(), gamePtr)->detach();
-	}
-}
-
-void Game::Session(tcp::socket socket, std::shared_ptr<Game> gamePtr)
-{ 
-	std::cout << "Thread Opened" << std::endl;
-	asio::streambuf sbuf;
-	asio::error_code error;
-	std::string playerName = "";
-	auto player = gamePtr->CreatePlayer(socket);
-	while (true)
-	{
-		auto mutbuf = sbuf.prepare(1024);
-		int msgLen = socket.read_some(mutbuf, error);
-		if (error)
-		{
-			std::cout << "Thread Closed" << std::endl;
-			return;
-		}
-		sbuf.commit(msgLen);
-		if (playerName.empty())
-		{
-			auto conBuf = sbuf.data();
-			playerName = std::string(asio::buffers_begin(conBuf),
-				asio::buffers_begin(conBuf) + conBuf.size());
-			std::cout << "Client Connected with id: " + playerName << std::endl;
-		}
-		sbuf.consume(1024);
-		if (sbuf.size() > 0)
-		{
-			std::cout << "Sending Message To Client: " + playerName << std::endl;
-			std::string testStr = "This is a string!";
-			auto newBuf = asio::buffer(testStr, testStr.length());
-			asio::write(socket, newBuf);
-		}
-	}
-}
-
-std::string Game::GetStringFromClient(const asio::ip::tcp::socket& inSocket)
-{
-	
-}
-
-void Game::WriteStringToClient(const asio::ip::tcp::socket& inSocket, std::string inStr)
-{
-	asio::write(inSocket, asio::buffer(inStr )
-}
 
 
 void Game::GameLoop()

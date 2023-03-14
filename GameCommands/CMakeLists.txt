@@ -1,4 +1,5 @@
 set (SOURCE_FILES 
+			GameCommand.cpp
 			MainMove.cpp
 			MainLook.cpp 
 			MainSearch.cpp
@@ -16,6 +17,7 @@ set (SOURCE_FILES
 			CombatDefendAdversary.cpp)
 
 set (HEADER_FILES 
+			GameCommand.h
 			MainMove.h
 			MainLook.h 
 			MainSearch.h

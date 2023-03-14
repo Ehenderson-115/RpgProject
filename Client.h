@@ -1,7 +1,8 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 #include <string>
-#include "asio.hpp"
+#include "NetworkFunctions.h"
+#include "Game.h"
 
 class Client
 {
