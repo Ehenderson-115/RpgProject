@@ -1,6 +1,6 @@
 #include "Game.h"
 #include "CommandParser.h"
-#include "../GameCommands/GameCommand.h"
+#include "GameCommand.h"
 #include "ClientData.h"
 #include "Character.h"
 #include "Enemy.h"
