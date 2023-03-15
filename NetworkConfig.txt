@@ -1,3 +1,2 @@
-ServerPort:50415
-ClientHostName: localhost
-ClientPort: 50415
+Port:50601
+Hostname:localhost

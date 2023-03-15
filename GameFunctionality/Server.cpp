@@ -1,15 +1,19 @@
 #include "Server.h"
+#include "HelperFunctions.h"
 #include <thread>
-#include <string>
-#include <iostream>
 using asio::ip::tcp;
 
-Server::Server(asio::io_context& io, const short inPort)
-: mIo(io)
-, mPort(inPort)
-, mAcceptor(io, tcp::endpoint(tcp::v4(), mPort))
-
+Server::Server()
+	: mIo()
+	, mPort(StringToValidPort(GetPortFromConfigFile("./Assets/NetworkConfig.txt")))
+	, mAcceptor(mIo, tcp::endpoint(tcp::v4(), mPort))
 {}
+
+void Server::InitServer()
+{
+	FormattedPrint("Hosting Server on port " + std::to_string(mPort));
+	CheckForNewClients();
+}
 
 
 void Server::CheckForNewClients()
@@ -24,7 +28,7 @@ void Server::CheckForNewClients()
 void Server::Session(tcp::socket socket)
 {
 	//Based on example code from the docs
-	std::cout << "Thread Opened" << std::endl;
+	FormattedPrint("New Client Connected");
 	asio::streambuf sbuf;
 	asio::error_code error;
 	std::string clientPrefix = "";
@@ -35,7 +39,7 @@ void Server::Session(tcp::socket socket)
 		int msgLen = socket.read_some(mutbuf, error);
 		if (error)
 		{
-			std::cout << "Thread Closed" << std::endl;
+			FormattedPrint("Connection to client closed due to: " + error.message());
 			return;
 		}
 		sbuf.commit(msgLen);
@@ -44,12 +48,12 @@ void Server::Session(tcp::socket socket)
 			auto conBuf = sbuf.data();
 			clientPrefix = std::string(asio::buffers_begin(conBuf),
 				asio::buffers_begin(conBuf) + conBuf.size());
-			std::cout << "Client Connected with id: " + clientPrefix << std::endl;
+			FormattedPrint("Client Connected with id: " + clientPrefix);
 		}
 		sbuf.consume(1024);
 		if (sbuf.size() > 0)
 		{
-			std::cout << "Sending Message To Client: " + clientPrefix << std::endl;
+			FormattedPrint("Sending Message To Client: " + clientPrefix);
 			std::string testStr = "This is a string!";
 			auto newBuf = asio::buffer(testStr, testStr.length());
 			asio::write(socket, newBuf);

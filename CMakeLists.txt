@@ -22,17 +22,16 @@ add_subdirectory(GameFunctionality)
 
 list(APPEND GAME_FUNCTIONALITY GameFunctionality)
 
-add_library(Server Server.h Server.cpp)
-add_library(Client CLient.h Client.cpp)
-
 add_executable(${SERVER_EXE} RpgGameServer.cpp)
 add_executable(${CLIENT_EXE} RpgGameClient.cpp)
 
-target_link_libraries(${SERVER_EXE} PUBLIC ${GAME_FUNCTIONALITY} Server)
-target_link_libraries(${CLIENT_EXE} PUBLIC ${GAME_OBJECTS} Client)
+target_link_libraries(${SERVER_EXE} PUBLIC ${GAME_FUNCTIONALITY})
+target_link_libraries(${CLIENT_EXE} PUBLIC ${GAME_FUNCTIONALITY})
 
 install(FILES config.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/Assets)
 install(FILES config.txt DESTINATION ${CMAKE_DEBUG_LOC}/Assets)
+install(FILES NetworkConfig.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/Assets)
+install(FILES NetworkConfig.txt DESTINATION ${CMAKE_DEBUG_LOC}/Assets)
 
 target_include_directories(${SERVER_EXE} PUBLIC "${PROJECT_BINARY_DIR}")
 target_include_directories(${CLIENT_EXE} PUBLIC "${PROJECT_BINARY_DIR}")

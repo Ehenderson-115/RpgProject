@@ -16,6 +16,7 @@
 #include <thread>
 #include <time.h>
 #include <random>
+#include <iostream>
 
 
 std::string Game::FormatCommand(std::string inStr)

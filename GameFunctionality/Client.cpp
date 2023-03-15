@@ -7,14 +7,14 @@ using asio::ip::tcp;
 Client::Client()
     :mIo()
     , mSocket(mIo)
-    , mPort(GetPortFromUser())
+    , mPort(StringToValidPort(GetPortFromConfigFile("./Assets/NetworkConfig.txt")))
     , mResolver(mIo, mPort)
 {}
 
 void Client::InitServerConnection()
 {
     //Based on example code from the doc
-    std::string hostname = "localhost";
+    std::string hostname = GetHostnameFromConfigFile("./Assets/NetworkConfig.txt");
 
     FormattedPrint("Attempting to connect to a server...");
     asio::connect(mSocket, mResolver.resolve(hostname,std::to_string(mPort)));

@@ -1,10 +1,14 @@
 set (SOURCE_FILES 
 			Game.cpp
+			Server.cpp
+			Client.cpp
 			NetworkFunctions.cpp
 			CommandParser.cpp)
 
 set (HEADER_FILES 
 			Game.h
+			Server.h
+			Client.h
 			NetworkFunctions.h
 			CommandParser.h)
 			

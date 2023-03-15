@@ -1,4 +1,6 @@
 #include "HelperFunctions.h"
+#include <fstream>
+#include <iostream>
 
 std::string StripString(std::string inStr, const std::string& stripStr)
 {
@@ -87,13 +89,10 @@ std::string GrabNextArg(std::string& inStr, bool removeArg)
 	return output;
 }
 
-unsigned short GetPortFromUser()
+unsigned short StringToValidPort(std::string strPort)
 {
-	std::string strPort;
-	FormattedPrint("Please enter a valid port number");
 	while (true)
 	{
-		std::getline(std::cin, strPort);
 		strPort = StripString(strPort, "\n");
 		strPort = StripString(strPort, "\t");
 		strPort = StripString(strPort, "\r");
@@ -102,6 +101,58 @@ unsigned short GetPortFromUser()
 		{
 			return (unsigned short)std::stoi(strPort);
 		}
-		FormattedPrint((strPort + " is not a valid port enter a new one"));
+		FormattedPrint(("Error: " + strPort + " is not a valid port"));
 	}
+}
+
+std::string GetPortFromConfigFile(std::string filePath)
+{
+	std::fstream configFile;
+	std::string line;
+	std::string fileStr;
+	configFile.open(filePath);
+	while (!configFile.eof())
+	{
+		configFile >> line;
+		line = StrToLower(line);
+		if (line.find("port:") == -1)
+		{
+			line.clear();
+		}
+		else
+		{
+			line = StripString(line, "port:");
+			break;
+
+		}
+	}
+	configFile.close();
+
+	return line;
+}
+
+std::string GetHostnameFromConfigFile(std::string filePath)
+{
+	std::fstream configFile;
+	std::string line;
+	std::string fileStr;
+	configFile.open(filePath);
+	while (!configFile.eof())
+	{
+		configFile >> line;
+		line = StrToLower(line);
+		if (line.find("hostname:") == -1)
+		{
+			line.clear();
+		}
+		else
+		{
+			line = StripString(line, "hostname:");
+			break;
+
+		}
+	}
+	configFile.close();
+
+	return line;
 }

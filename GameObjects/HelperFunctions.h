@@ -1,6 +1,4 @@
 #include <string>
-#include <iostream>
-#include <vector>
 
 std::string StripString(std::string inStr, const std::string& stripStr);
 void FormattedPrint(std::string inStr);
@@ -8,4 +6,6 @@ std::string AddLineBreaks(std::string inStr);
 std::string StrToLower(std::string inStr);
 std::string RemoveExtraSpaces(std::string inStr);
 std::string GrabNextArg(std::string& inStr, bool removeArg = true);
-unsigned short GetPortFromUser();
+unsigned short StringToValidPort(std::string strPort);
+std::string GetPortFromConfigFile(std::string filePath);
+std::string GetHostnameFromConfigFile(std::string filePath);
