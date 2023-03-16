@@ -6,6 +6,3 @@ std::string AddLineBreaks(std::string inStr);
 std::string StrToLower(std::string inStr);
 std::string RemoveExtraSpaces(std::string inStr);
 std::string GrabNextArg(std::string& inStr, bool removeArg = true);
-unsigned short StringToValidPort(std::string strPort);
-std::string GetPortFromConfigFile(std::string filePath);
-std::string GetHostnameFromConfigFile(std::string filePath);

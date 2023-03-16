@@ -4,7 +4,7 @@
 int main(int argc, char* argv[])
 {	
 	Client myClient;
-	myClient.InitServerConnection();
+	myClient.InitClient();
 
   return 0;
 }

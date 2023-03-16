@@ -2,21 +2,14 @@
 #define CLIENT_H
 #include <string>
 #include "Game.h"
-#include "asio.hpp"
 
 class Client
 {
 public:
-	Client();
-	void InitServerConnection();
+	void InitClient();
 
-	
 private:
-	void ActiveConnectionLoop();
+	void LogicLoop();
 	std::string GetCommandFromUser();
-	asio::io_context mIo;
-	asio::ip::tcp::socket mSocket;
-	asio::ip::tcp::resolver mResolver;
-	unsigned short mPort;
 };
 #endif

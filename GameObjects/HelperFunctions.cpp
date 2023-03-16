@@ -1,5 +1,4 @@
 #include "HelperFunctions.h"
-#include <fstream>
 #include <iostream>
 
 std::string StripString(std::string inStr, const std::string& stripStr)
@@ -103,56 +102,4 @@ unsigned short StringToValidPort(std::string strPort)
 		}
 		FormattedPrint(("Error: " + strPort + " is not a valid port"));
 	}
-}
-
-std::string GetPortFromConfigFile(std::string filePath)
-{
-	std::fstream configFile;
-	std::string line;
-	std::string fileStr;
-	configFile.open(filePath);
-	while (!configFile.eof())
-	{
-		configFile >> line;
-		line = StrToLower(line);
-		if (line.find("port:") == -1)
-		{
-			line.clear();
-		}
-		else
-		{
-			line = StripString(line, "port:");
-			break;
-
-		}
-	}
-	configFile.close();
-
-	return line;
-}
-
-std::string GetHostnameFromConfigFile(std::string filePath)
-{
-	std::fstream configFile;
-	std::string line;
-	std::string fileStr;
-	configFile.open(filePath);
-	while (!configFile.eof())
-	{
-		configFile >> line;
-		line = StrToLower(line);
-		if (line.find("hostname:") == -1)
-		{
-			line.clear();
-		}
-		else
-		{
-			line = StripString(line, "hostname:");
-			break;
-
-		}
-	}
-	configFile.close();
-
-	return line;
 }

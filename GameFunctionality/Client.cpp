@@ -2,16 +2,8 @@
 #include <iostream>
 #include "HelperFunctions.h"
 
-using asio::ip::tcp;
 
-Client::Client()
-    :mIo()
-    , mSocket(mIo)
-    , mPort(StringToValidPort(GetPortFromConfigFile("./Assets/NetworkConfig.txt")))
-    , mResolver(mIo, mPort)
-{}
-
-void Client::InitServerConnection()
+void Client::InitClient()
 {
     //Based on example code from the doc
     std::string hostname = GetHostnameFromConfigFile("./Assets/NetworkConfig.txt");
@@ -20,10 +12,10 @@ void Client::InitServerConnection()
     asio::connect(mSocket, mResolver.resolve(hostname,std::to_string(mPort)));
     FormattedPrint("Connection Successful");
     mIo.run();
-    ActiveConnectionLoop();
+    LogicLoop();
 }
 
-void Client::ActiveConnectionLoop()
+void Client::LogicLoop()
 {
     asio::streambuf sbuf;
     asio::error_code error;

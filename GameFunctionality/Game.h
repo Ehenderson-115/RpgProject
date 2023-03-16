@@ -15,7 +15,7 @@ class Game
 {
 public:
 
-	void StartGame();
+	void InitGame();
 private:
 	std::shared_ptr<Room> FindStartingRoom();
 
@@ -23,24 +23,27 @@ private:
 
 	std::string FormatCommand(std::string inStr);
 
-	std::shared_ptr<Player> CreatePlayer();
+	bool AddNewPlayer(std::string playerName);
 
 	void DoCombatLogic();
 
 	void ProcessAdversaryCommand();
 
-	bool isCombatOver();
+	bool IsCombatOver();
+
+	bool IsNewPlayer(const std::string& playerName);
 
 	void HandleCombatEnd();
 
 	void HandleInvalidCommand(const std::string& commmand);
 
 	std::shared_ptr<CommandParser> mCommandParser;
-	std::shared_ptr<ClientData> mActiveData;
+	std::shared_ptr<ClientData> mCurrPlayerData;
 	std::shared_ptr<Room> mStartingRoom;
 	std::string mCommandStr;
 
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
+	std::vector<std::shared_ptr<ClientData>> mActivePlayerData;
 	
 
 };
