@@ -1,17 +1,13 @@
 #include "Client.h"
 #include <iostream>
 #include "HelperFunctions.h"
+#include "NetworkFunctions.h"
 
 
 void Client::InitClient()
 {
-    //Based on example code from the doc
-    std::string hostname = GetHostnameFromConfigFile("./Assets/NetworkConfig.txt");
-
-    FormattedPrint("Attempting to connect to a server...");
-    asio::connect(mSocket, mResolver.resolve(hostname,std::to_string(mPort)));
-    FormattedPrint("Connection Successful");
-    mIo.run();
+    
+    InitServerConnection();
     LogicLoop();
 }
 

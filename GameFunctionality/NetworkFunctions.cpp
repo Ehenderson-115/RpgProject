@@ -6,61 +6,48 @@
 using asio::ip::tcp;
 
 
-void AcceptClientConnections(unsigned short port, std::shared_ptr<Game>& gameInstance)
+std::string ReadStringFromSocket(asio::ip::tcp::socket& inSocket)
 {
-	asio::io_context io;
-	tcp::acceptor acceptor(io, tcp::endpoint(tcp::v4(), port));
-	io.run();
-	while (true)
-	{
-		std::make_shared<std::thread>(Session, acceptor.accept(), gameInstance)->detach();
-	}
-}
-
-void Session(tcp::socket socket, std::shared_ptr<Game>& gameInstance)
-{
-	//Based on example code from the docs
-	FormattedPrint("New Client Connected");
 	asio::streambuf sbuf;
 	asio::error_code error;
-	std::string clientPrefix = "";
-	while (true)
+	std::string output = "";
+	auto mutbuf = sbuf.prepare(1024);
+	int msgLen = inSocket.read_some(mutbuf, error);
+	if (error)
 	{
+		FormattedPrint("Failed to read message from socket: " + error.message());
+	}
+	else
+	{
+		sbuf.commit(msgLen);
+		auto conBuf = sbuf.data();
+		output = std::string(asio::buffers_begin(conBuf),
+		asio::buffers_begin(conBuf) + conBuf.size());
+	}
+	return output;
+}
 
-		auto mutbuf = sbuf.prepare(1024);
-		int msgLen = socket.read_some(mutbuf, error);
+void WriteStringToSocket(asio::ip::tcp::socket& inSocket, std::string inStr)
+{
+	//Convert to CMake define?
+	const int MAX_RETRY_COUNT = 5;
+	
+	asio::error_code error;
+	auto buf = asio::buffer(inStr, inStr.length());
+	for (int i = 0; i < MAX_RETRY_COUNT; i++)
+	{
+		asio::write(inSocket, buf, error);
 		if (error)
 		{
-			FormattedPrint("Connection to client closed due to: " + error.message());
-			return;
+			FormattedPrint("Falied to write message to socket: " + error.message());
+			FormattedPrint("Retrying...");
+
 		}
-		sbuf.commit(msgLen);
-		if (clientPrefix.empty())
+		else
 		{
-			auto conBuf = sbuf.data();
-			clientPrefix = std::string(asio::buffers_begin(conBuf),
-				asio::buffers_begin(conBuf) + conBuf.size());
-			FormattedPrint("Client Connected with id: " + clientPrefix);
-		}
-		sbuf.consume(1024);
-		if (sbuf.size() > 0)
-		{
-			FormattedPrint("Sending Message To Client: " + clientPrefix);
-			std::string testStr = "This is a string!";
-			auto newBuf = asio::buffer(testStr, testStr.length());
-			asio::write(socket, newBuf);
+			break;
 		}
 	}
-}
-
-std::string ReadStringFromSocket(const asio::ip::tcp::socket& inSocket, asio::error_code& error)
-{
-	asio::streambuf sbuf;
-}
-
-std::string WriteStringToSocket(const asio::ip::tcp::socket& inSocket)
-{
-	return std::string();
 }
 
 std::string GetPortFromConfigFile(std::string filePath)
@@ -129,4 +116,67 @@ unsigned short StringToValidPort(std::string strPort)
 		}
 		FormattedPrint(("Error: " + strPort + " is not a valid port"));
 	}
+}
+
+void AcceptClientConnections(unsigned short port, std::shared_ptr<Game>& gameInstance)
+{
+	asio::io_context io;
+	tcp::acceptor acceptor(io, tcp::endpoint(tcp::v4(), port));
+	io.run();
+	while (true)
+	{
+		std::make_shared<std::thread>(Session, acceptor.accept(), gameInstance)->detach();
+	}
+}
+
+void Session(tcp::socket socket, std::shared_ptr<Game>& gameInstance)
+{
+	//Based on example code from the docs
+	FormattedPrint("New Client Connected");
+	asio::streambuf sbuf;
+	asio::error_code error;
+	std::string clientName = AddClientToGame(socket, gameInstance);
+	while (true)
+	{
+
+	}
+}
+
+std::string AddClientToGame(tcp::socket& inSocket, std::shared_ptr<Game>& gameInstance)
+{
+	bool isValidName = false;
+	WriteStringToSocket(inSocket, "Please enter the name of your character");
+	std::string clientName = ReadStringFromSocket(inSocket);
+	isValidName = gameInstance->AddNewPlayer(clientName);
+	while(!isValidName)
+	{ 
+		WriteStringToSocket(inSocket, "The name you provided is already being used by another player, please enter a new one");
+		clientName = ReadStringFromSocket(inSocket);
+		isValidName = gameInstance->AddNewPlayer(clientName);	
+	}
+	WriteStringToSocket(inSocket, "You have been successfully added to the game world!");
+	return clientName;
+}
+
+void InitServerConnection()
+{
+	asio::io_context io;
+	tcp::socket socket(io);
+	tcp::resolver resolver(io);
+	asio::error_code error;
+
+	std::string hostname = GetHostnameFromConfigFile("./ConfigFiles/NetworkConfig.txt");
+	std::string port = GetPortFromConfigFile("./ConfigFiles/NetworkConfig.txt");
+
+	FormattedPrint("Attempting to connect to Server " + hostname + " on port " + port);
+	asio::connect(socket, resolver.resolve(hostname, port), error);
+
+	io.run();
+
+	DoClientLogic(socket);
+}
+
+void DoClientLogic(tcp::socket& socket)
+{
+
 }

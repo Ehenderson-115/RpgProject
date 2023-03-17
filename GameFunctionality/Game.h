@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <mutex>
 
 
 class Room;
@@ -16,14 +17,14 @@ class Game
 public:
 
 	void InitGame();
+	bool AddNewPlayer(const std::string& playerName);
+	std::string GetPlayerStateString(const std::string& playerName);
 private:
 	std::shared_ptr<Room> FindStartingRoom();
 
 	void GameLoop();
 
 	std::string FormatCommand(std::string inStr);
-
-	bool AddNewPlayer(std::string playerName);
 
 	void DoCombatLogic();
 
@@ -41,6 +42,7 @@ private:
 	std::shared_ptr<ClientData> mCurrPlayerData;
 	std::shared_ptr<Room> mStartingRoom;
 	std::string mCommandStr;
+	std::mutex mMutex;
 
 	std::vector<std::shared_ptr<Entity>> mGameEntities;
 	std::vector<std::shared_ptr<ClientData>> mActivePlayerData;

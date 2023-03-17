@@ -26,17 +26,20 @@ std::string Game::FormatCommand(std::string inStr)
 	return inStr;
 }
 
-bool Game::AddNewPlayer(std::string playerName)
+bool Game::AddNewPlayer(const std::string& playerName)
 {
 	bool playerAdded = false;
+	std::unique_lock<std::mutex> lock(mMutex);
 	if (IsNewPlayer(playerName))
 	{
 		auto newPlayer = std::make_shared<Player>(playerName);
 		mGameEntities.push_back(newPlayer);
+		lock.unlock();
 		auto startRoom = FindStartingRoom();
 		auto world = std::static_pointer_cast<World>(mGameEntities.at(0));
 		world->AddPlayerLocation(newPlayer, startRoom);
 		auto outputManager = std::make_shared<OutputManager>();
+		lock.lock();
 		mActivePlayerData.push_back(std::make_shared<ClientData>(newPlayer, nullptr, startRoom, world, outputManager, ClientData::GameState::Main));
 		playerAdded = true;
 	}
@@ -53,6 +56,11 @@ bool Game::IsNewPlayer(const std::string& playerName)
 		}
 	}
 	return true;
+}
+
+std::string Game::GetPlayerStateString(const std::string& playerName)
+{
+	return std::string();
 }
 
 std::shared_ptr<Room> Game::FindStartingRoom()
@@ -74,8 +82,6 @@ void Game::InitGame()
 	mGameEntities = gameFileParser->InitGameDataFromFile("./ConfigFiles/GameConfig.txt");
 	mStartingRoom = FindStartingRoom();
 }
-
-
 
 
 void Game::GameLoop()

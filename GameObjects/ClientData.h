@@ -1,6 +1,7 @@
-#ifndef ACTIVE_GAME_DATA_H
-#define ACTIVE_GAME_DATA_H
-#include<memory>
+#ifndef CLIENT_DATA_H
+#define CLIENT_DATA_H
+#include <memory>
+#include <mutex>
 class Player;
 class Character;
 class Room;
@@ -16,6 +17,7 @@ struct ClientData
 	std::shared_ptr <Room>,
 	std::shared_ptr <World>,
 	std::shared_ptr <OutputManager>,
+	std::shared_ptr <std::mutex>,
 	GameState);
 
 	
@@ -23,6 +25,7 @@ struct ClientData
 	std::shared_ptr<Character> mAdversary;
 	std::shared_ptr<Room> mRoom;
 	std::shared_ptr<World> mWorld;
+	std::shared_ptr<std::mutex> mMutex;
 	std::shared_ptr<OutputManager> mOutputManager;
 
 	void State(GameState inState);
