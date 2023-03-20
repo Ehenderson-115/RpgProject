@@ -20,14 +20,14 @@ void MainMove::Execute()
 	{
 		mGameData->mWorld->AddPlayerLocation(mGameData->mPlayer, nextRoom);
 		mGameData->mRoom = nextRoom;
-		mGameData->mOutputManager->AddToOutput("You enter the room.");
+		mGameData->mOutputManager->AppendToOutput("You enter the room.");
 	}
 	else if (nextRoom == nullptr) 
 	{
-		mGameData->mOutputManager->AddToOutput("The direction \"" + argument + "\" is invalid.");
+		mGameData->mOutputManager->AppendToOutput("The direction \"" + argument + "\" is invalid.");
 	}
 	else
 	{
-		mGameData->mOutputManager->AddToOutput("There is nothing in that direction.");
+		mGameData->mOutputManager->AppendToOutput("There is nothing in that direction.");
 	}
 }

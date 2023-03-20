@@ -50,7 +50,7 @@ void WriteStringToSocket(asio::ip::tcp::socket& inSocket, std::string inStr)
 	}
 }
 
-std::string GetPortFromConfigFile(std::string filePath)
+std::string GetPortFromConfigFile(const std::string& filePath)
 {
 	std::fstream configFile;
 	std::string line;
@@ -76,7 +76,7 @@ std::string GetPortFromConfigFile(std::string filePath)
 	return line;
 }
 
-std::string GetHostnameFromConfigFile(std::string filePath)
+std::string GetHostnameFromConfigFile(const std::string& filePath)
 {
 	std::fstream configFile;
 	std::string line;
@@ -118,6 +118,13 @@ unsigned short StringToValidPort(std::string strPort)
 	}
 }
 
+std::string FormatCommand(std::string inStr)
+{
+	inStr = StrToLower(inStr);
+	inStr = RemoveExtraSpaces(inStr);
+	return inStr;
+}
+
 void AcceptClientConnections(unsigned short port, std::shared_ptr<Game>& gameInstance)
 {
 	asio::io_context io;
@@ -136,9 +143,16 @@ void Session(tcp::socket socket, std::shared_ptr<Game>& gameInstance)
 	asio::streambuf sbuf;
 	asio::error_code error;
 	std::string clientName = AddClientToGame(socket, gameInstance);
+	std::string clientCommand = "";
+	std::string clientStatus = "";
 	while (true)
 	{
+		//Waits for command to come in
+		clientCommand = FormatCommand(ReadStringFromSocket(socket));
+		clientStatus = RunUserCommandInGame(clientName, clientCommand, gameInstance);
 
+		//Updates the client with the status of their character
+		WriteStringToSocket(socket, clientStatus);
 	}
 }
 
@@ -156,6 +170,12 @@ std::string AddClientToGame(tcp::socket& inSocket, std::shared_ptr<Game>& gameIn
 	}
 	WriteStringToSocket(inSocket, "You have been successfully added to the game world!");
 	return clientName;
+}
+
+
+std::string RunUserCommandInGame(const std::string playerName, const std::string command, std::shared_ptr<Game>& gameInstance)
+{
+
 }
 
 void InitServerConnection()

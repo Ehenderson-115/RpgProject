@@ -35,7 +35,7 @@ void OutputManager::UpdateStatusBar(const std::shared_ptr<ClientData>& inData)
 	}
 }
 
-void OutputManager::AddToOutput(const std::string& inStr)
+void OutputManager::AppendToOutput(const std::string& inStr)
 {
 	mOutput += inStr;
 }

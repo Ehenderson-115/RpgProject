@@ -33,5 +33,5 @@ void CombatAttackPlayer::Execute()
 	}
 	turnDescript += (" You deal " + std::to_string(totalDamage) + " to the " + adversaryName + ".");
 	mGameData->mAdversary->Damage(totalDamage);
-	mGameData->mOutputManager->AddToOutput(turnDescript + "\n\n");
+	mGameData->mOutputManager->AppendToOutput(turnDescript + "\n\n");
 }

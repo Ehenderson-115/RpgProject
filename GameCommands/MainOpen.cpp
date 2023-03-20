@@ -15,6 +15,6 @@ void MainOpen::Execute()
 	}
 	else
 	{
-		mGameData->mOutputManager->AddToOutput("Invalid target " + argument);
+		mGameData->mOutputManager->AppendToOutput("Invalid target " + argument);
 	}
 }

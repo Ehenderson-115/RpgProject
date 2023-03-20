@@ -8,5 +8,5 @@ MenuListItems::MenuListItems(std::shared_ptr<ClientData> inData, std::string inA
 
 void MenuListItems::Execute()
 {
-	mGameData->mOutputManager->AddToOutput(mGameData->mPlayer->CheckInventory());
+	mGameData->mOutputManager->AppendToOutput(mGameData->mPlayer->CheckInventory());
 }

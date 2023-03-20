@@ -9,5 +9,5 @@ CombatDefendAdversary::CombatDefendAdversary(std::shared_ptr<ClientData> inData,
 void CombatDefendAdversary::Execute()
 {
 	mGameData->mAdversary->Defend();
-	mGameData->mOutputManager->AddToOutput("The " + mGameData->mAdversary->Name() + " prepares for you to attack.");
+	mGameData->mOutputManager->AppendToOutput("The " + mGameData->mAdversary->Name() + " prepares for you to attack.");
 }

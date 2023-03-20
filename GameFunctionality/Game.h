@@ -18,28 +18,27 @@ public:
 
 	void InitGame();
 	bool AddNewPlayer(const std::string& playerName);
-	std::string GetPlayerStateString(const std::string& playerName);
+	
+	std::string ExecuteCommand(const std::string playerName, const std::string userCommand);
+
 private:
 	std::shared_ptr<Room> FindStartingRoom();
 
-	void GameLoop();
+	std::string GetPlayerStateString(const std::shared_ptr<ClientData>& playerData);
 
-	std::string FormatCommand(std::string inStr);
+	void DoCombatLogic(std::shared_ptr<ClientData>& playerData);
 
-	void DoCombatLogic();
+	void ProcessAdversaryCommand(std::shared_ptr<ClientData>& playerData);
 
-	void ProcessAdversaryCommand();
-
-	bool IsCombatOver();
+	bool IsCombatOver(std::shared_ptr<ClientData>& playerData);
 
 	bool IsNewPlayer(const std::string& playerName);
 
-	void HandleCombatEnd();
+	std::shared_ptr<ClientData> GetPlayerData(const std::string& playerName);
 
-	void HandleInvalidCommand(const std::string& commmand);
+	void HandleCombatEnd(std::shared_ptr<ClientData>& playerData);
 
 	std::shared_ptr<CommandParser> mCommandParser;
-	std::shared_ptr<ClientData> mCurrPlayerData;
 	std::shared_ptr<Room> mStartingRoom;
 	std::string mCommandStr;
 	std::mutex mMutex;

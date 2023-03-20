@@ -8,5 +8,5 @@ MenuInspect::MenuInspect(std::shared_ptr<ClientData> inData, std::string inArgs)
 
 void MenuInspect::Execute()
 {
-	mGameData->mOutputManager->AddToOutput(mGameData->mPlayer->CheckItem(mArgs));
+	mGameData->mOutputManager->AppendToOutput(mGameData->mPlayer->CheckItem(mArgs));
 }

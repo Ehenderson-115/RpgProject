@@ -14,11 +14,11 @@ void MainGrabItem::Execute()
 	if (foundItem != nullptr)
 	{
 		mGameData->mPlayer->AddItem(foundItem);
-		mGameData->mOutputManager->AddToOutput("You picked up the " + foundItem->Name());
+		mGameData->mOutputManager->AppendToOutput("You picked up the " + foundItem->Name());
 	}
 	else
 	{
-		mGameData->mOutputManager->AddToOutput("There is no item with the name " + mArgs);
+		mGameData->mOutputManager->AppendToOutput("There is no item with the name " + mArgs);
 	}
 
 }

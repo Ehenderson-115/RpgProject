@@ -11,7 +11,7 @@ void MainStartCombat::Execute()
 	mGameData->mAdversary = mGameData->mRoom->GetCharacter(mArgs);
 	if (mGameData->mAdversary == nullptr)
 	{
-		mGameData->mOutputManager->AddToOutput("The is no \"" + mArgs + "\" to fight.");
+		mGameData->mOutputManager->AppendToOutput("The is no \"" + mArgs + "\" to fight.");
 	}
 	else
 	{

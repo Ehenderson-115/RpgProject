@@ -9,5 +9,5 @@ MenuEquip::MenuEquip(std::shared_ptr<ClientData> inData, std::string inArgs)
 void MenuEquip::Execute()
 {
 	std::string result = mGameData->mPlayer->EquipWeapon(mArgs);
-	mGameData->mOutputManager->AddToOutput(result);
+	mGameData->mOutputManager->AppendToOutput(result);
 }

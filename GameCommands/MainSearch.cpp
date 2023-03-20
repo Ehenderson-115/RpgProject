@@ -9,5 +9,5 @@ MainSearch::MainSearch(std::shared_ptr<ClientData> inData, std::string inArgs)
 
 void MainSearch::Execute()
 {
-	mGameData->mOutputManager->AddToOutput(mGameData->mRoom->CheckRoomContents());
+	mGameData->mOutputManager->AppendToOutput(mGameData->mRoom->CheckRoomContents());
 }

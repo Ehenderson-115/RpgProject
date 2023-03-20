@@ -1,5 +1,6 @@
 #ifndef CLIENT_DATA_H
 #define CLIENT_DATA_H
+#include <string>
 #include <memory>
 #include <mutex>
 class Player;
@@ -30,6 +31,12 @@ struct ClientData
 
 	void State(GameState inState);
 	GameState State();
+	static GameState TranslateState(std::string inStr);
+	static std::string TranslateState(GameState inState);
+
+	std::string GetStateString();
+	std::string GetStatusBar();
+	std::string GetOutput();
 private:
 	GameState mState;
 

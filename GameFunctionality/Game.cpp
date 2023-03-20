@@ -18,14 +18,6 @@
 #include <random>
 #include <iostream>
 
-
-std::string Game::FormatCommand(std::string inStr)
-{
-	inStr = StrToLower(inStr);
-	inStr = RemoveExtraSpaces(inStr);
-	return inStr;
-}
-
 bool Game::AddNewPlayer(const std::string& playerName)
 {
 	bool playerAdded = false;
@@ -58,9 +50,25 @@ bool Game::IsNewPlayer(const std::string& playerName)
 	return true;
 }
 
-std::string Game::GetPlayerStateString(const std::string& playerName)
+std::string Game::GetPlayerStateString(const std::shared_ptr<ClientData>& playerData)
 {
-	return std::string();
+	std::string outputStr = "";
+	outputStr += playerData->GetStateString();
+	outputStr += playerData->GetStatusBar();
+	outputStr += playerData->GetOutput();
+	return outputStr;
+}
+
+std::shared_ptr<ClientData> Game::GetPlayerData(const std::string& playerName)
+{
+	for (auto packet : mActivePlayerData)
+	{
+		if (packet->mPlayer->Name() == playerName)
+		{
+			return packet;
+		}
+	}
+	return nullptr;
 }
 
 std::shared_ptr<Room> Game::FindStartingRoom()
@@ -84,97 +92,93 @@ void Game::InitGame()
 }
 
 
-void Game::GameLoop()
+std::string Game::ExecuteCommand(const std::string playerName, const std::string userCommand)
 {
-	while (mCurrPlayerData->State() != ClientData::GameState::Closing)
+	auto playerData = GetPlayerData(playerName);
+	std::unique_lock<std::mutex> lock(mMutex);
+	auto command = mCommandParser->ParseCommandString(playerData, userCommand);
+	lock.unlock();
+	if (command == nullptr)
 	{
-		getline(std::cin, mCommandStr);
-		
-		mCommandStr = FormatCommand(mCommandStr);
-		auto command = mCommandParser->ParseCommandString(mCurrPlayerData, mCommandStr);
-		if (command != nullptr)
+		//If command is nullptr, then the command must have been invalid
+		playerData->mOutputManager->AppendToOutput("Invalid Command: " + userCommand);
+	}
+	else
+	{
+		command->Execute();
+		playerData->mOutputManager->UpdateStatusBar(playerData);
+		if (playerData->State() == ClientData::GameState::Combat || playerData->State() == ClientData::GameState::CombatStart)
 		{
-			command->Execute();
-			mCurrPlayerData->mOutputManager->UpdateStatusBar(mCurrPlayerData);
+			DoCombatLogic(playerData);
+
+			if (playerData->State() == ClientData::GameState::CombatEndClose)
+			{
+				playerData->mOutputManager->AppendToOutput("Press enter to exit the game...");
+			}
+			else if (playerData->State() == ClientData::GameState::CombatEndMain)
+			{
+				playerData->mOutputManager->AppendToOutput("Press enter to exit combat...");
+				playerData->State(ClientData::GameState::Main);
+			}
+		}
+	}
+	return GetPlayerStateString(playerData);
+}
+
+
+void Game::DoCombatLogic(std::shared_ptr<ClientData>& playerData)
+{
+	if (IsCombatOver(playerData))
+	{
+		HandleCombatEnd(playerData);
+	}
+	else if(playerData->State() != ClientData::GameState::CombatStart)
+	{
+		if (playerData->mAdversary->classType() == Entity::ClassType::Enemy)
+		{
+			ProcessAdversaryCommand(playerData);
 		}
 		else
 		{
-			HandleInvalidCommand(mCommandStr);
+			//TODO Handle when adversary is another player.
 		}
-		if (mCurrPlayerData->State() == ClientData::GameState::Combat || mCurrPlayerData->State() == ClientData::GameState::CombatStart)
-		{
-			DoCombatLogic();
-		}
-		if (mCurrPlayerData->State() == ClientData::GameState::CombatEndClose)
-		{
-			mCurrPlayerData->mOutputManager->AddToOutput("Press enter to exit the game...");
-			mCurrPlayerData->mOutputManager->PrintScreen();
-			getline(std::cin, mCommandStr);
-		}
-		else if (mCurrPlayerData->State() == ClientData::GameState::CombatEndMain)
-		{
-			mCurrPlayerData->mOutputManager->AddToOutput("Press enter to exit combat...");
-			mCurrPlayerData->mOutputManager->PrintScreen();
-			getline(std::cin, mCommandStr);
-			mCurrPlayerData->State(ClientData::GameState::Main);
-		}
-
-		mCurrPlayerData->mOutputManager->PrintScreen();
-		mCommandStr.clear();
+		
 	}
 }
 
-
-void Game::DoCombatLogic()
-{
-	if (IsCombatOver())
-	{
-		HandleCombatEnd();
-	}
-	else if(mCurrPlayerData->State() != ClientData::GameState::CombatStart)
-	{
-		ProcessAdversaryCommand();
-	}
-}
-
-void Game::ProcessAdversaryCommand()
+void Game::ProcessAdversaryCommand(std::shared_ptr<ClientData>& playerData)
 {
 	int enemyChoice = rand() % 2;
 	std::string attack = "adv::Attack";
 	std::string defend = "adv::Defend";
 	if (enemyChoice == 0) 
 	{
-		auto command = mCommandParser->ParseCommandString(mCurrPlayerData, attack);
+		auto command = mCommandParser->ParseCommandString(playerData, attack);
 		command->Execute();
 	}
 	else
 	{
-		auto command = mCommandParser->ParseCommandString(mCurrPlayerData, defend);
+		auto command = mCommandParser->ParseCommandString(playerData, defend);
 		command->Execute();
 	}
-	mCurrPlayerData->mOutputManager->UpdateStatusBar(mCurrPlayerData);
+	playerData->mOutputManager->UpdateStatusBar(playerData);
 }
 
-void Game::HandleInvalidCommand(const std::string& commmand)
+bool Game::IsCombatOver(std::shared_ptr<ClientData>& playerData)
 {
-	mCurrPlayerData->mOutputManager->AddToOutput("Invalid Command: " + commmand);
-}
-
-bool Game::IsCombatOver()
-{
-	if (mCurrPlayerData->mAdversary == nullptr)
+	if (playerData->mAdversary == nullptr)
 	{
 		return true;
 	}
-	else if (mCurrPlayerData->mPlayer->isDead() && !mCurrPlayerData->mAdversary->isDead())
+	else if (playerData->mPlayer->isDead() && !playerData->mAdversary->isDead())
 	{
 		return true;
 	}
-	else if (mCurrPlayerData->mAdversary->isDead() && !mCurrPlayerData->mPlayer->isDead())
+	else if (playerData->mAdversary->isDead() && !playerData->mPlayer->isDead())
 	{
 		return true;
 	}
-	else if (mCurrPlayerData->mPlayer->isDead() && mCurrPlayerData->mAdversary->isDead())
+	else if (playerData->mPlayer->isDead() && playerData->mAdversary->isDead())
 	{
 		return true;
 	}
@@ -184,28 +188,28 @@ bool Game::IsCombatOver()
 	}
 }
 
-void Game::HandleCombatEnd()
+void Game::HandleCombatEnd(std::shared_ptr<ClientData>& playerData)
 {
-	if (mCurrPlayerData->mPlayer->isDead() && !mCurrPlayerData->mAdversary->isDead())
+	if (playerData->mPlayer->isDead() && !playerData->mAdversary->isDead())
 	{
-		mCurrPlayerData->mOutputManager->AddToOutput("You have been killed by the " + mCurrPlayerData->mAdversary->Name() + ".\n");
-		mCurrPlayerData->State(ClientData::GameState::CombatEndClose);
+		playerData->mOutputManager->AppendToOutput("You have been killed by the " + playerData->mAdversary->Name() + ".\n");
+		playerData->State(ClientData::GameState::CombatEndClose);
 	}
-	else if (mCurrPlayerData->mAdversary->isDead() && !mCurrPlayerData->mPlayer->isDead())
+	else if (playerData->mAdversary->isDead() && !playerData->mPlayer->isDead())
 	{
-		mCurrPlayerData->mOutputManager->AddToOutput("The " + mCurrPlayerData->mAdversary->Name() + " has been killed.\n");
-		mCurrPlayerData->State(ClientData::GameState::CombatEndMain);
-		mCurrPlayerData->mRoom->RemoveContent(mCurrPlayerData->mAdversary->Name());
-		mCurrPlayerData->mAdversary = nullptr;
+		playerData->mOutputManager->AppendToOutput("The " + playerData->mAdversary->Name() + " has been killed.\n");
+		playerData->State(ClientData::GameState::CombatEndMain);
+		playerData->mRoom->RemoveContent(playerData->mAdversary->Name());
+		playerData->mAdversary = nullptr;
 	}
-	else if (mCurrPlayerData->mPlayer->isDead() && mCurrPlayerData->mAdversary->isDead())
+	else if (playerData->mPlayer->isDead() && playerData->mAdversary->isDead())
 	{
-		mCurrPlayerData->mOutputManager->AddToOutput("You and the " + mCurrPlayerData->mAdversary->Name() + " deal lethal blows to one another.");
-		mCurrPlayerData->mOutputManager->AddToOutput("Just as the world begins to fade to black, you feel a burning determination in your chest that won't let you die.");
-		mCurrPlayerData->mOutputManager->AddToOutput("1 HP has been restored.\n");
-		mCurrPlayerData->mPlayer->Heal(1);
-		mCurrPlayerData->State(ClientData::GameState::CombatEndMain);
-		mCurrPlayerData->mRoom->RemoveContent(mCurrPlayerData->mAdversary->Name());
-		mCurrPlayerData->mAdversary = nullptr;
+		playerData->mOutputManager->AppendToOutput("You and the " + playerData->mAdversary->Name() + " deal lethal blows to one another.");
+		playerData->mOutputManager->AppendToOutput("Just as the world begins to fade to black, you feel a burning spark of willpower. You refuse to give up.");
+		playerData->mOutputManager->AppendToOutput(" 1 HP has been restored.\n");
+		playerData->mPlayer->Heal(1);
+		playerData->State(ClientData::GameState::CombatEndMain);
+		playerData->mRoom->RemoveContent(playerData->mAdversary->Name());
+		playerData->mAdversary = nullptr;
 	}
 }

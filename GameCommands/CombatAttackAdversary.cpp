@@ -26,5 +26,5 @@ void CombatAttackAdversary::Execute()
 	}
 	turnDescript += " You take " + std::to_string(totalDamage) + " points of damage.";
 	mGameData->mPlayer->Damage(totalDamage);
-	mGameData->mOutputManager->AddToOutput(turnDescript);
+	mGameData->mOutputManager->AppendToOutput(turnDescript);
 }

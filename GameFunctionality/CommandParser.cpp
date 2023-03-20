@@ -1,6 +1,7 @@
 #include "CommandParser.h"
 #include "GameCommand.h"
 #include "ClientData.h"
+#include "OutputManager.h"
 #include "HelperFunctions.h"
 
 #include "MainLook.h"
@@ -21,7 +22,7 @@
 #include "CombatDefendPlayer.h"
 #include "CombatDefendAdversary.h"
 
-std::shared_ptr<GameCommand> CommandParser::ParseCommandString(std::shared_ptr<ClientData>& gameData, std::string& commandStr)
+std::shared_ptr<GameCommand> CommandParser::ParseCommandString(std::shared_ptr<ClientData>& gameData, std::string commandStr)
 {
 	switch (gameData->State())
 	{
@@ -90,7 +91,7 @@ std::shared_ptr<GameCommand> CommandParser::GenerateMenuCommand(std::shared_ptr<
 		std::string nextArg = GrabNextArg(commandStr);
 		if (nextArg != "at")
 		{
-			FormattedPrint("Invalid look argument: \"" + nextArg + "\". Did you mean \"at\"?");
+			gameData->mOutputManager->AppendToOutput("Invalid look argument: \"" + nextArg + "\". Did you mean \"at\"?");
 			return nullptr;
 		}
 		auto command = std::make_shared<MenuInspect>(gameData, commandStr);

@@ -4,8 +4,8 @@
 RoomConnection::RoomConnection(std::shared_ptr<Room> inMainRoom
 	, std::shared_ptr<Room> inConnectedRoom
 	, Direction inConnectionDir)
-	: mMainRoom {inMainRoom}
-	, mConnectedRoom {inConnectedRoom}
+	: mMainRoom { inMainRoom }
+	, mConnectedRoom { inConnectedRoom }
 	, mConnectionDir { inConnectionDir }
 {}
 

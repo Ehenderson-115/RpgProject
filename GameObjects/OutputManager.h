@@ -10,10 +10,12 @@ class OutputManager
 public:
 	OutputManager();
 	void UpdateStatusBar(const std::shared_ptr<ClientData>& inData);
-	void AddToOutput(const std::string& inStr);
+	void AppendToOutput(const std::string& inStr);
 	void PrintScreen();
-
-
+	void StatusBar(const std::string& inStr) { mStatusBar = inStr; };
+	void Output(const std::string& inStr) { mOutput = inStr; };
+	std::string StatusBar() const { return mStatusBar; };
+	std::string Output() const { return mOutput; };
 
 private:
 	std::string mOutput;

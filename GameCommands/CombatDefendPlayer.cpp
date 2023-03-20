@@ -14,5 +14,5 @@ void CombatDefendPlayer::Execute()
 	}
 
 	mGameData->mPlayer->Defend();
-	mGameData->mOutputManager->AddToOutput("You prepare for an oncoming attack.");
+	mGameData->mOutputManager->AppendToOutput("You prepare for an oncoming attack.");
 }
