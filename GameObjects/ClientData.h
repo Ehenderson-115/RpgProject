@@ -18,7 +18,6 @@ struct ClientData
 	std::shared_ptr <Room>,
 	std::shared_ptr <World>,
 	std::shared_ptr <OutputManager>,
-	std::shared_ptr <std::mutex>,
 	GameState);
 
 	
@@ -26,7 +25,7 @@ struct ClientData
 	std::shared_ptr<Character> mAdversary;
 	std::shared_ptr<Room> mRoom;
 	std::shared_ptr<World> mWorld;
-	std::shared_ptr<std::mutex> mMutex;
+	static std::mutex mMutex;
 	std::shared_ptr<OutputManager> mOutputManager;
 
 	void State(GameState inState);

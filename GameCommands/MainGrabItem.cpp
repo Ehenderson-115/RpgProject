@@ -10,6 +10,7 @@ MainGrabItem::MainGrabItem(std::shared_ptr<ClientData> inData, std::string inArg
 
 void MainGrabItem::Execute()
 {
+	//std::lock_guard<std::mutex> lGuard(mGameData->mMutex);
 	auto foundItem = mGameData->mRoom->GetItem(mArgs);
 	if (foundItem != nullptr)
 	{

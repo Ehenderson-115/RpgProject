@@ -2,19 +2,17 @@ set (SOURCE_FILES
 			Game.cpp
 			Server.cpp
 			Client.cpp
-			NetworkFunctions.cpp
 			CommandParser.cpp)
 
 set (HEADER_FILES 
 			Game.h
 			Server.h
 			Client.h
-			NetworkFunctions.h
 			CommandParser.h)
 			
 
 add_library(GameFunctionality ${SOURCE_FILES} ${HEADER_FILES})
-target_compile_definitions(GameFunctionality PUBLIC ASIO_STANDALONE)
-target_include_directories(GameFunctionality PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ../ThirdPartyLibraries/asio-1.24.0/include)
-target_link_libraries(GameFunctionality GameCommands GameObjects)
+target_include_directories(GameFunctionality PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(GameFunctionality GameCommands GameObjects NetworkLib)
+
 

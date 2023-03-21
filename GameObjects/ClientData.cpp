@@ -8,14 +8,12 @@ ClientData::ClientData(
 	std::shared_ptr<Room> inRoom,
 	std::shared_ptr<World> inWorld,
 	std::shared_ptr<OutputManager> inOutputManager,
-	std::shared_ptr<std::mutex> inMutex,
 	GameState inState)
 	: mPlayer {inPlayer}
 	, mAdversary {inAdversary}
 	, mRoom {inRoom}
-	, mWorld {inWorld}
+	, mWorld{ inWorld }
 	, mOutputManager {inOutputManager}
-	, mMutex{inMutex}
 	, mState {inState}
 {}
 

@@ -1,6 +1,7 @@
 #include "NetworkFunctions.h"
 #include "HelperFunctions.h"
 #include "Game.h"
+#include <iostream>
 #include <fstream>
 #include <mutex>
 using asio::ip::tcp;
@@ -149,7 +150,7 @@ void Session(tcp::socket socket, std::shared_ptr<Game>& gameInstance)
 	{
 		//Waits for command to come in
 		clientCommand = FormatCommand(ReadStringFromSocket(socket));
-		clientStatus = RunUserCommandInGame(clientName, clientCommand, gameInstance);
+		clientStatus = gameInstance->ExecuteCommand(clientName, clientCommand);
 
 		//Updates the client with the status of their character
 		WriteStringToSocket(socket, clientStatus);
@@ -173,11 +174,6 @@ std::string AddClientToGame(tcp::socket& inSocket, std::shared_ptr<Game>& gameIn
 }
 
 
-std::string RunUserCommandInGame(const std::string playerName, const std::string command, std::shared_ptr<Game>& gameInstance)
-{
-
-}
-
 void InitServerConnection()
 {
 	asio::io_context io;
@@ -198,5 +194,14 @@ void InitServerConnection()
 
 void DoClientLogic(tcp::socket& socket)
 {
-
+	std::string currStatus = "";
+	std::string userResponse = "";
+	while (true)
+	{
+		std::string currStatus = ReadStringFromSocket(socket);
+		FormattedPrint(currStatus);
+		std::getline(std::cin, userResponse);
+		WriteStringToSocket(socket, userResponse);
+	}
 }
+

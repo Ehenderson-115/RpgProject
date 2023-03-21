@@ -87,19 +87,3 @@ std::string GrabNextArg(std::string& inStr, bool removeArg)
 	}
 	return output;
 }
-
-unsigned short StringToValidPort(std::string strPort)
-{
-	while (true)
-	{
-		strPort = StripString(strPort, "\n");
-		strPort = StripString(strPort, "\t");
-		strPort = StripString(strPort, "\r");
-		strPort = StripString(strPort, " ");
-		if (strPort.length() > 0 && strPort.length() <= 5 && std::numeric_limits<unsigned short>::max() >= std::stoi(strPort))
-		{
-			return (unsigned short)std::stoi(strPort);
-		}
-		FormattedPrint(("Error: " + strPort + " is not a valid port"));
-	}
-}
