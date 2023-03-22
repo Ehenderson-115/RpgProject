@@ -133,11 +133,11 @@ void AcceptClientConnections(unsigned short port, std::shared_ptr<Game>& gameIns
 	io.run();
 	while (true)
 	{
-		std::make_shared<std::thread>(Session, acceptor.accept(), gameInstance)->detach();
+		std::make_shared<std::thread>(ServerSession, acceptor.accept(), gameInstance)->detach();
 	}
 }
 
-void Session(tcp::socket socket, std::shared_ptr<Game>& gameInstance)
+void ServerSession(tcp::socket socket, std::shared_ptr<Game>& gameInstance)
 {
 	//Based on example code from the docs
 	FormattedPrint("New Client Connected");
@@ -174,9 +174,8 @@ std::string AddClientToGame(tcp::socket& inSocket, std::shared_ptr<Game>& gameIn
 }
 
 
-void InitServerConnection()
+tcp::socket InitServerConnection(asio::io_context& io)
 {
-	asio::io_context io;
 	tcp::socket socket(io);
 	tcp::resolver resolver(io);
 	asio::error_code error;
@@ -186,22 +185,27 @@ void InitServerConnection()
 
 	FormattedPrint("Attempting to connect to Server " + hostname + " on port " + port);
 	asio::connect(socket, resolver.resolve(hostname, port), error);
+	FormattedPrint("Connection made!");
 
-	io.run();
-
-	DoClientLogic(socket);
+	return socket;
 }
 
-void DoClientLogic(tcp::socket& socket)
+void ClientSession(std::string& result, std::string& command)
 {
-	std::string currStatus = "";
-	std::string userResponse = "";
+	asio::io_context io;
+	tcp::socket socket = InitServerConnection(io);
+	io.run();
+	result = ReadStringFromSocket(socket);
+
+
 	while (true)
 	{
-		std::string currStatus = ReadStringFromSocket(socket);
-		FormattedPrint(currStatus);
-		std::getline(std::cin, userResponse);
-		WriteStringToSocket(socket, userResponse);
+		if (result.empty() && !command.empty())
+		{
+			WriteStringToSocket(socket, command);
+			result = ReadStringFromSocket(socket);
+			command.clear();
+		}
 	}
 }
 
