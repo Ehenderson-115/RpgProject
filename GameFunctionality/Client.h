@@ -3,16 +3,20 @@
 #include <memory>
 #include <string>
 #include <mutex>
+#include "NetworkHandler.h"
 #include "OutputManager.h"
 #include "ClientData.h"
 
-class Client
+class Client : public NetworkHandler
 {
 public:
-	void Start();
+	void InitClient();
 	
 private:
+	void MainLoop();
 	std::string GetCommandFromUser();
 	std::shared_ptr<OutputManager> mOutputManager;
+
+
 };
 #endif

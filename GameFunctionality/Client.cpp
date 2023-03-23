@@ -2,33 +2,34 @@
 #include <iostream>
 #include <thread>
 #include "HelperFunctions.h"
-#include "NetworkFunctions.h"
 
 
-void Client::Start()
+void Client::InitClient()
+{
+    std::string hostname = GetHostnameFromConfigFile("./ConfigFiles/NetworkConfig.txt");
+    std::string port = GetPortFromConfigFile("./ConfigFiles/NetworkConfig.txt");
+    ConnectToServer(hostname, port);
+    MainLoop();
+}
+
+void Client::MainLoop()
 {
     std::string result = "";
-    std::string command = ""; 
-    auto networkThread = std::make_shared<std::thread>(ClientSession, result, command);
-    networkThread->detach();
+    std::string command = "";
+
     while (true)
     {
-        if (!result.empty() && command.empty())
+        if (result.empty())
         {
-            mOutputManager->Output(result);
-            mOutputManager->PrintScreen();
-            
-        }
-        if (!result.empty() && command.empty())
-        {
+            result = ReadStringFromSocket();
+            FormattedPrint(result);
             command = GetCommandFromUser();
+            WriteStringToSocket(command);
             result.clear();
         }
-
-
     }
-
 }
+
 
 
 std::string Client::GetCommandFromUser()

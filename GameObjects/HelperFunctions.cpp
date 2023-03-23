@@ -1,5 +1,6 @@
 #include "HelperFunctions.h"
 #include <iostream>
+#include <fstream>
 
 std::string StripString(std::string inStr, const std::string& stripStr)
 {
@@ -86,4 +87,80 @@ std::string GrabNextArg(std::string& inStr, bool removeArg)
 		inStr = inStr.substr(firstSpace + 1);
 	}
 	return output;
+}
+
+
+std::string GetPortFromConfigFile(const std::string& filePath)
+{
+	std::fstream configFile;
+	std::string line;
+	std::string fileStr;
+	configFile.open(filePath);
+	while (!configFile.eof())
+	{
+		configFile >> line;
+		line = StrToLower(line);
+		if (line.find("port:") == -1)
+		{
+			line.clear();
+		}
+		else
+		{
+			line = StripString(line, "port:");
+			break;
+
+		}
+	}
+	configFile.close();
+
+	return line;
+}
+
+std::string GetHostnameFromConfigFile(const std::string& filePath)
+{
+	std::fstream configFile;
+	std::string line;
+	std::string fileStr;
+	configFile.open(filePath);
+	while (!configFile.eof())
+	{
+		configFile >> line;
+		line = StrToLower(line);
+		if (line.find("hostname:") == -1)
+		{
+			line.clear();
+		}
+		else
+		{
+			line = StripString(line, "hostname:");
+			break;
+
+		}
+	}
+	configFile.close();
+
+	return line;
+}
+
+unsigned short StringToValidPort(std::string strPort)
+{
+	while (true)
+	{
+		strPort = StripString(strPort, "\n");
+		strPort = StripString(strPort, "\t");
+		strPort = StripString(strPort, "\r");
+		strPort = StripString(strPort, " ");
+		if (strPort.length() > 0 && strPort.length() <= 5 && std::numeric_limits<unsigned short>::max() >= std::stoi(strPort))
+		{
+			return (unsigned short)std::stoi(strPort);
+		}
+		FormattedPrint(("Error: " + strPort + " is not a valid port"));
+	}
+}
+
+std::string FormatCommand(std::string inStr)
+{
+	inStr = StrToLower(inStr);
+	inStr = RemoveExtraSpaces(inStr);
+	return inStr;
 }
