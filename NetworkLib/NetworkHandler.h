@@ -17,6 +17,7 @@ public:
 
 
 	void ListenForNewClients(unsigned short port);
+	static void InitSession(int socketId, NetworkHandler* inHandler);
 	virtual void ServerSession(int socketId);
 
 	void ConnectToServer(const std::string& hostname, const std::string& port);

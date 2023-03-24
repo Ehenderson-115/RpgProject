@@ -65,16 +65,19 @@ void NetworkHandler::ListenForNewClients(unsigned short port)
 	while (true)
 	{
 		mOpenSockets.push_back(acceptor.accept());
-		std::make_shared<std::thread>(ServerSession, socketId)->detach();
+		std::make_shared<std::thread>(InitSession, socketId, this)->detach();
 		socketId++;
 	}
 }
 
-void NetworkHandler::ServerSession(int socketId)
+void NetworkHandler::InitSession(int socketId, NetworkHandler* inHandler)
 {
-	FormattedPrint("Session Created");
+	inHandler->ServerSession(socketId);
 }
 
+void NetworkHandler::ServerSession(int socketId) {
+	FormattedPrint("Session created");
+}
 void NetworkHandler::ConnectToServer(const std::string& hostname, const std::string& port)
 {
 	mOpenSockets.push_back(tcp::socket(mIo));
