@@ -14,9 +14,13 @@ public:
 	
 private:
 	void MainLoop();
+	void ParseResultString(std::string inStr);
+	std::string ConsumeTag(std::string& inStr);
+	void ProcessResult(const std::string& result);
 	std::string GetCommandFromUser();
+	
 	std::shared_ptr<OutputManager> mOutputManager;
-
+	ClientData::GameState mState;
 
 };
 #endif

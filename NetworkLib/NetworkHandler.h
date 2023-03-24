@@ -13,7 +13,7 @@ public:
 	NetworkHandler();
 	//Helper methods
 	std::string ReadStringFromSocket(int socketId = 0);
-	void WriteStringToSocket(std::string inStr, int socketId = 0);
+	bool WriteStringToSocket(std::string inStr, int socketId = 0);
 
 
 	void ListenForNewClients(unsigned short port);

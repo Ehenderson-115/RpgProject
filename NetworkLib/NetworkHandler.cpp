@@ -22,6 +22,7 @@ std::string NetworkHandler::ReadStringFromSocket(int socketId)
 	if (error)
 	{
 		FormattedPrint("Failed to read message from socket: " + error.message());
+		return "";
 	}
 	else
 	{
@@ -33,27 +34,23 @@ std::string NetworkHandler::ReadStringFromSocket(int socketId)
 	return output;
 }
 
-void NetworkHandler::WriteStringToSocket(std::string inStr, int socketId)
+bool NetworkHandler::WriteStringToSocket(std::string inStr, int socketId)
 {
 
 	const int MAX_RETRY_COUNT = 5;
 	
 	asio::error_code error;
-	auto buf = asio::buffer(inStr, inStr.length());
-	for (int i = 0; i < MAX_RETRY_COUNT; i++)
+	if (!inStr.empty())
 	{
+		auto buf = asio::buffer(inStr, inStr.length());
 		asio::write(mOpenSockets.at(socketId), buf, error);
-		if (error)
-		{
-			FormattedPrint("Falied to write message to socket: " + error.message());
-			FormattedPrint("Retrying...");
-
-		}
-		else
-		{
-			break;
-		}
 	}
+	if (error)
+	{
+		FormattedPrint(error.message());
+		return false;
+	}
+	return true;
 }
 
 void NetworkHandler::ListenForNewClients(unsigned short port)

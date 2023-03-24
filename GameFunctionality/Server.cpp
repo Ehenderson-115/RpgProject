@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "NetworkHandler.h"
 #include "HelperFunctions.h"
 
 void Server::InitServer()
@@ -14,21 +13,44 @@ void Server::InitServer()
 
 void Server::ServerSession(int socketId)
 {
+	const int MAX_RETRY_COUNT = 3;
 	//Based on example code from the docs
 	FormattedPrint("New Client Connected");
-	asio::streambuf sbuf;
-	asio::error_code error;
 	std::string clientName = AddClientToGame(socketId);
 	std::string clientCommand = "";
 	std::string clientStatus = "";
+	bool writeSuccess = true;
 	while (true)
 	{
 		//Waits for command to come in
 		clientCommand = FormatCommand(ReadStringFromSocket(socketId));
-		clientStatus = mGame->ExecuteCommand(clientName, clientCommand);
-
+		if (!clientCommand.empty())
+		{
+			clientStatus = mGame->ExecuteCommand(clientName, clientCommand);
+		}
+		else
+		{
+			FormattedPrint("Failure to read message from client " + clientName + " closing connection...");
+			break;
+		}
 		//Updates the client with the status of their character
-		WriteStringToSocket(clientStatus, socketId);
+		for(int i = 0; i <= MAX_RETRY_COUNT; i++)
+		{
+			writeSuccess = WriteStringToSocket(clientStatus, socketId);
+			if (writeSuccess)
+			{
+				break;
+			}
+			else
+			{
+				FormattedPrint("Retrying...");
+			}
+		}
+		if (!writeSuccess)
+		{
+			FormattedPrint("Failure to write message to client " + clientName + " closing connection...");
+			break;
+		}
 	}
 }
 
