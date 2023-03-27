@@ -18,7 +18,7 @@ std::string NetworkHandler::ReadStringFromSocket(int socketId)
 	asio::error_code error;
 	std::string output = "";
 	auto mutbuf = sbuf.prepare(1024);
-	int msgLen = mOpenSockets.at(socketId).read_some(mutbuf, error);
+	int msgLen = mActiveSockets.at(socketId).read_some(mutbuf, error);
 	if (error)
 	{
 		FormattedPrint("Failed to read message from socket: " + error.message());
@@ -43,7 +43,7 @@ bool NetworkHandler::WriteStringToSocket(std::string inStr, int socketId)
 	if (!inStr.empty())
 	{
 		auto buf = asio::buffer(inStr, inStr.length());
-		asio::write(mOpenSockets.at(socketId), buf, error);
+		asio::write(mActiveSockets.at(socketId), buf, error);
 	}
 	if (error)
 	{
@@ -51,6 +51,12 @@ bool NetworkHandler::WriteStringToSocket(std::string inStr, int socketId)
 		return false;
 	}
 	return true;
+}
+
+void NetworkHandler::SafelyCloseSocket(int socketId)
+{
+	mActiveSockets.at(socketId).shutdown(asio::socket_base::shutdown_both);
+	mActiveSockets.at(socketId).close();
 }
 
 void NetworkHandler::ListenForNewClients(unsigned short port)
@@ -61,7 +67,7 @@ void NetworkHandler::ListenForNewClients(unsigned short port)
 
 	while (true)
 	{
-		mOpenSockets.push_back(acceptor.accept());
+		mActiveSockets.push_back(acceptor.accept());
 		std::make_shared<std::thread>(InitSession, socketId, this)->detach();
 		socketId++;
 	}
@@ -77,12 +83,12 @@ void NetworkHandler::ServerSession(int socketId) {
 }
 void NetworkHandler::ConnectToServer(const std::string& hostname, const std::string& port)
 {
-	mOpenSockets.push_back(tcp::socket(mIo));
+	mActiveSockets.push_back(tcp::socket(mIo));
 	tcp::resolver resolver(mIo);
 	asio::error_code error;
 
 	FormattedPrint("Attempting to connect to Server " + hostname + " on port " + port);
-	asio::connect(mOpenSockets.at(0), resolver.resolve(hostname, port), error);
+	asio::connect(mActiveSockets.at(0), resolver.resolve(hostname, port), error);
 	if (error)
 	{
 		FormattedPrint("Unable to connect to server due to: " + error.message());
@@ -95,8 +101,4 @@ void NetworkHandler::ConnectToServer(const std::string& hostname, const std::str
 
 }
 
-void NetworkHandler::ClientSession(std::string& result, std::string& command)
-{
-	
-}
 

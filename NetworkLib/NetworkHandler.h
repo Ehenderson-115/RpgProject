@@ -14,20 +14,20 @@ public:
 	//Helper methods
 	std::string ReadStringFromSocket(int socketId = 0);
 	bool WriteStringToSocket(std::string inStr, int socketId = 0);
-
+	void SafelyCloseSocket(int socketId = 0);
 
 	void ListenForNewClients(unsigned short port);
 	static void InitSession(int socketId, NetworkHandler* inHandler);
 	virtual void ServerSession(int socketId);
 
 	void ConnectToServer(const std::string& hostname, const std::string& port);
-	void ClientSession(std::string& result, std::string& command);
+
 protected:
 	static std::mutex mMutex;
 
 private:
 	unsigned int mSocketCount;
-	std::vector<asio::ip::tcp::socket> mOpenSockets;
+	std::vector<asio::ip::tcp::socket> mActiveSockets;
 	asio::io_context mIo;
 	
 

@@ -13,7 +13,7 @@ public:
 	void InitClient();
 	
 private:
-	void MainLoop();
+	void ClientSideSession();
 	void ParseResultString(std::string inStr);
 	std::string ConsumeTag(std::string& inStr);
 	void ProcessResult(const std::string& result);

@@ -52,6 +52,7 @@ void Server::ServerSession(int socketId)
 			break;
 		}
 	}
+	SafelyCloseSocket(socketId);
 }
 
 std::string Server::AddClientToGame(int socketId)

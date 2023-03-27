@@ -56,6 +56,7 @@ std::string Game::GetPlayerStateString(const std::shared_ptr<ClientData>& player
 	outputStr += playerData->GetStateString();
 	outputStr += playerData->GetStatusBar();
 	outputStr += playerData->GetOutput();
+	playerData->mOutputManager->Clear();
 	return outputStr;
 }
 
@@ -95,6 +96,7 @@ void Game::InitGame()
 std::string Game::ExecuteCommand(const std::string playerName, const std::string userCommand)
 {
 	auto playerData = GetPlayerData(playerName);
+	std::string output = "";
 	std::unique_lock<std::mutex> lock(mMutex);
 	auto command = mCommandParser->ParseCommandString(playerData, userCommand);
 	lock.unlock();
@@ -102,6 +104,7 @@ std::string Game::ExecuteCommand(const std::string playerName, const std::string
 	{
 		//If command is nullptr, then the command must have been invalid
 		playerData->mOutputManager->AppendToOutput("Invalid Command: " + userCommand);
+		output = GetPlayerStateString(playerData);
 	}
 	else
 	{
@@ -114,15 +117,25 @@ std::string Game::ExecuteCommand(const std::string playerName, const std::string
 			if (playerData->State() == ClientData::GameState::CombatEndClose)
 			{
 				playerData->mOutputManager->AppendToOutput("Press enter to exit the game...");
+				output = GetPlayerStateString(playerData);
 			}
 			else if (playerData->State() == ClientData::GameState::CombatEndMain)
 			{
 				playerData->mOutputManager->AppendToOutput("Press enter to exit combat...");
+				output = GetPlayerStateString(playerData);
 				playerData->State(ClientData::GameState::Main);
 			}
+			else
+			{
+				output = GetPlayerStateString(playerData);
+			}
+		}
+		else
+		{
+			output = GetPlayerStateString(playerData);
 		}
 	}
-	return GetPlayerStateString(playerData);
+	return output;
 }
 
 
