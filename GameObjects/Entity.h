@@ -20,7 +20,7 @@ public:
 	std::string Descript() const { return mDescript; }
 	std::string Name() const { return mName; }
 	int Id() const { return mId; }
-	ClassType classType() const { return mClassType; }
+	ClassType Type() const { return mClassType; }
 
 	//Setters
 	void Descript(const std::string& inStr) { mDescript = StripQuotes(inStr); }

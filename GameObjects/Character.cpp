@@ -7,6 +7,7 @@ Character::Character()
 	, mCurrAction{ Action::Idle }
 	, mCurrhp{ 0 }, mMaxhp{ 0 }
 	, mBaseAttack{ 0 } 
+	, mCombatFlag{ false }
 {}
 
 Character::Character(ClassType classType) 
@@ -16,6 +17,7 @@ Character::Character(ClassType classType)
 	, mCurrhp{ 0 }
 	, mMaxhp{ 0 }
 	, mBaseAttack{ 0 }
+	, mCombatFlag{ false }
 {}
 
 Character::Character(ClassType classType, std::string inName)
@@ -25,6 +27,7 @@ Character::Character(ClassType classType, std::string inName)
 	, mCurrhp{ 30 }
 	, mMaxhp{ 30 }
 	, mBaseAttack{ 1 }
+	, mCombatFlag{ false }
 {}
 
 void Character::Hitpoints(const std::string& inStr)

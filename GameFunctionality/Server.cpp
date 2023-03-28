@@ -23,10 +23,11 @@ void Server::ServerSession(int socketId)
 	while (true)
 	{
 		//Waits for command to come in
+		if(mGame->CheckPlayerAttacked(clientName))
 		clientCommand = FormatCommand(ReadStringFromSocket(socketId));
 		if (!clientCommand.empty())
 		{
-			clientStatus = mGame->ExecuteCommand(clientName, clientCommand);
+			clientStatus = mGame->ProcessUserCommand(clientName, clientCommand);
 		}
 		else
 		{

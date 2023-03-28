@@ -28,6 +28,21 @@ std::shared_ptr<Room> World::GetPlayerLoc(std::shared_ptr<Player> inPlayer)
 	return nullptr;
 }
 
+std::vector<std::shared_ptr<Player>> World::GetOtherPlayers(std::shared_ptr<Player> inPlayer)
+{
+	std::vector<std::shared_ptr<Player>> output;
+	auto currRoom = GetPlayerLoc(inPlayer);
+	for (auto location : mPlayerLocs)
+	{
+		if (location->mRoom == currRoom && location->mPlayer != inPlayer)
+		{
+			output.push_back(location->mPlayer);
+		}
+
+	}
+	return output;
+}
+
 void World::AddRoomConnection(std::shared_ptr<Room> inMainRoom, std::shared_ptr<Room> inConnectedRoom, RoomConnection::Direction inConnectionDir)
 {
 	//Room connected to nullptr is possible due to possible omission of connected room to the first room in the config file.

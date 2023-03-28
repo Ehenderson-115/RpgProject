@@ -92,12 +92,46 @@ void Game::InitGame()
 	mStartingRoom = FindStartingRoom();
 }
 
-
-std::string Game::ExecuteCommand(const std::string playerName, const std::string userCommand)
+std::shared_ptr<ClientData> Game::FindAttackingPlayerData(const std::shared_ptr<Player>& inPlayer)
 {
-	auto playerData = GetPlayerData(playerName);
-	std::string output = "";
+	for (auto packet : mActivePlayerData)
+	{
+		if (packet->mAdversary->Name() == inPlayer->Name())
+		{
+			return packet;
+		}
+	}
+}
+
+bool Game::CheckPlayerAttacked(std::shared_ptr<ClientData>& playerData)
+{
+	if ((playerData->State() == ClientData::GameState::Main || playerData->State() == ClientData::GameState::Menu) && playerData->mPlayer->InCombat())
+	{
+		return true;
+	}
+	else 
+	{
+		return false;
+	}
+}
+
+void Game::InitPvp(std::shared_ptr<ClientData>& playerData)
+{
+	auto attacker = FindAttackingPlayerData(playerData->mPlayer);
+	attacker->
+}
+
+std::string Game::ProcessUserCommand(const std::string playerName, const std::string userCommand)
+{
 	std::unique_lock<std::mutex> lock(mMutex);
+
+	auto playerData = GetPlayerData(playerName);
+	if (CheckPlayerAttacked(playerData))
+	{
+		InitPvp(playerData);
+	}
+	std::string output = "";
+	
 	auto command = mCommandParser->ParseCommandString(playerData, userCommand);
 	lock.unlock();
 	if (command == nullptr)
@@ -112,23 +146,7 @@ std::string Game::ExecuteCommand(const std::string playerName, const std::string
 		playerData->mOutputManager->UpdateStatusBar(playerData);
 		if (playerData->State() == ClientData::GameState::Combat || playerData->State() == ClientData::GameState::CombatStart)
 		{
-			DoCombatLogic(playerData);
-
-			if (playerData->State() == ClientData::GameState::CombatEndClose)
-			{
-				playerData->mOutputManager->AppendToOutput("Press enter to exit the game...");
-				output = GetPlayerStateString(playerData);
-			}
-			else if (playerData->State() == ClientData::GameState::CombatEndMain)
-			{
-				playerData->mOutputManager->AppendToOutput("Press enter to exit combat...");
-				output = GetPlayerStateString(playerData);
-				playerData->State(ClientData::GameState::Main);
-			}
-			else
-			{
-				output = GetPlayerStateString(playerData);
-			}
+			output = GetCombatResult(playerData);
 		}
 		else
 		{
@@ -138,8 +156,46 @@ std::string Game::ExecuteCommand(const std::string playerName, const std::string
 	return output;
 }
 
+std::string Game::GetCombatResult(std::shared_ptr<ClientData>& playerData)
+{
+	std::string output = "";
+	if (playerData->mAdversary->Type() == Entity::ClassType::Player)
+	{
+		DoPvpCombat(playerData);
+	}
+	else
+	{
+		DoNpcCombat(playerData);
+	}
 
-void Game::DoCombatLogic(std::shared_ptr<ClientData>& playerData)
+	if (playerData->State() == ClientData::GameState::CombatEndClose)
+	{
+		playerData->mOutputManager->AppendToOutput("Press enter to exit the game...");
+		output = GetPlayerStateString(playerData);
+	}
+	else if (playerData->State() == ClientData::GameState::CombatEndMain)
+	{
+		playerData->mOutputManager->AppendToOutput("Press enter to exit combat...");
+		output = GetPlayerStateString(playerData);
+		playerData->State(ClientData::GameState::Main);
+	}
+	else
+	{
+		output = GetPlayerStateString(playerData);
+	}
+	return output;
+}
+
+void Game::DoPvpCombat(std::shared_ptr<ClientData>& playerData)
+{
+	if (playerData->State() == ClientData::GameState::CombatStart)
+	{
+		playerData->mOutputManager->AppendToOutput("Waiting for other player...");
+	}
+
+}
+
+void Game::DoNpcCombat(std::shared_ptr<ClientData>& playerData)
 {
 	if (IsCombatOver(playerData))
 	{
@@ -147,15 +203,7 @@ void Game::DoCombatLogic(std::shared_ptr<ClientData>& playerData)
 	}
 	else if(playerData->State() != ClientData::GameState::CombatStart)
 	{
-		if (playerData->mAdversary->classType() == Entity::ClassType::Enemy)
-		{
-			ProcessAdversaryCommand(playerData);
-		}
-		else
-		{
-			//TODO Handle when adversary is another player.
-		}
-		
+		ProcessAdversaryCommand(playerData);
 	}
 }
 
@@ -164,6 +212,7 @@ void Game::ProcessAdversaryCommand(std::shared_ptr<ClientData>& playerData)
 	int enemyChoice = rand() % 2;
 	std::string attack = "adv::Attack";
 	std::string defend = "adv::Defend";
+	std::lock_guard<std::mutex> lock(mMutex);
 	if (enemyChoice == 0) 
 	{
 		auto command = mCommandParser->ParseCommandString(playerData, attack);

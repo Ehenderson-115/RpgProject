@@ -24,13 +24,13 @@ std::string Room::CheckRoomContents()
             output += "You also found a ";
             output += content->Name();
         }
-        else if (content->classType() == Entity::ClassType::Enemy && i == 0 && output.empty())
+        else if (content->Type() == Entity::ClassType::Enemy && i == 0 && output.empty())
         {
             output += "There is a ";
             output += content->Name();
             output += " they don't look friendly";
         }
-        else if (content->classType() == Entity::ClassType::Enemy && i > 0) 
+        else if (content->Type() == Entity::ClassType::Enemy && i > 0) 
         {
             output += "There is also a ";
             output += content->Name();
@@ -40,11 +40,6 @@ std::string Room::CheckRoomContents()
         {
             output += "\n";
         }
-    }
-    if (output.empty())
-    {
-        output += "There is nothing of interest in this room";
-        output += "\n";
     }
     return output;
 }

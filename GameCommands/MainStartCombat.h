@@ -9,7 +9,7 @@ public:
 	virtual void Execute();
 
 private:
-
+	void SafelyAddPlayerAdv();
 };
 
 

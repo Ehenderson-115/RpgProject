@@ -19,14 +19,23 @@ public:
 	void InitGame();
 	bool AddNewPlayer(const std::string& playerName);
 	
-	std::string ExecuteCommand(const std::string playerName, const std::string userCommand);
+	std::string ProcessUserCommand(const std::string playerName, const std::string userCommand);
+	bool CheckPlayerAttacked(std::shared_ptr<ClientData>& playerData);
 
 private:
 	std::shared_ptr<Room> FindStartingRoom();
 
+	std::shared_ptr<ClientData> FindAttackingPlayerData(const std::shared_ptr<Player>& inPlayer);
+	
+	void InitPvp(std::shared_ptr<ClientData>& playerData);
+
 	std::string GetPlayerStateString(const std::shared_ptr<ClientData>& playerData);
 
-	void DoCombatLogic(std::shared_ptr<ClientData>& playerData);
+	std::string GetCombatResult (std::shared_ptr<ClientData>& playerData);
+
+	void DoPvpCombat(std::shared_ptr<ClientData>& playerData);
+
+	void DoNpcCombat(std::shared_ptr<ClientData>& playerData);
 
 	void ProcessAdversaryCommand(std::shared_ptr<ClientData>& playerData);
 
