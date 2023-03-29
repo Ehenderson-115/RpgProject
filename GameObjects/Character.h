@@ -33,7 +33,7 @@ public:
 	bool isDead() const { return (mCurrhp <= 0); }
 
 	bool InCombat() const { return mCombatFlag; }
-	bool InCombat(bool input) { mCombatFlag = input; }
+	void InCombat(bool input) { mCombatFlag = input; }
 
 protected:	
 	CharRace TranslateRace(const std::string& inStr);

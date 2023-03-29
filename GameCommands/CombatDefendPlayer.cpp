@@ -8,11 +8,11 @@ CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ClientData> inData, std::
 
 void CombatDefendPlayer::Execute()
 {
-	if (mGameData->State() == ClientData::GameState::CombatStart)
+	if (mPlayerData->State() == ClientData::GameState::CombatStart)
 	{
-		mGameData->State(ClientData::GameState::Combat);
+		mPlayerData->State(ClientData::GameState::Combat);
 	}
 
-	mGameData->mPlayer->Defend();
-	mGameData->mOutputManager->AppendToOutput("You prepare for an oncoming attack.");
+	mPlayerData->mPlayer->Defend();
+	mPlayerData->mOutputManager->AppendToOutput("You prepare for an oncoming attack.");
 }

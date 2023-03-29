@@ -72,6 +72,14 @@ std::shared_ptr<ClientData> Game::GetPlayerData(const std::string& playerName)
 	return nullptr;
 }
 
+void Game::RemovePlayerFromWorld(const std::string playerName)
+{
+	std::lock_guard<std::mutex> lock(mMutex);
+	auto playerData = GetPlayerData(playerName);
+	playerData->mWorld->RemovePlayerLocation(playerData->mPlayer);
+
+}
+
 std::shared_ptr<Room> Game::FindStartingRoom()
 {
 	for (auto entity : mGameEntities)
@@ -103,7 +111,7 @@ std::shared_ptr<ClientData> Game::FindAttackingPlayerData(const std::shared_ptr<
 	}
 }
 
-bool Game::CheckPlayerAttacked(std::shared_ptr<ClientData>& playerData)
+bool Game::PlayerAttacked(std::shared_ptr<ClientData>& playerData)
 {
 	if ((playerData->State() == ClientData::GameState::Main || playerData->State() == ClientData::GameState::Menu) && playerData->mPlayer->InCombat())
 	{
@@ -118,20 +126,50 @@ bool Game::CheckPlayerAttacked(std::shared_ptr<ClientData>& playerData)
 void Game::InitPvp(std::shared_ptr<ClientData>& playerData)
 {
 	auto attacker = FindAttackingPlayerData(playerData->mPlayer);
-	attacker->
+
+	attacker->mPlayer->IsTurn(true);
+	playerData->mAdversary = attacker->mPlayer;
+
+	attacker->State(ClientData::GameState::Combat);
+	playerData->State(ClientData::GameState::Combat);
+
+	playerData->mOutputManager->UpdateStatusBar(playerData);
+	attacker->mOutputManager->UpdateStatusBar(attacker);
+}
+
+std::string Game::HandlePvpEdgeCases(std::shared_ptr<ClientData>& playerData, const std::string& userCommand)
+{
+	std::string output = "";
+	if (PlayerAttacked(playerData))
+	{
+		InitPvp(playerData);
+		playerData->mOutputManager->AppendToOutput("While attempting to " + userCommand + " you are suddenly attacked by " + playerData->mAdversary->Name());
+		output = GetPlayerStateString(playerData);
+	}
+	else if (playerData->mAdversary->Type() == Entity::ClassType::Player && playerData->State() == ClientData::GameState::CombatStart)
+	{
+		playerData->mOutputManager->AppendToOutput("Waiting for other player....");
+		output = GetPlayerStateString(playerData);
+	}
+	return output;
 }
 
 std::string Game::ProcessUserCommand(const std::string playerName, const std::string userCommand)
 {
+	std::string output = "";
 	std::unique_lock<std::mutex> lock(mMutex);
 
 	auto playerData = GetPlayerData(playerName);
-	if (CheckPlayerAttacked(playerData))
-	{
-		InitPvp(playerData);
-	}
-	std::string output = "";
 	
+	//If attacked or waiting for the player attacked to find out that they have been attacked then don't execute command
+	if (playerData->mPlayer->InCombat() && playerData->mAdversary->Type() == Entity::ClassType::Player) {
+		output = HandlePvpEdgeCases(playerData, userCommand);
+		if (!output.empty())
+		{
+			return output;
+		}
+	}
+
 	auto command = mCommandParser->ParseCommandString(playerData, userCommand);
 	lock.unlock();
 	if (command == nullptr)
@@ -140,32 +178,31 @@ std::string Game::ProcessUserCommand(const std::string playerName, const std::st
 		playerData->mOutputManager->AppendToOutput("Invalid Command: " + userCommand);
 		output = GetPlayerStateString(playerData);
 	}
+	else if (playerData->State() == ClientData::GameState::Combat || playerData->State() == ClientData::GameState::CombatStart)
+	{
+		lock.lock();
+		output = GetCombatResult(playerData, command);
+	}
 	else
 	{
 		command->Execute();
 		playerData->mOutputManager->UpdateStatusBar(playerData);
-		if (playerData->State() == ClientData::GameState::Combat || playerData->State() == ClientData::GameState::CombatStart)
-		{
-			output = GetCombatResult(playerData);
-		}
-		else
-		{
-			output = GetPlayerStateString(playerData);
-		}
+		output = GetPlayerStateString(playerData);
 	}
+	
 	return output;
 }
 
-std::string Game::GetCombatResult(std::shared_ptr<ClientData>& playerData)
+std::string Game::GetCombatResult(std::shared_ptr<ClientData>& playerData, std::shared_ptr<GameCommand>& command)
 {
 	std::string output = "";
-	if (playerData->mAdversary->Type() == Entity::ClassType::Player)
+	if (playerData->mAdversary->Type() == Entity::ClassType::Player && playerData->State() != ClientData::GameState::CombatStart)
 	{
-		DoPvpCombat(playerData);
+		DoPvpCombat(playerData, command);
 	}
-	else
+	else if (playerData->mAdversary->Type() != Entity::ClassType::Player)
 	{
-		DoNpcCombat(playerData);
+		DoNpcCombat(playerData, command);
 	}
 
 	if (playerData->State() == ClientData::GameState::CombatEndClose)
@@ -186,16 +223,30 @@ std::string Game::GetCombatResult(std::shared_ptr<ClientData>& playerData)
 	return output;
 }
 
-void Game::DoPvpCombat(std::shared_ptr<ClientData>& playerData)
-{
-	if (playerData->State() == ClientData::GameState::CombatStart)
+void Game::DoPvpCombat(std::shared_ptr<ClientData>& playerData, std::shared_ptr<GameCommand>& command)
+{		
+	if (IsCombatOver(playerData))
 	{
-		playerData->mOutputManager->AppendToOutput("Waiting for other player...");
+		HandleCombatEnd(playerData);
 	}
-
+	else
+	{
+		if (playerData->mPlayer->IsTurn())
+		{
+			command->Execute();
+			playerData->mOutputManager->UpdateStatusBar(playerData);
+			playerData->mPlayer->IsTurn(false);
+			auto target = std::static_pointer_cast<Player>(playerData->mAdversary);
+			target->IsTurn(true);
+		}
+		else
+		{
+			playerData->mOutputManager->AppendToOutput("Waiting for other player to act...");
+		}
+	}
 }
 
-void Game::DoNpcCombat(std::shared_ptr<ClientData>& playerData)
+void Game::DoNpcCombat(std::shared_ptr<ClientData>& playerData, std::shared_ptr<GameCommand>& command)
 {
 	if (IsCombatOver(playerData))
 	{
@@ -204,6 +255,11 @@ void Game::DoNpcCombat(std::shared_ptr<ClientData>& playerData)
 	else if(playerData->State() != ClientData::GameState::CombatStart)
 	{
 		ProcessAdversaryCommand(playerData);
+	}
+	else
+	{
+		command->Execute();
+		playerData->mOutputManager->UpdateStatusBar(playerData);
 	}
 }
 
@@ -263,6 +319,7 @@ void Game::HandleCombatEnd(std::shared_ptr<ClientData>& playerData)
 		playerData->State(ClientData::GameState::CombatEndMain);
 		playerData->mRoom->RemoveContent(playerData->mAdversary->Name());
 		playerData->mAdversary = nullptr;
+		playerData->mPlayer->InCombat(false);
 	}
 	else if (playerData->mPlayer->isDead() && playerData->mAdversary->isDead())
 	{

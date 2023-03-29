@@ -11,6 +11,7 @@ class Player;
 class Entity;
 class CommandParser;
 struct ClientData;
+class GameCommand;
 
 class Game
 {
@@ -20,7 +21,8 @@ public:
 	bool AddNewPlayer(const std::string& playerName);
 	
 	std::string ProcessUserCommand(const std::string playerName, const std::string userCommand);
-	bool CheckPlayerAttacked(std::shared_ptr<ClientData>& playerData);
+	void RemovePlayerFromWorld(const std::string playerName);
+	
 
 private:
 	std::shared_ptr<Room> FindStartingRoom();
@@ -31,11 +33,15 @@ private:
 
 	std::string GetPlayerStateString(const std::shared_ptr<ClientData>& playerData);
 
-	std::string GetCombatResult (std::shared_ptr<ClientData>& playerData);
+	std::string GetCombatResult(std::shared_ptr<ClientData>& playerData, std::shared_ptr<GameCommand>& command);
 
-	void DoPvpCombat(std::shared_ptr<ClientData>& playerData);
+	std::string Game::HandlePvpEdgeCases(std::shared_ptr<ClientData>& playerData, const std::string& userCommand);
 
-	void DoNpcCombat(std::shared_ptr<ClientData>& playerData);
+	bool PlayerAttacked(std::shared_ptr<ClientData>& playerData);
+
+	void DoPvpCombat(std::shared_ptr<ClientData>& playerData, std::shared_ptr<GameCommand>& command);
+
+	void DoNpcCombat(std::shared_ptr<ClientData>& playerData, std::shared_ptr<GameCommand>& command);
 
 	void ProcessAdversaryCommand(std::shared_ptr<ClientData>& playerData);
 

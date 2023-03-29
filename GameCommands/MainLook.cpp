@@ -8,6 +8,6 @@ MainLook::MainLook(std::shared_ptr<ClientData> inData, std::string inArgs)
 
 void MainLook::Execute()
 {
-	mGameData->mOutputManager->AppendToOutput(mGameData->mRoom->Descript());
+	mPlayerData->mOutputManager->AppendToOutput(mPlayerData->mRoom->Descript());
 }
 

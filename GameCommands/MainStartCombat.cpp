@@ -11,47 +11,48 @@ MainStartCombat::MainStartCombat(std::shared_ptr<ClientData> inData, std::string
 
 void MainStartCombat::Execute()
 {
-	std::lock_guard<std::mutex> lock(mGameData->mMutex);
-	auto adversary = mGameData->mRoom->GetCharacter(mArgs);
+	//std::lock_guard<std::mutex> lock(mPlayerData->mMutex);
+	auto adversary = mPlayerData->mRoom->GetCharacter(mArgs);
 	if (adversary == nullptr)
 	{
 		SafelyAddPlayerAdv();
-		if (mGameData->mAdversary == nullptr)
+		if (mPlayerData->mAdversary == nullptr)
 		{
-			mGameData->mOutputManager->AppendToOutput("The is no \"" + mArgs + "\" to fight.");
+			mPlayerData->mOutputManager->AppendToOutput("The is no \"" + mArgs + "\" to fight.");
 		}
 	}
 	else
 	{
 		if (adversary->InCombat())
 		{
-			mGameData->mOutputManager->AppendToOutput("That target is already in combat with someone else.");
+			mPlayerData->mOutputManager->AppendToOutput("That target is already in combat with someone else.");
 		}
 		else
 		{
-			mGameData->mPlayer->InCombat(true);
+			mPlayerData->mPlayer->InCombat(true);
 			adversary->InCombat(true);
-			mGameData->State(ClientData::GameState::CombatStart);
+			mPlayerData->State(ClientData::GameState::CombatStart);
 		}
 	}
 }
 
 void MainStartCombat::SafelyAddPlayerAdv()
 {
-	for (auto player : mGameData->mWorld->GetOtherPlayers(mGameData->mPlayer))
+	for (auto player : mPlayerData->mWorld->GetOtherPlayers(mPlayerData->mPlayer))
 	{
-		if (StrToLower(mArgs) == StrToLower(player->Name()))
+		if ((StrToLower(mArgs) == StrToLower(player->Name()) && (mPlayerData->mWorld->GetPlayerLoc(player) == mPlayerData->mRoom)))
 		{
 			if (!player->InCombat())
 			{
-				mGameData->mAdversary = player;
+				mPlayerData->mAdversary = player;
 				player->InCombat(true);
-				mGameData->mPlayer->InCombat(true);
-				mGameData->State(ClientData::GameState::CombatStart);
+				mPlayerData->mPlayer->InCombat(true);
+				mPlayerData->State(ClientData::GameState::CombatStart);
+				mPlayerData->mOutputManager->AppendToOutput("Waiting for other player...");
 			}
 			else
 			{
-				mGameData->mOutputManager->AppendToOutput("That player is already in combat with someone else.");
+				mPlayerData->mOutputManager->AppendToOutput("That player is already in combat with someone else.");
 			}
 			break;
 		}

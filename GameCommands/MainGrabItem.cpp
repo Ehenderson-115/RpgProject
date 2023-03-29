@@ -11,15 +11,15 @@ MainGrabItem::MainGrabItem(std::shared_ptr<ClientData> inData, std::string inArg
 void MainGrabItem::Execute()
 {
 	//std::lock_guard<std::mutex> lGuard(mGameData->mMutex);
-	auto foundItem = mGameData->mRoom->GetItem(mArgs);
+	auto foundItem = mPlayerData->mRoom->GetItem(mArgs);
 	if (foundItem != nullptr)
 	{
-		mGameData->mPlayer->AddItem(foundItem);
-		mGameData->mOutputManager->AppendToOutput("You picked up the " + foundItem->Name());
+		mPlayerData->mPlayer->AddItem(foundItem);
+		mPlayerData->mOutputManager->AppendToOutput("You picked up the " + foundItem->Name());
 	}
 	else
 	{
-		mGameData->mOutputManager->AppendToOutput("There is no item with the name " + mArgs);
+		mPlayerData->mOutputManager->AppendToOutput("There is no item with the name " + mArgs);
 	}
 
 }

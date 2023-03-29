@@ -24,7 +24,7 @@ void OutputManager::UpdateStatusBar(const std::shared_ptr<ClientData>& inData)
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
 		break;
 	case ClientData::GameState::CombatStart:
-		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");
+		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + "----------------------------" + "\n");
 		break;
 	case ClientData::GameState::CombatEndMain:
 		mStatusBar = (inData->mPlayer->Character::GetStatus() + " ||| " + inData->mAdversary->GetStatus() + "\n");

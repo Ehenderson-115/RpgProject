@@ -23,7 +23,6 @@ void Server::ServerSession(int socketId)
 	while (true)
 	{
 		//Waits for command to come in
-		if(mGame->CheckPlayerAttacked(clientName))
 		clientCommand = FormatCommand(ReadStringFromSocket(socketId));
 		if (!clientCommand.empty())
 		{
@@ -53,6 +52,7 @@ void Server::ServerSession(int socketId)
 			break;
 		}
 	}
+	mGame->RemovePlayerFromWorld(clientName);
 	SafelyCloseSocket(socketId);
 }
 

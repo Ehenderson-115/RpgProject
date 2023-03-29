@@ -12,7 +12,7 @@ public:
 
 protected:
 	std::string mArgs;
-	std::shared_ptr<ClientData> mGameData;
+	std::shared_ptr<ClientData> mPlayerData;
 };
 
 

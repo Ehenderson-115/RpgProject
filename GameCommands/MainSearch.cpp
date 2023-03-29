@@ -11,8 +11,8 @@ MainSearch::MainSearch(std::shared_ptr<ClientData> inData, std::string inArgs)
 
 void MainSearch::Execute()
 {
-	std::string searchResult = (mGameData->mRoom->CheckRoomContents());
-	auto playersInRoom = mGameData->mWorld->GetOtherPlayers(mGameData->mPlayer);
+	std::string searchResult = (mPlayerData->mRoom->CheckRoomContents());
+	auto playersInRoom = mPlayerData->mWorld->GetOtherPlayers(mPlayerData->mPlayer);
 	if (!playersInRoom.empty())
 	{
 		for (auto player : playersInRoom)
@@ -33,5 +33,5 @@ void MainSearch::Execute()
 	{
 		searchResult = "There is nothing of interest in this room\n";
 	}
-	mGameData->mOutputManager->AppendToOutput(searchResult);
+	mPlayerData->mOutputManager->AppendToOutput(searchResult);
 }

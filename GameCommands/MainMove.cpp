@@ -15,19 +15,19 @@ void MainMove::Execute()
 	std::string argument;
 	argument = GrabNextArg(mArgs);
 
-	auto nextRoom = mGameData->mWorld->GetConnectedRoom(mGameData->mRoom, RoomConnection::TranslateDirection(argument));
+	auto nextRoom = mPlayerData->mWorld->GetConnectedRoom(mPlayerData->mRoom, RoomConnection::TranslateDirection(argument));
 	if (nextRoom != nullptr)
 	{
-		mGameData->mWorld->AddPlayerLocation(mGameData->mPlayer, nextRoom);
-		mGameData->mRoom = nextRoom;
-		mGameData->mOutputManager->AppendToOutput("You enter the room.");
+		mPlayerData->mWorld->AddPlayerLocation(mPlayerData->mPlayer, nextRoom);
+		mPlayerData->mRoom = nextRoom;
+		mPlayerData->mOutputManager->AppendToOutput("You enter the room.");
 	}
 	else if (nextRoom == nullptr) 
 	{
-		mGameData->mOutputManager->AppendToOutput("The direction \"" + argument + "\" is invalid.");
+		mPlayerData->mOutputManager->AppendToOutput("The direction \"" + argument + "\" is invalid.");
 	}
 	else
 	{
-		mGameData->mOutputManager->AppendToOutput("There is nothing in that direction.");
+		mPlayerData->mOutputManager->AppendToOutput("There is nothing in that direction.");
 	}
 }

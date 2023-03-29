@@ -6,5 +6,5 @@ MainClose::MainClose(std::shared_ptr<ClientData> inData, std::string inArgs)
 
 void MainClose::Execute()
 {
-	mGameData->State(ClientData::GameState::Closing);
+	mPlayerData->State(ClientData::GameState::Closing);
 }

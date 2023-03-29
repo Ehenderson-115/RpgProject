@@ -9,17 +9,17 @@ CombatAttackPlayer::CombatAttackPlayer(std::shared_ptr<ClientData> inData, std::
 
 void CombatAttackPlayer::Execute()
 {
-	if (mGameData->State() == ClientData::GameState::CombatStart)
+	if (mPlayerData->State() == ClientData::GameState::CombatStart)
 	{
-		mGameData->mAdversary->Damage(30);
-		mGameData->State(ClientData::GameState::Combat);
+		mPlayerData->mAdversary->Damage(30);
+		mPlayerData->State(ClientData::GameState::Combat);
 	}
 	int damageMod = (rand() % 5);
 	int totalDamage;
 	std::string turnDescript = "";
-	std::string adversaryName = mGameData->mAdversary->Name();
-	std::string wepName = mGameData->mPlayer->GetWepName();
-	totalDamage = mGameData->mPlayer->Attack(damageMod);
+	std::string adversaryName = mPlayerData->mAdversary->Name();
+	std::string wepName = mPlayerData->mPlayer->GetWepName();
+	totalDamage = mPlayerData->mPlayer->Attack(damageMod);
 	if (damageMod == 4)
 	{
 		totalDamage *= 2;
@@ -32,6 +32,6 @@ void CombatAttackPlayer::Execute()
 		turnDescript += ("You ready your " + wepName + " and strike the " + adversaryName + ".");
 	}
 	turnDescript += (" You deal " + std::to_string(totalDamage) + " to the " + adversaryName + ".");
-	mGameData->mAdversary->Damage(totalDamage);
-	mGameData->mOutputManager->AppendToOutput(turnDescript + "\n\n");
+	mPlayerData->mAdversary->Damage(totalDamage);
+	mPlayerData->mOutputManager->AppendToOutput(turnDescript + "\n\n");
 }

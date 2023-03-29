@@ -6,5 +6,5 @@ MenuClose::MenuClose(std::shared_ptr<ClientData> inData, std::string inArgs)
 
 void MenuClose::Execute()
 {
-	mGameData->State(ClientData::GameState::Main);
+	mPlayerData->State(ClientData::GameState::Main);
 }

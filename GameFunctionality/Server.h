@@ -13,7 +13,6 @@ private:
 	
 	void ServerSession(int socketId);
 	std::string AddClientToGame(int socketId);
-	bool GetAndRunClientCommand();
 	std::shared_ptr<Game> mGame;
 
 };

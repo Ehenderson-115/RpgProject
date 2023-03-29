@@ -21,6 +21,8 @@ public:
 	std::string EquipWeapon(std::string nameToFind);
 	std::string GetStatus() const;
 	std::string GetWepName() const;
+	bool IsTurn() const { return mTurnFlag; };
+	void IsTurn(bool input) { mTurnFlag = input; };
 
 	//Setters
 	void AddItem(const std::shared_ptr<Item>& inItem) { mInventory.push_back(inItem); }
@@ -28,6 +30,7 @@ public:
 	int Attack(const int& modifier);
 
 private:
+	bool mTurnFlag;
 	std::shared_ptr<Weapon> mEqWeapon;
 	std::vector<std::shared_ptr<Item>> mInventory;
 	

@@ -11,10 +11,10 @@ void MainOpen::Execute()
 	std::string argument = GrabNextArg(mArgs);
 	if (argument == "inventory" || argument == "i")
 	{
-		mGameData->State(ClientData::GameState::Menu);
+		mPlayerData->State(ClientData::GameState::Menu);
 	}
 	else
 	{
-		mGameData->mOutputManager->AppendToOutput("Invalid target " + argument);
+		mPlayerData->mOutputManager->AppendToOutput("Invalid target " + argument);
 	}
 }

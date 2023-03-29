@@ -12,8 +12,8 @@ void CombatAttackAdversary::Execute()
 	int damageMod = (rand() % 5);
 	int totalDamage;
 	std::string turnDescript = "";
-	std::string adversaryName = mGameData->mAdversary->Name();
-	totalDamage = mGameData->mAdversary->Attack(damageMod);
+	std::string adversaryName = mPlayerData->mAdversary->Name();
+	totalDamage = mPlayerData->mAdversary->Attack(damageMod);
 	if (damageMod == 4)
 	{
 		totalDamage *= 2;
@@ -25,6 +25,6 @@ void CombatAttackAdversary::Execute()
 		turnDescript += ("The " + adversaryName + " attacks you.");
 	}
 	turnDescript += " You take " + std::to_string(totalDamage) + " points of damage.";
-	mGameData->mPlayer->Damage(totalDamage);
-	mGameData->mOutputManager->AppendToOutput(turnDescript);
+	mPlayerData->mPlayer->Damage(totalDamage);
+	mPlayerData->mOutputManager->AppendToOutput(turnDescript);
 }

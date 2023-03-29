@@ -2,7 +2,7 @@
 #include "HelperFunctions.h"
 
 GameCommand::GameCommand(std::shared_ptr<ClientData> inData, std::string inArgs) 
-	: mGameData{inData}
+	: mPlayerData{inData}
 	, mArgs {inArgs}
 {}
 void GameCommand::Execute()
