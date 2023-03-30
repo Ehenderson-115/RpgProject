@@ -35,7 +35,7 @@ private:
 
 	std::string GetCombatResult(std::shared_ptr<ClientData>& playerData, std::shared_ptr<GameCommand>& command);
 
-	std::string Game::HandlePvpEdgeCases(std::shared_ptr<ClientData>& playerData, const std::string& userCommand);
+	std::string HandlePvpEdgeCases(std::shared_ptr<ClientData>& playerData, const std::string& userCommand);
 
 	bool PlayerAttacked(std::shared_ptr<ClientData>& playerData);
 

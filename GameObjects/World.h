@@ -22,7 +22,7 @@ public:
 
 	void RemoveRoomConnection(std::shared_ptr<Room> inRoom, RoomConnection::Direction inConnectionDir);
 	void RemovePlayerLocation(std::shared_ptr<Player> inPlayer);
-	std::vector<std::shared_ptr<Player>> World::GetOtherPlayers(std::shared_ptr<Player> inPlayer);
+	std::vector<std::shared_ptr<Player>> GetOtherPlayers(std::shared_ptr<Player> inPlayer);
 
 
 private:

@@ -22,6 +22,10 @@ add_subdirectory(GameFunctionality)
 
 list(APPEND GAME_FUNCTIONALITY GameFunctionality NetworkLib)
 
+if(UNIX)
+list(APPEND GAME_FUNCTIONALITY pthread)
+endif()
+
 add_subdirectory(NetworkLib)
 
 add_executable(${SERVER_EXE} RpgGameServer.cpp)
@@ -30,10 +34,13 @@ add_executable(${CLIENT_EXE} RpgGameClient.cpp)
 target_link_libraries(${SERVER_EXE} PUBLIC ${GAME_FUNCTIONALITY})
 target_link_libraries(${CLIENT_EXE} PUBLIC ${GAME_FUNCTIONALITY})
 
-install(FILES GameConfig.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/ConfigFiles)
+if(WIN32)
 install(FILES GameConfig.txt DESTINATION ${CMAKE_DEBUG_LOC}/ConfigFiles)
-install(FILES NetworkConfig.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/ConfigFiles)
 install(FILES NetworkConfig.txt DESTINATION ${CMAKE_DEBUG_LOC}/ConfigFiles)
+endif()
+
+install(FILES GameConfig.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/ConfigFiles)
+install(FILES NetworkConfig.txt DESTINATION ${CMAKE_INSTALL_PREFIX}/ConfigFiles)
 install(TARGETS NetworkLib LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX} PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 target_include_directories(${SERVER_EXE} PUBLIC "${PROJECT_BINARY_DIR}")

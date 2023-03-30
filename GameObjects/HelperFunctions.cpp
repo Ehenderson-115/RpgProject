@@ -1,6 +1,7 @@
 #include "HelperFunctions.h"
 #include <iostream>
 #include <fstream>
+#include <limits>
 
 std::string StripString(std::string inStr, const std::string& stripStr)
 {

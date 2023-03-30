@@ -73,9 +73,6 @@ std::string ClientData::TranslateState(GameState inState)
 {
 	switch (inState)
 	{
-	case GameState::Error:
-		return "error";
-		break;
 	case GameState::Menu:
 		return "menu";
 		break;		
@@ -96,6 +93,10 @@ std::string ClientData::TranslateState(GameState inState)
 		break;		
 	case GameState::Closing:
 		return "closing";
+		break;
+	case GameState::Error:
+	default:
+		return "error";
 		break;
 	}
 }
