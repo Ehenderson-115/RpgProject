@@ -162,7 +162,7 @@ std::string Game::ProcessUserCommand(const std::string playerName, const std::st
 	auto playerData = GetPlayerData(playerName);
 	
 	//If attacked or waiting for the player attacked to find out that they have been attacked then don't execute command
-	if (playerData->mPlayer->InCombat() && playerData->mAdversary->Type() == Entity::ClassType::Player) {
+	if (playerData->mPlayer->InCombat() && playerData->mAdversary == nullptr) {
 		output = HandlePvpEdgeCases(playerData, userCommand);
 		if (!output.empty())
 		{
