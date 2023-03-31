@@ -1,12 +1,12 @@
 #include "MenuInspect.h"
-#include "../GameObjects/OutputManager.h"
-#include "../GameObjects/Player.h"
+#include "OutputManager.h"
+#include "Player.h"
 
-MenuInspect::MenuInspect(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MenuInspect::MenuInspect(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 
 void MenuInspect::Execute()
 {
-	mGameData->mOutputManager->AddToOutput(mGameData->mPlayer->CheckItem(mArgs));
+	mPlayerData->mOutputManager->AppendToOutput(mPlayerData->mPlayer->CheckItem(mArgs));
 }

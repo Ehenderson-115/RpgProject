@@ -1,13 +1,13 @@
 #include "CombatDefendAdversary.h"
-#include "../GameObjects/Character.h"
-#include "../GameObjects/OutputManager.h"
+#include "Character.h"
+#include "OutputManager.h"
 
-CombatDefendAdversary::CombatDefendAdversary(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+CombatDefendAdversary::CombatDefendAdversary(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 
 void CombatDefendAdversary::Execute()
 {
-	mGameData->mAdversary->Defend();
-	mGameData->mOutputManager->AddToOutput("The " + mGameData->mAdversary->Name() + " prepares for you to attack.");
+	mPlayerData->mAdversary->Defend();
+	mPlayerData->mOutputManager->AppendToOutput("The " + mPlayerData->mAdversary->Name() + " prepares for you to attack.");
 }

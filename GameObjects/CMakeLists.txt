@@ -6,12 +6,11 @@ set (SOURCE_FILES
 			Player.cpp
 			Weapon.cpp
 			Room.cpp
-			Game.cpp
 			HelperFunctions.cpp
 			Parser.cpp
-			ActiveGameData.cpp
+			ClientData.cpp
 			World.cpp
-			Connection.cpp
+			RoomConnection.cpp
 			PlayerLocation.cpp
 			OutputManager.cpp)
 
@@ -23,15 +22,14 @@ set (HEADER_FILES
 			Player.h
 			Weapon.h
 			Room.h
-			Game.h
 			HelperFunctions.h
 			Parser.h
-			ActiveGameData.h
+			ClientData.h
 			World.h
-			Connection.h
+			RoomConnection.h
 			PlayerLocation.h
 			OutputManager.h)
 
-add_library(GameObjects  ${SOURCE_FILES} ${HEADER_FILES})
-target_include_directories(GameObjects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_library(GameObjects ${SOURCE_FILES} ${HEADER_FILES})
+target_include_directories(GameObjects PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

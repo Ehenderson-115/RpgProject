@@ -1,24 +1,25 @@
 #include "MainGrabItem.h"
-#include "../GameObjects/OutputManager.h"
-#include "../GameObjects/Room.h"
-#include "../GameObjects/Player.h"
-#include "../GameObjects/Item.h"
+#include "OutputManager.h"
+#include "Room.h"
+#include "Player.h"
+#include "Item.h"
 
-MainGrabItem::MainGrabItem(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+MainGrabItem::MainGrabItem(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 
 void MainGrabItem::Execute()
 {
-	auto foundItem = mGameData->mRoom->GetItem(mArgs);
+	//std::lock_guard<std::mutex> lGuard(mGameData->mMutex);
+	auto foundItem = mPlayerData->mRoom->GetItem(mArgs);
 	if (foundItem != nullptr)
 	{
-		mGameData->mPlayer->AddItem(foundItem);
-		mGameData->mOutputManager->AddToOutput("You picked up the " + foundItem->Name());
+		mPlayerData->mPlayer->AddItem(foundItem);
+		mPlayerData->mOutputManager->AppendToOutput("You picked up the " + foundItem->Name());
 	}
 	else
 	{
-		mGameData->mOutputManager->AddToOutput("There is no item with the name " + mArgs);
+		mPlayerData->mOutputManager->AppendToOutput("There is no item with the name " + mArgs);
 	}
 
 }

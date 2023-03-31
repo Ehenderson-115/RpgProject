@@ -2,17 +2,20 @@
 #define GAME_COMMAND_H
 #include <string>
 #include <memory>
-#include "../GameObjects/ActiveGameData.h"
+#include "ClientData.h"
 
 class GameCommand
 {
 public:
-	GameCommand(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	GameCommand(std::shared_ptr<ClientData> inData, std::string inArgs);
+
 	virtual void Execute();
 
 protected:
 	std::string mArgs;
-	std::shared_ptr<ActiveGameData> mGameData;
+
+	std::shared_ptr<ClientData> mPlayerData;
+
 };
 
 

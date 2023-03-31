@@ -1,18 +1,19 @@
 #include "CombatDefendPlayer.h"
-#include "../GameObjects/Player.h"
-#include "../GameObjects/OutputManager.h"
+#include "Player.h"
+#include "OutputManager.h"
 
-CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ActiveGameData> inData, std::string inArgs)
+CombatDefendPlayer::CombatDefendPlayer(std::shared_ptr<ClientData> inData, std::string inArgs)
 	: GameCommand(inData, inArgs)
 {};
 
 void CombatDefendPlayer::Execute()
 {
-	if (mGameData->State() == Game::GameState::CombatStart)
+
+	if (mPlayerData->State() == ClientData::GameState::CombatStart)
 	{
-		mGameData->State(Game::GameState::Combat);
+		mPlayerData->State(ClientData::GameState::Combat);
 	}
 
-	mGameData->mPlayer->Defend();
-	mGameData->mOutputManager->AddToOutput("You prepare for an oncoming attack.");
+	mPlayerData->mPlayer->Defend();
+	mPlayerData->mOutputManager->AppendToOutput("You prepare for an oncoming attack.");
 }

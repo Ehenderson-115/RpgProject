@@ -6,11 +6,13 @@
 Player::Player() 
 	: Character(ClassType::Player)
 	, mEqWeapon{ nullptr } 
+	, mTurnFlag{ false }
 {}
 
 Player::Player(std::string inName)
 	: Character(ClassType::Player, inName)
 	, mEqWeapon{ nullptr }
+	, mTurnFlag{ false }
 {}
 
 std::string Player::CheckInventory()

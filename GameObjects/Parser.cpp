@@ -236,7 +236,7 @@ void Parser::SetData(const DataType& dataType, std::shared_ptr<Room> inRoom)
 			world->AddRoomConnection(
 				inRoom
 				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
-				, Connection::TranslateDirection("north"));
+				, RoomConnection::TranslateDirection("north"));
 		}
 		break;
 	case DataType::South:
@@ -245,7 +245,7 @@ void Parser::SetData(const DataType& dataType, std::shared_ptr<Room> inRoom)
 			world->AddRoomConnection(
 				inRoom
 				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
-				, Connection::TranslateDirection("south"));
+				, RoomConnection::TranslateDirection("south"));
 		}
 		break;
 	case DataType::East:
@@ -254,7 +254,7 @@ void Parser::SetData(const DataType& dataType, std::shared_ptr<Room> inRoom)
 			world->AddRoomConnection(
 				inRoom
 				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
-				, Connection::TranslateDirection("east"));
+				, RoomConnection::TranslateDirection("east"));
 		}
 		break;
 	case DataType::West:
@@ -263,7 +263,7 @@ void Parser::SetData(const DataType& dataType, std::shared_ptr<Room> inRoom)
 			world->AddRoomConnection(
 				inRoom
 				, std::static_pointer_cast<Room>(mParsedEntites.at(std::stoi(dataToAdd)))
-				, Connection::TranslateDirection("west"));
+				, RoomConnection::TranslateDirection("west"));
 		}
 		break;
 	case DataType::Contents:

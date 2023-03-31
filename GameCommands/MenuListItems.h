@@ -5,7 +5,8 @@
 class MenuListItems : public GameCommand
 {
 public:
-	MenuListItems(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	MenuListItems(std::shared_ptr<ClientData> inData, std::string inArgs);
+
 	virtual void Execute();
 
 private:

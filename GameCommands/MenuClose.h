@@ -5,7 +5,8 @@
 class MenuClose : public GameCommand
 {
 public:
-	MenuClose(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+
+	MenuClose(std::shared_ptr<ClientData> inData, std::string inArgs);
 	virtual void Execute();
 
 private:

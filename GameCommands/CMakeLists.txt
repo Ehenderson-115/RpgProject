@@ -1,5 +1,5 @@
 set (SOURCE_FILES 
-			CommandParser.cpp  
+
 			GameCommand.cpp
 			MainMove.cpp
 			MainLook.cpp 
@@ -18,7 +18,6 @@ set (SOURCE_FILES
 			CombatDefendAdversary.cpp)
 
 set (HEADER_FILES 
-			CommandParser.h  
 			GameCommand.h
 			MainMove.h
 			MainLook.h 
@@ -39,4 +38,4 @@ set (HEADER_FILES
 
 add_library(GameCommands ${SOURCE_FILES} ${HEADER_FILES})
 target_include_directories(GameCommands PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
+target_link_libraries(GameCommands GameObjects)

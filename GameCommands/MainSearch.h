@@ -5,7 +5,7 @@
 class MainSearch : public GameCommand
 {
 public:
-	MainSearch(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	MainSearch(std::shared_ptr<ClientData> inData, std::string inArgs);
 	virtual void Execute();
 
 private:

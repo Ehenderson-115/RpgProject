@@ -5,7 +5,7 @@
 class MainMove : public GameCommand
 {
 public:
-	MainMove(std::shared_ptr<ActiveGameData> inData, std::string inArgs);
+	MainMove(std::shared_ptr<ClientData> inData, std::string inArgs);
 	virtual void Execute();
 
 private:

@@ -1,17 +1,23 @@
 #ifndef OUTPUT_MANAGER_H
 #define OUTPUT_MANAGER_H
 #include <string>
-#include "Game.h"
+#include <memory>
+struct ClientData;
 
 class OutputManager 
 {
 
 public:
 	OutputManager();
-	void UpdateStatusBar(const std::shared_ptr<ActiveGameData>& inData);
-	void AddToOutput(const std::string& inStr);
-	void PrintScreen();
 
+	void UpdateStatusBar(const std::shared_ptr<ClientData>& inData);
+	void AppendToOutput(const std::string& inStr) { mOutput += inStr; };
+	void PrintScreen();
+	void StatusBar(const std::string& inStr) { mStatusBar = inStr; };
+	void Output(const std::string& inStr) { mOutput = inStr; };
+	std::string StatusBar() const { return mStatusBar; };
+	std::string Output() const { return mOutput; };
+	void Clear() { mOutput.clear(); };
 
 
 private:
